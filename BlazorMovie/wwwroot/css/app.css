@@ -1,4 +1,54 @@
-.valid.modified:not([type=checkbox]) {
+:root {
+    --sjw-title-font: 'ltc-broadway-engraved', sans-serif;
+    --sjw-secondary-font: 'merriweather', sans-serif;
+    --sjw-body-font: 'montserrat-alternates', sans-serif;
+    /*colors*/
+    --sjw-background-color: #f2f2f2;
+    --sjw-primary-color: #3D048C; /*blue*/
+    --sjw-secondary-color: #6E038C; /*Purple*/
+    --sjw-tertiary-color: #F2BF5E; /*Mustard*/
+
+/*text styles*/
+--sjw-font-size: 1rem;
+}
+
+html, body{
+    height: 100%;
+    margin: 0;
+    padding: 0;
+    font-size: var(--sjw-font-size);
+    font-family: var(--sjw-body-font);
+    background-color: var(--sjw-background-color);
+}
+
+h1 {
+    font-family: var(--sjw-title-font);
+}
+
+h2, h3, h4, h5, h6 {
+    font-family: var(--sjw-secondary-font);
+}
+
+h1.focus{
+   outline: none;
+}
+#app {
+    height: 100%;
+}
+
+
+
+.btn-primary {
+    --bs-btn-bg: var(--sjw-secondary-color);
+    --bs-btn-border-color: var(--sjw-primary-color);
+    --bs-btn-hover-bg: var(--sjw-primary-color);
+    --bs-btn-hover-border-color: var(--sjw-tertiary-color);
+    --bs-btn-active-bg: var(--sjw-tertiary-color);
+    --bs-btn-active-border-color: var(--sjw-primary-color);
+}
+
+    /*Blazor Default Styles*/
+    .valid.modified:not([type=checkbox]) {
     outline: 1px solid #26b050;
 }
 
