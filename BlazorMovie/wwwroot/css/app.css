@@ -1,18 +1,18 @@
 :root {
-    --sjw-title-font: 'ltc-broadway-engraved', sans-serif;
+    --sjw-title-font: 'broadacre-regular-0', sans-serif;
     --sjw-secondary-font: 'merriweather', sans-serif;
     --sjw-body-font: 'montserrat-alternates', sans-serif;
     /*colors*/
-    --sjw-background-color: #f2f2f2;
+    --sjw-background-color: #fdfdfd;
     --sjw-primary-color: #3D048C; /*blue*/
     --sjw-secondary-color: #6E038C; /*Purple*/
     --sjw-tertiary-color: #F2BF5E; /*Mustard*/
-
-/*text styles*/
---sjw-font-size: 1rem;
+    --sjw-font-color: #0b0b45;
+    /*text styles*/
+    --sjw-font-size: 1rem;
 }
 
-html, body{
+html, body {
     height: 100%;
     margin: 0;
     padding: 0;
@@ -23,15 +23,18 @@ html, body{
 
 h1 {
     font-family: var(--sjw-title-font);
+    color: var(--sjw-font-color);
 }
 
 h2, h3, h4, h5, h6 {
     font-family: var(--sjw-secondary-font);
+    color: var(--sjw-font-color);
 }
 
-h1.focus{
-   outline: none;
-}
+/*h1.focus {
+    outline: none;
+}*/
+
 #app {
     height: 100%;
 }
@@ -47,8 +50,8 @@ h1.focus{
     --bs-btn-active-border-color: var(--sjw-primary-color);
 }
 
-    /*Blazor Default Styles*/
-    .valid.modified:not([type=checkbox]) {
+/*Blazor Default Styles*/
+.valid.modified:not([type=checkbox]) {
     outline: 1px solid #26b050;
 }
 
