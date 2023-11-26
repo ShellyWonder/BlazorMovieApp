@@ -1,0 +1,12 @@
+﻿.navStyle {
+    background-color: var(--sjw-golden-color);
+    color: antiquewhite;
+    font-family: var(--sjw-title-font);
+    font-size: 1.2rem;
+    padding: 0.5rem;
+    
+}
+
+.navbar-nav {
+    --bs-navbar-hover-color: var(--sjw-primary-color);
+}

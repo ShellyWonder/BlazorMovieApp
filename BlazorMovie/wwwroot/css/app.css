@@ -6,6 +6,7 @@
     --sjw-background-color: #fdfdfd;
     --sjw-primary-color: #3D048C; /*blue*/
     --sjw-secondary-color: #6E038C; /*Purple*/
+    --sjw-golden-color: #ffa060;
     --sjw-tertiary-color: #F2BF5E; /*Mustard*/
     --sjw-font-color: #0b0b45;
     /*text styles*/
@@ -48,6 +49,7 @@ h2, h3, h4, h5, h6 {
     --bs-btn-hover-border-color: var(--sjw-tertiary-color);
     --bs-btn-active-bg: var(--sjw-tertiary-color);
     --bs-btn-active-border-color: var(--sjw-primary-color);
+    --bs-btn-font-family: var( --sjw-title-font);
 }
 
 /*Blazor Default Styles*/
