@@ -33,9 +33,9 @@ h2, h3, h4, h5, h6 {
     color: var(--sjw-font-color);
 }
 
-/*h1.focus {
+h1 .focus {
     outline: none;
-}*/
+}
 
 #app {
     height: 100%;
