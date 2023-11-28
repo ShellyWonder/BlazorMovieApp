@@ -1,0 +1,18 @@
+﻿@page "/movie/{id:int}"
+
+
+<p>Movie id is @Id.</p>
+
+
+@code {
+
+[Parameter]
+    public int Id { get; set; }
+
+    // private PopularMovie? movie;
+
+    // protected override async Task OnInitializedAsync()
+    // {
+    //     movie = await TMDB.GetMovieAsync(Id);
+    // }
+}
