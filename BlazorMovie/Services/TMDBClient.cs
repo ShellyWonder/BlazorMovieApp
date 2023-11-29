@@ -23,5 +23,9 @@ namespace BlazorMovie.Services
         {
             return _httpClient.GetFromJsonAsync<PopularMoviesPageResponse>("movie/popular");
         }
+        public Task<MovieDetails?> GetMovieDetailsAsync(int id)
+        {
+            return _httpClient.GetFromJsonAsync<MovieDetails>($"movie/{id}");
+        }
     }
 }
