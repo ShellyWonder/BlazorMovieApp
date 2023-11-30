@@ -1,0 +1,9 @@
+﻿.btn {
+    background-color: var( --sjw-golden-color);
+    color: var(--sjw-font-color);
+    border-color: var(--sjw-secondary-color);
+}
+
+.rounded-pill {
+    aspect-ratio: 1/1;
+}
