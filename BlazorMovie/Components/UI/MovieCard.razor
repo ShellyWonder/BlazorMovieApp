@@ -11,7 +11,7 @@
             <img class="card-img-top" alt="Movie Poster" src="@($"https://image.tmdb.org/t/p/w500/{Movie.PosterPath}")" />
         }
         <div class="card-body border-top bg-light">
-            <h5 class="card-title">@Movie.Title</h5>
+            <h5 class="card-title">@Movie.Title.ToUpper()</h5>
             <p class="card-text">
                 @DateTime.Parse(Movie.ReleaseDate).ToString("MMMM dd, yyyy")
             </p>

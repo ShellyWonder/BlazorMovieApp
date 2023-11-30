@@ -11,6 +11,8 @@
     font-weight: 400;
     color: var(--sjw-footer-font-color);
     margin-bottom: 1rem;
+    border: 2px solid;
+    border-color: var(--sjw-footer-font-color);
 }
 
 .releaseDate {
