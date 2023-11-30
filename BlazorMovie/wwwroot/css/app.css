@@ -9,9 +9,11 @@
     --sjw-golden-color: #ffa060;
     --sjw-tertiary-color: #F2BF5E; /*Mustard*/
     --sjw-font-color: #0b0b45;
-    --sjw-footer-font-color: #faebd7;/*Antique white*/
+    --sjw-footer-font-color: #faebd7; /*Antique white*/
     /*text styles*/
     --sjw-font-size: 1rem;
+    /*box shadow*/
+    --sjw-box-shadow: rgba(0, 0, 0, 0.19) 0px 10px 20px, rgba(0, 0, 0, 0.23) 0px 6px 6px;
 }
 
 html, body {
