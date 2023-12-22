@@ -21,7 +21,7 @@
                 @foreach (BlazorMovie.Models.NowPlaying movie in movies.Results)
                 {
                     <div class="col">
-                        <MovieCard  />
+                        <MovieCardDetails Movie="movie" />
                     </div>
                 }
 
@@ -31,7 +31,7 @@
                 for (int i = 0; i < 10; i++)
                 {
                     <div class="col">
-                        <MovieCard  />
+                        <MovieCardDetails/>
 
                     </div>
                 }

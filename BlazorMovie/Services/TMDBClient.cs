@@ -21,11 +21,12 @@ namespace BlazorMovie.Services
         #region PopularMovies 
         public Task<PopularMoviesPageResponse?> GetPopularMoviesAsync(int page = 1)
         {
-            if (page < 1) page = 1;
-            if (page > 500) page = 500;
+            page = MovieCount(page);
 
             return _httpClient.GetFromJsonAsync<PopularMoviesPageResponse>($"movie/popular?page={page}");
         }
+
+
         public Task<MovieDetails?> GetMovieDetailsAsync(int id)
         {
             return _httpClient.GetFromJsonAsync<MovieDetails>($"movie/{id}");
@@ -35,8 +36,7 @@ namespace BlazorMovie.Services
         #region NowPlaying 
         public Task<NowPlayingPageResponse?> GetNowPlayingAsync(int page = 1)
         {
-            if (page < 1) page = 1;
-            if (page > 500) page = 500;
+            page = MovieCount(page);
 
             return _httpClient.GetFromJsonAsync<NowPlayingPageResponse>($"movie/now_playing?page={page}");
         }
@@ -45,5 +45,11 @@ namespace BlazorMovie.Services
             return _httpClient.GetFromJsonAsync<MovieDetails>($"movie/{id}");
         }
         #endregion
+        private static int MovieCount(int page)
+        {
+            if (page < 1) page = 1;
+            if (page > 500) page = 500;
+            return page;
+        }
     }
 }
