@@ -14,6 +14,6 @@ builder.Services.AddScoped(sp => new HttpClient { BaseAddress = new Uri(builder.
 builder.Services.AddScoped<TMDBClient>();
 builder.Services.AddScoped<PopularMovie, PopularMovieService>();
 builder.Services.AddSingleton<MovieServiceFactory>();
-builder.Services.AddScoped<IMovieService<IMovie>>();
+builder.Services.AddSingleton<IMovieService<IMovie>>();
 
 await builder.Build().RunAsync();

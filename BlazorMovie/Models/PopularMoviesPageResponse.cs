@@ -1,8 +1,9 @@
-﻿using System.Text.Json.Serialization;
+﻿
+using System.Text.Json.Serialization;
 
 namespace BlazorMovie.Models
 {
-    public class PopularMoviesPageResponse
+    public class PopularMoviesPageResponse 
     {
 
         [JsonPropertyName("page")]
