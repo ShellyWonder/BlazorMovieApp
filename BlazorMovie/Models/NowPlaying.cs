@@ -18,13 +18,13 @@ namespace BlazorMovie.Models
         public int Id { get; set; }
 
         [JsonPropertyName("original_language")]
-        public string OriginalLanguage { get; set; } = string.Empty;
+        public string? OriginalLanguage { get; set; } 
 
         [JsonPropertyName("original_title")]
-        public string OriginalTitle { get; set; } = string.Empty;
+        public string? OriginalTitle { get; set; }
 
         [JsonPropertyName("overview")]
-        public string Overview { get; set; } = string.Empty;
+        public string? Overview { get; set; } 
 
         [JsonPropertyName("popularity")]
         public float Popularity { get; set; }
