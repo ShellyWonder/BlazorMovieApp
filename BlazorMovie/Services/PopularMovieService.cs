@@ -1,5 +1,4 @@
 ﻿using BlazorMovie.Models;
-using BlazorMovie.Models.Interfaces;
 
 namespace BlazorMovie.Services
 {
@@ -13,10 +12,8 @@ namespace BlazorMovie.Services
         }
         public async Task<PopularMoviesPageResponse> GetMoviesAsync(int page)
         {
-            if (page < 1) page = 1;
-            else if (page > 500) page = 500;
-
-            var result = await _tmdbClient.GetPopularMoviesAsync(1) ?? throw new Exception("No movie data returned");
+           
+            var result = await _tmdbClient.GetPopularMoviesAsync(page) ?? throw new Exception("No movie data returned");
             return result;
         }
     }
