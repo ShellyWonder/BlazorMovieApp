@@ -16,13 +16,13 @@ namespace BlazorMovie.Services
             if (page < 1) page = 1;
             else if (page > 500) page = 500;
 
-            return await _tmdbClient.GetPopularMoviesAsync(1);
-
-            
+            var result = await _tmdbClient.GetPopularMoviesAsync(1) ?? throw new Exception("No movie data returned");
+            return result;
         }
-
-
     }
+
+
+
 }
 
 
