@@ -1,8 +1,9 @@
 ﻿using BlazorMovie.Models;
+using BlazorMovie.Models.Interfaces;
 
 namespace BlazorMovie.Services
 {
-    public class PopularMovieService : PopularMovie
+    public class PopularMovieService : IMovieService<PopularMovie>
     {
         private readonly TMDBClient _tmdbClient;
 
@@ -10,14 +11,13 @@ namespace BlazorMovie.Services
         {
             _tmdbClient = tmdbClient;
         }
-        public async Task<PopularMoviesPageResponse> GetMoviesAsync(int page)
+
+        
+       public async Task<PageResponse<PopularMovie>> GetMoviesAsync(int page)
         {
-           
-            var result = await _tmdbClient.GetPopularMoviesAsync(page) ?? throw new Exception("No movie data returned");
-            return result;
+            return await _tmdbClient.GetPopularMoviesAsync(page) ?? throw new Exception("No movie data returned");
         }
     }
-
 
 
 }

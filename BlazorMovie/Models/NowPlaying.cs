@@ -3,7 +3,7 @@ using System.Text.Json.Serialization;
 
 namespace BlazorMovie.Models
 {
-    public class NowPlaying : IMovie
+    public class NowPlaying :IMovie
     {
         [JsonPropertyName("adult")]
         public bool Adult { get; set; }

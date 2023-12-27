@@ -1,7 +1,7 @@
 ﻿namespace BlazorMovie.Models.Interfaces
 {
-    public interface IMovieService<TMovie> where TMovie : IMovie
+    public interface IMovieService<T> where T : IMovie
     {
-        Task<IEnumerable<TMovie>> GetMoviesAsync(int page); 
+        Task<PageResponse<T>> GetMoviesAsync(int page);
     }
 }
