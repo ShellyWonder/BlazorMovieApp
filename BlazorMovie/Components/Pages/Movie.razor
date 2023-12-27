@@ -71,7 +71,7 @@ else
             @if (movieDetails.SpokenLanguages.Any())
             {
                 <div>
-                    <strong> Languages:</strong> @string.Join(",", movieDetails.SpokenLanguages.Select(sl => sl.EnglishName))
+                    <strong> Languages:</strong> @string.Join(", ", movieDetails.SpokenLanguages.Select(sl => sl.EnglishName))
                 </div>
             }
         <div>
