@@ -1,8 +1,9 @@
-﻿using System.Text.Json.Serialization;
+﻿using BlazorMovie.Models.Interfaces;
+using System.Text.Json.Serialization;
 
 namespace BlazorMovie.Models
 {
-    public class MovieDetails
+    public class MovieDetails : IMovie
     {
 
         [JsonPropertyName("adult")]

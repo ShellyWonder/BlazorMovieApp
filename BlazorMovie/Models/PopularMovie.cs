@@ -1,9 +1,10 @@
-﻿using System.Text.Json.Serialization;
+﻿using BlazorMovie.Models.Interfaces;
+using System.Text.Json.Serialization;
 
 namespace BlazorMovie.Models
 {
     
-        public class PopularMovie
+        public class PopularMovie: IMovie
         {
             [JsonPropertyName("adult")]
             public bool Adult { get; set; }
@@ -24,19 +25,19 @@ namespace BlazorMovie.Models
             public string? OriginalTitle { get; set; } 
 
             [JsonPropertyName("overview")]
-            public string Overview { get; set; } = string.Empty;
+            public string? Overview { get; set; } 
 
             [JsonPropertyName("popularity")]
             public float Popularity { get; set; }
 
             [JsonPropertyName("poster_path")]
-            public string PosterPath { get; set; } = string.Empty;
+            public string? PosterPath { get; set; }
 
             [JsonPropertyName("release_date")]
-            public string ReleaseDate { get; set; } = string.Empty;
+            public string? ReleaseDate { get; set; } 
 
             [JsonPropertyName("title")]
-            public string Title { get; set; } = string.Empty;
+            public string? Title { get; set; }
 
             [JsonPropertyName("video")]
             public bool Video { get; set; }

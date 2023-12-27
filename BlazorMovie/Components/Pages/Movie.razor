@@ -2,7 +2,7 @@
 @using BlazorMovie.Services
 @inject TMDBClient TMDB
 
-
+@*movie details*@
 @if (movieDetails is null)
 {
     //build out placeholder code
@@ -71,7 +71,7 @@ else
             @if (movieDetails.SpokenLanguages.Any())
             {
                 <div>
-                    <strong> Languages:</strong> @string.Join(",", movieDetails.SpokenLanguages.Select(sl => sl.EnglishName))
+                    <strong> Languages:</strong> @string.Join(", ", movieDetails.SpokenLanguages.Select(sl => sl.EnglishName))
                 </div>
             }
         <div>
