@@ -15,6 +15,7 @@ builder.Services.AddScoped<TMDBClient>();
 builder.Services.AddScoped<MovieServiceFactory>();
 builder.Services.AddScoped<IMovieService<PopularMovie>, PopularMovieService>();
 builder.Services.AddScoped<IMovieService<NowPlaying>, NowPlayingService>();
+builder.Services.AddScoped<IMovieService<Result>, TopRatedService>();
 
 
 await builder.Build().RunAsync();

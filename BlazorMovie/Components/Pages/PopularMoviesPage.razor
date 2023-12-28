@@ -1,0 +1,33 @@
+﻿@using BlazorMovie.Services
+@using BlazorMovie.Models
+@using BlazorMovie.Models.Interfaces
+
+@inject TMDBClient TMDB
+@inject NavigationManager navManager
+@inject IMovieService<PopularMovie> PopularMovieService
+
+<MovieListComponent TMovie="PopularMovie" movies="@movies" Title="Playing Now" OnPageChanged="GetPage" />
+
+@code {
+    private PageResponse<PopularMovie>? movies;
+    
+
+    [Parameter]
+    public string? Title { get; set; } = "Popular Movies";
+
+
+    [SupplyParameterFromQuery]
+    public int Page { get; set; } = 1;
+
+    protected override async Task OnParametersSetAsync()
+    {  
+        movies = await PopularMovieService.GetMoviesAsync(Page);
+    }
+
+
+    private void GetPage(int pageNum)
+    {
+        string url = navManager.GetUriWithQueryParameter("page", pageNum);
+        navManager.NavigateTo(url);
+    }
+}

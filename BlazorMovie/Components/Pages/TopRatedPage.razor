@@ -1,0 +1,34 @@
+﻿@page "/top_rated"
+
+@using BlazorMovie.Services
+@using BlazorMovie.Models
+@using BlazorMovie.Models.Interfaces
+
+@inject TMDBClient TMDB
+@inject NavigationManager navManager
+@inject IMovieService<Result> TopRatedService
+
+<MovieListComponent TMovie="Result" movies="@movies" Title="Top Rated Movies" OnPageChanged="GetPage" />
+
+@code {
+    private PageResponse<Result>? movies;
+
+    [Parameter]
+    public string? Title { get; set; } = "Top Rated Movies";
+
+    [SupplyParameterFromQuery]
+    public int Page { get; set; } = 1;
+
+    protected override async Task OnParametersSetAsync()
+    {
+  
+        movies = await TopRatedService.GetMoviesAsync(Page);
+    }
+
+
+    private void GetPage(int pageNum)
+    {
+        string url = navManager.GetUriWithQueryParameter("page", pageNum);
+        navManager.NavigateTo(url);
+    }
+}

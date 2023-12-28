@@ -21,6 +21,10 @@ namespace BlazorMovie.Services
             {
                 return (IMovieService<TMovie>)_serviceProvider.GetService(typeof(PopularMovieService))!;
             }
+            else if (typeof(TMovie) == typeof(Result))
+            {
+                return (IMovieService<TMovie>)_serviceProvider.GetService(typeof(TopRatedService))!;
+            }
             else
             {
                 throw new NotImplementedException();
