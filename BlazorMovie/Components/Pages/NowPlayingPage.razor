@@ -1,0 +1,36 @@
+﻿@page "/now_playing"
+
+@using BlazorMovie.Services
+@using BlazorMovie.Models
+@using BlazorMovie.Models.Interfaces
+
+@inject TMDBClient TMDB
+@inject NavigationManager navManager
+@inject IMovieService<NowPlaying> NowPlayingService
+
+<MovieListComponent TMovie="NowPlaying" movies="@movies" Title="Playing Now" OnPageChanged="GetPage" />
+
+
+@code {
+    private PageResponse<NowPlaying>? movies;
+
+    [Parameter]
+    public string? Title { get; set; } = "Movies Playing Now";
+
+    [SupplyParameterFromQuery]
+    public int Page { get; set; } = 1;
+
+    protected override async Task OnParametersSetAsync()
+    {
+
+        movies = await NowPlayingService.GetMoviesAsync(Page);
+ 
+    }
+
+ 
+    private void GetPage(int pageNum)
+    {
+        string url = navManager.GetUriWithQueryParameter("page", pageNum);
+        navManager.NavigateTo(url);
+    }
+}
