@@ -3,6 +3,7 @@ using System.Text.Json.Serialization;
 
 namespace BlazorMovie.Models
 {
+    //Result is used for TopRatedService
     public class Result : IMovie
     {
         [JsonPropertyName("adult")]
@@ -10,7 +11,7 @@ namespace BlazorMovie.Models
 
         [JsonPropertyName("backdrop_path")]
         public string BackdropPath { get; set; } = String.Empty;
-        
+
         [JsonPropertyName("genre_ids")]
         public int[] GenreIds { get; set; } = [];
 
