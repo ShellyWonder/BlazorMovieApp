@@ -1,5 +1,6 @@
 ﻿using BlazorMovie.Models;
 using BlazorMovie.Models.Interfaces;
+using System;
 
 namespace BlazorMovie.Services
 {
@@ -13,6 +14,7 @@ namespace BlazorMovie.Services
         }
         public IMovieService<TMovie> GetMovieService<TMovie>() where TMovie : IMovie
         {
+           
             if (typeof(TMovie) == typeof(NowPlaying))
             {
                 return (IMovieService<TMovie>)_serviceProvider.GetService(typeof(NowPlayingService))!;
@@ -25,10 +27,17 @@ namespace BlazorMovie.Services
             {
                 return (IMovieService<TMovie>)_serviceProvider.GetService(typeof(TopRatedService))!;
             }
+            else if (typeof(TMovie) == typeof(Upcoming))
+            {
+                return (IMovieService<TMovie>)_serviceProvider.GetService(typeof(UpcomingComingSoonService))!;
+            }
             else
             {
-                throw new NotImplementedException();
+                throw new ArgumentException($"No service available for type '{typeof(TMovie).Name}'.");
             }
+
+            
         }
+        
     }
 }

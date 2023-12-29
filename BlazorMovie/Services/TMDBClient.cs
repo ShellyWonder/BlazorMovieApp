@@ -51,6 +51,15 @@ namespace BlazorMovie.Services
             return _httpClient.GetFromJsonAsync<PageResponse<Result>>($"movie/top_rated?page={page}");
         }
         #endregion
+        
+        #region Upcoming
+        public Task<PageResponse<Result>?> GetUpcomingAsync(int page = 1)
+        {
+            page = MovieCount(page);
+
+            return _httpClient.GetFromJsonAsync<PageResponse<Result>>($"movie/upcoming?page={page}");
+        }
+        #endregion
 
         private static int MovieCount(int page)
         {

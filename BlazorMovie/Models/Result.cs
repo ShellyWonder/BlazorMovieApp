@@ -4,6 +4,7 @@ using System.Text.Json.Serialization;
 namespace BlazorMovie.Models
 {
     //Result is used for TopRatedService and UpcomingService
+    
     public class Result : IMovie
     {
         [JsonPropertyName("adult")]
