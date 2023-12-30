@@ -6,7 +6,7 @@
 @inject NavigationManager navManager
 @inject IMovieService<PopularMovie> PopularMovieService
 
-<MovieListComponent TMovie="PopularMovie" movies="@movies" Title="Playing Now" OnPageChanged="GetPage" />
+<MovieListComponent TMovie="PopularMovie" movies="@movies" Title="Popular Movies" OnPageChanged="GetPage" />
 
 @code {
     private PageResponse<PopularMovie>? movies;
