@@ -44,11 +44,20 @@ namespace BlazorMovie.Services
         #endregion
 
         #region TopRated
-        public Task<PageResponse<Result>?> GetTopRatedAsync(int page = 1)
+        public Task<PageResponse<TopRated>?> GetTopRatedAsync(int page = 1)
         {
             page = MovieCount(page);
 
-            return _httpClient.GetFromJsonAsync<PageResponse<Result>>($"movie/top_rated?page={page}");
+            return _httpClient.GetFromJsonAsync<PageResponse<TopRated>>($"movie/top_rated?page={page}");
+        }
+        #endregion
+
+        #region Upcoming
+        public Task<PageResponse<Upcoming>?> GetUpcomingAsync(int page = 1)
+        {
+            page = MovieCount(page);
+
+            return _httpClient.GetFromJsonAsync<PageResponse<Upcoming>>($"movie/upcoming?page={page}");
         }
         #endregion
 

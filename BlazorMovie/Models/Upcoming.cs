@@ -3,8 +3,7 @@ using System.Text.Json.Serialization;
 
 namespace BlazorMovie.Models
 {
-    //Result is used for TopRatedService
-    public class Result : IMovie
+    public class Upcoming : IMovie
     {
         [JsonPropertyName("adult")]
         public bool Adult { get; set; }
@@ -50,4 +49,3 @@ namespace BlazorMovie.Models
     }
 
 }
-

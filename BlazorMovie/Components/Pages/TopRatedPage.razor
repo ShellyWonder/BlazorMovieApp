@@ -6,12 +6,12 @@
 
 @inject TMDBClient TMDB
 @inject NavigationManager navManager
-@inject IMovieService<Result> TopRatedService
+@inject IMovieService<TopRated> TopRatedService
 
-<MovieListComponent TMovie="Result" movies="@movies" Title="Top Rated Movies" OnPageChanged="GetPage" />
+<MovieListComponent TMovie="TopRated" movies="@movies" Title="Top Rated Movies" OnPageChanged="GetPage" />
 
 @code {
-    private PageResponse<Result>? movies;
+    private PageResponse<TopRated>? movies;
 
     [Parameter]
     public string? Title { get; set; } = "Top Rated Movies";

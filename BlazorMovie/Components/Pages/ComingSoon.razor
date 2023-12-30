@@ -1,7 +1,34 @@
 ﻿@page "/upcoming"
 
-<h3>Coming Soon</h3>
+@using BlazorMovie.Models;
+@using BlazorMovie.Models.Interfaces;
+@using BlazorMovie.Services
+
+@inject TMDBClient TMDB
+@inject NavigationManager navManager
+@inject IMovieService<Upcoming> UpcomingComingSoonService
+
+<MovieListComponent TMovie="Upcoming" movies="@movies" Title="Coming Soon" OnPageChanged="GetPage" />
 
 @code {
+    private PageResponse<Upcoming>? movies;
 
+    [Parameter]
+    public string? Title { get; set; } = "Coming Soon";
+
+    [SupplyParameterFromQuery]
+    public int Page { get; set; } = 1;
+
+    protected override async Task OnParametersSetAsync()
+    {
+
+        movies = await UpcomingComingSoonService.GetMoviesAsync(Page);
+    }
+
+
+    private void GetPage(int pageNum)
+    {
+        string url = navManager.GetUriWithQueryParameter("page", pageNum);
+        navManager.NavigateTo(url);
+    }
 }
