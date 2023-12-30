@@ -1,6 +1,5 @@
 ﻿using BlazorMovie.Models;
 using BlazorMovie.Models.Interfaces;
-using System;
 
 namespace BlazorMovie.Services
 {
@@ -23,7 +22,7 @@ namespace BlazorMovie.Services
             {
                 return (IMovieService<TMovie>)_serviceProvider.GetService(typeof(PopularMovieService))!;
             }
-            else if (typeof(TMovie) == typeof(Result))
+            else if (typeof(TMovie) == typeof(TopRated))
             {
                 return (IMovieService<TMovie>)_serviceProvider.GetService(typeof(TopRatedService))!;
             }

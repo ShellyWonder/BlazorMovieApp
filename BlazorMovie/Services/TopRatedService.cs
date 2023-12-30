@@ -3,7 +3,7 @@ using BlazorMovie.Models.Interfaces;
 
 namespace BlazorMovie.Services
 {
-    public class TopRatedService : IMovieService<Result>
+    public class TopRatedService : IMovieService<TopRated>
     {
         private readonly TMDBClient _tmdbClient;
 
@@ -12,9 +12,11 @@ namespace BlazorMovie.Services
             _tmdbClient = tmdbClient;
         }
 
-        public  async Task<PageResponse<Result>> GetMoviesAsync(int page)
+        public  async Task<PageResponse<TopRated>> GetMoviesAsync(int page)
         {
             return await _tmdbClient.GetTopRatedAsync(page) ?? throw new Exception("No movie data returned");
         }
+
+        
     }
 }
