@@ -5,7 +5,6 @@
 @inject TMDBClient TMDB
 @inject NavigationManager navManager
 @inject IMovieService<PopularMovie> PopularMovieService
-
 <MovieListComponent TMovie="PopularMovie" movies="@movies" Title="Popular Movies" OnPageChanged="GetPage" />
 
 @code {
