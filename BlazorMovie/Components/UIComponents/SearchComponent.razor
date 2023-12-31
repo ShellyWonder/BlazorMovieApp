@@ -1,0 +1,46 @@
+﻿@using BlazorMovie.Models
+
+<div class="container mt-3">
+    <div class="row">
+        <div class="col-6">
+            <select @bind="searchModel.Category" class="form-select">
+                <option value="">Select Category</option>
+                <option value="Movie">Movie By Title</option>
+                <option value="PopularMovies">Popular Movies</option>
+                <option value="TopRated">Top Rated</option>
+                <option value="Upcoming">Upcoming</option>
+                <option value="NowPlaying">Now Playing</option>
+            </select>
+        </div>
+        <div class="col-6">
+            @if (!string.IsNullOrWhiteSpace(searchModel.Category))
+            {
+                <input type="text" class="form-control" placeholder="Enter search term..." @bind="searchModel.SearchTerm">
+            }
+        </div>
+        <div class="col">
+            <button class="btn btn-primary" @onclick="PerformSearch">Search</button>
+        </div>
+    </div>
+</div>
+@code {
+    private bool showSearchBox = false;
+    private string selectedCategory = "";
+    private string searchTerm = "";
+
+    private SearchModel? Category { get; set; }
+    [SupplyParameterFromQuery(Name = "category")]
+    private SearchModel searchModel { get; set; } = new SearchModel();
+
+    private void OnCategoryChanged(ChangeEventArgs e)
+    {
+        selectedCategory = e.Value?.ToString() ?? "";
+        showSearchBox = !string.IsNullOrWhiteSpace(selectedCategory);
+    }
+
+    private void PerformSearch()
+    {
+        // Implement search logic based on selectedCategory and searchTerm
+        Console.WriteLine($"Searching {selectedCategory} for '{searchTerm}'");
+    }
+}
