@@ -1,6 +1,6 @@
 ﻿@using BlazorMovie.Models
-
 @inject NavigationManager NavigationManager
+@inject IJSRuntime JSRuntime
 
 <div class="modal fade" id="searchResultsModal" tabindex="-1" role="dialog" aria-labelledby="searchResultsModalLabel" aria-hidden="true">
     <div class="modal-dialog" role="document">
@@ -33,11 +33,9 @@
 
 @code {
     [Parameter]
-    public IEnumerable<MovieDetails> SearchResults { get; set; }
+    public IEnumerable<MovieDetails> SearchResults { get; set; } = new List<MovieDetails>();
 
-    [Inject]
-    public NavigationManager NavigationManager { get; set; }
-
+   
     private void SelectMovie(MovieDetails movie)
     {
         NavigationManager.NavigateTo($"/movie/{movie.Id}");
