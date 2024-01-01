@@ -25,8 +25,9 @@ namespace BlazorMovie.Services
 
             return _httpClient.GetFromJsonAsync<PopularMoviesPageResponse>($"movie/popular?page={page}");
         }
+        #endregion
 
-
+        #region MovieDetails
         public Task<MovieDetails?> GetMovieDetailsAsync(int id)
         {
             return _httpClient.GetFromJsonAsync<MovieDetails>($"movie/{id}");
@@ -58,6 +59,13 @@ namespace BlazorMovie.Services
             page = MovieCount(page);
 
             return _httpClient.GetFromJsonAsync<PageResponse<Upcoming>>($"movie/upcoming?page={page}");
+        }
+        #endregion
+
+        #region GET Movie Search
+        public Task<MovieDetails?> GetMovieByTitle(string title)
+        {
+            return _httpClient.GetFromJsonAsync<MovieDetails>($"movie/{title}");
         }
         #endregion
 
