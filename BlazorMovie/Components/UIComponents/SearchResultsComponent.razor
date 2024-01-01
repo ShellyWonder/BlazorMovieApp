@@ -1,0 +1,57 @@
+﻿@using BlazorMovie.Models
+
+@inject NavigationManager NavigationManager
+
+<div class="modal fade" id="searchResultsModal" tabindex="-1" role="dialog" aria-labelledby="searchResultsModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="searchResultsModalLabel">Search Results</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                @if (SearchResults != null && SearchResults.Any())
+                {
+                    foreach (var movie in SearchResults)
+                    {
+                        <div class="search-result-item" @onclick="() => SelectMovie(movie)">
+                            <img src="@($"https://image.tmdb.org/t/p/w92/{movie.PosterPath}")" alt="@movie.Title" />
+                            <span>@movie.Title</span>
+                        </div>
+                    }
+                }
+                else
+                {
+                    <p>No results found.</p>
+                }
+            </div>
+        </div>
+    </div>
+</div>
+
+@code {
+    [Parameter]
+    public IEnumerable<MovieDetails> SearchResults { get; set; }
+
+    [Inject]
+    public NavigationManager NavigationManager { get; set; }
+
+    private void SelectMovie(MovieDetails movie)
+    {
+        NavigationManager.NavigateTo($"/movie/{movie.Id}");
+        HideModal();
+    }
+
+    public void ShowModal()
+    {
+        JSRuntime.InvokeVoidAsync("showModal", "searchResultsModal");
+    }
+
+    private void HideModal()
+    {
+        JSRuntime.InvokeVoidAsync("hideModal", "searchResultsModal");
+    }
+}
+
