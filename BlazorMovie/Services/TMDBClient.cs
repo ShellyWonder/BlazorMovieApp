@@ -1,5 +1,6 @@
 ﻿using BlazorMovie.Models;
 using System.Net.Http.Json;
+using System.Web;
 
 
 namespace BlazorMovie.Services
@@ -63,9 +64,12 @@ namespace BlazorMovie.Services
         #endregion
 
         #region GET Movie Search
-        public Task<MovieDetails?> GetMovieByTitle(string title)
+        public Task<MovieDetails?> GetMovieByTitleAsnyc(string title, int page=1)
         {
-            return _httpClient.GetFromJsonAsync<MovieDetails>($"movie/{title}");
+            page = MovieCount(page);
+            // encode the title to make it URL safe
+            string encodedTitle = HttpUtility.UrlEncode(title);
+            return _httpClient.GetFromJsonAsync<MovieDetails>($"search/movie?query={encodedTitle}&page={page}");
         }
         #endregion
 
