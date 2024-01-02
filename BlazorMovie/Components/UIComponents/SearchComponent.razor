@@ -1,5 +1,8 @@
 ﻿@using BlazorMovie.Models
+
+@inject ISearchService searchService
 @inject NavigationManager NavManager
+
 <div class="container mt-3">
     <div class="row">
         <div class="col-6">
@@ -22,15 +25,29 @@
             <button class="btn btn-primary" @onclick="PerformSearch">Search</button>
         </div>
     </div>
+    @if (!string.IsNullOrWhiteSpace(errorMessage))
+    {
+        <div class="alert alert-danger mt-3" role="alert">
+            @errorMessage
+        </div>
+    }
 </div>
 @code {
     private bool showSearchBox = false;
     private string selectedCategory = "";
     private string searchTerm = "";
+    private IEnumerable<SearchModel> searchResults = [];
+    private string errorMessage = "";
 
-    private SearchModel? Category { get; set; }
     [SupplyParameterFromQuery(Name = "category")]
+    private SearchModel? Category { get; set; }
+
+    [Parameter]
+    public EventCallback<IEnumerable<SearchModel>> OnMultipleResultsFound { get; set; }
+
     private SearchModel searchModel { get; set; } = new SearchModel();
+
+    public NavigationManager NavigationManager { get; set; } = null!;
 
     private void OnCategoryChanged(ChangeEventArgs e)
     {
@@ -38,13 +55,34 @@
         showSearchBox = !string.IsNullOrWhiteSpace(selectedCategory);
     }
 
-    private void PerformSearch()
+    private async Task PerformSearch()
     {
-        // Implement search logic based on selectedCategory and searchTerm
-        Console.WriteLine($"Searching {selectedCategory} for '{searchTerm}'");
+        searchResults = await searchService.GetSearchModelAsync("Movie", searchTerm);
+
+        if (searchResults != null && searchResults.Count() >= 2)
+        {
+            await OnMultipleResultsFound.InvokeAsync(searchResults);
+        }
+        else if (searchResults != null && searchResults.Any())
+        {
+            var singleResult = searchResults.First();
+           
+            if (singleResult.MovieDetails != null)
+            {
+                OnMovieSelected(singleResult.MovieDetails);
+            }
+            else
+            {
+                //show error message to user indicating movie details not available
+                errorMessage = "Movie details are not available.";
+                    
+            }
+        }
+
+            
     }
     private void OnMovieSelected(MovieDetails movieDetails)
     {
-    //     NavigationManager.NavigateTo($"/movie/{movieDetails.Id}");
+       NavigationManager.NavigateTo($"/movie/{movieDetails.Id}");
     }
 }

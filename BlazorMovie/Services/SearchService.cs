@@ -18,7 +18,8 @@ namespace BlazorMovie.Services
         {
             if (Category == "Movie")
             {
-                var movieDetails = await _TMDBClient.GetMovieByTitle(SearchTerm);
+                var movieDetails = await _TMDBClient.GetMovieByTitleAsnyc(SearchTerm);
+                
                 if (movieDetails != null)
                 {
                     var searchModel = new SearchModel
