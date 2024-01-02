@@ -16,6 +16,6 @@ builder.Services.AddScoped<IMovieService<PopularMovie>, PopularMovieService>();
 builder.Services.AddScoped<IMovieService<NowPlaying>, NowPlayingService>();
 builder.Services.AddScoped<IMovieService<TopRated>, TopRatedService>();
 builder.Services.AddScoped<IMovieService<Upcoming>, UpcomingComingSoonService>();
-
+builder.Services.AddScoped<ISearchService, SearchService>();
 
 await builder.Build().RunAsync();
