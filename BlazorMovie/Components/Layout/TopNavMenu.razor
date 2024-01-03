@@ -1,5 +1,5 @@
 ﻿<nav class="navbar navbar-expand-lg navStyle" data-bs-theme="dark">
-    <div class="container-xxl">
+    <div class="container-fluid">
         <a href="/" class="me-3"><img src="/img/smallLogo.png" height="50" /></a>
         <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarBM" aria-expanded="false" aria-label="toggle-navigation">
             <span class="navbar-toggler-icon"></span>
@@ -8,27 +8,27 @@
             <ul class="navbar-nav me-auto mb-2 mb-lg-0">
                 <li class="nav-item">
                     <NavLink class="nav-link" href="/" Match="NavLinkMatch.All">Popular Movies</NavLink>
-                    <i class="bi bi-home"></i>
+                   
                 </li> 
                 <li class="nav-item">
                     <NavLink class="nav-link" href="/now_playing">Now Playing</NavLink>
-                    <i class="bi bi-film"></i>
+                    
                 </li>
                 <li class="nav-item">
                     <NavLink class="nav-link" href="/top_rated">Top Rated</NavLink>
-                    <i class="bi bi-ticket-perforated"></i>
+                    
                 </li>
                  <li class="nav-item">
                     <NavLink class="nav-link" href="/upcoming">Coming Soon</NavLink>
-                    <i class="bi bi-projector"></i>
+                   
                 </li>
 
             </ul>
-        </div>
-       
         <SearchComponent  OnMultipleResultsFound="ShowSearchResultsModal"/>
         
         <SearchResultsComponent @ref="searchResultsModal" SearchResults="@searchResults"/>
+        </div>
+       
     </div>
 </nav>
 
