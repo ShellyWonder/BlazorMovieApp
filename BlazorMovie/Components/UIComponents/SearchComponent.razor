@@ -3,25 +3,38 @@
 @inject ISearchService searchService
 @inject NavigationManager NavManager
 
+
 <div class="row">
     <div class="col-12 d-flex justify-content-end">
-        <select @bind="searchModel.Category" class="form-select">
-            <option value="">Select Category</option>
-            <option value="Movie">Movie By Title</option>
-            <option value="PopularMovies">Popular Movies</option>
-            <option value="TopRated">Top Rated</option>
-            <option value="Upcoming">Upcoming</option>
-            <option value="NowPlaying">Now Playing</option>
-        </select>
-    </div>
-    @if (!string.IsNullOrWhiteSpace(searchModel.Category))
-    {
-        <div class="input-group"> 
-            <input type="text" class="form-control" placeholder="Enter search term..." @bind="searchTerm">
-            <button class="btn btn-primary" @onclick="PerformSearch">Search</button>
-       </div>
-    }
+        @if (string.IsNullOrWhiteSpace(searchModel.Category))
+        {
+            <select @bind="searchModel.Category" class="form-select">
+                <option value="">Select Category</option>
+                <option value="Movie">Movie By Title</option>
+                <option value="PopularMovies">Popular Movies</option>
+                <option value="TopRated">Top Rated</option>
+                <option value="Upcoming">Upcoming</option>
+                <option value="NowPlaying">Now Playing</option>
+            </select>
 
+        }
+        else 
+        {
+            <div class="input-group">
+                <select @bind="searchModel.Category" class="form-select">
+                    <option value="">Select Category</option>
+                    <option value="Movie">Movie By Title</option>
+                    <option value="PopularMovies">Popular Movies</option>
+                    <option value="TopRated">Top Rated</option>
+                    <option value="Upcoming">Upcoming</option>
+                    <option value="NowPlaying">Now Playing</option>
+                </select>
+                <input type="text" class="form-control" placeholder="Enter search term..." @bind="searchTerm">
+                <button class="btn btn-primary" @onclick="PerformSearch">Search</button>
+            </div>
+        }
+
+    </div>
 
 </div>
 @if (!string.IsNullOrWhiteSpace(errorMessage))
