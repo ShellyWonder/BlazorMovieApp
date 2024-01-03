@@ -3,35 +3,34 @@
 @inject ISearchService searchService
 @inject NavigationManager NavManager
 
-<div class="container mt-3">
-    <div class="row">
-        <div class="col-6">
-            <select @bind="searchModel.Category" class="form-select">
-                <option value="">Select Category</option>
-                <option value="Movie">Movie By Title</option>
-                <option value="PopularMovies">Popular Movies</option>
-                <option value="TopRated">Top Rated</option>
-                <option value="Upcoming">Upcoming</option>
-                <option value="NowPlaying">Now Playing</option>
-            </select>
-        </div>
-        <div class="col-6">
-            @if (!string.IsNullOrWhiteSpace(searchModel.Category))
-            {
-                <input type="text" class="form-control" placeholder="Enter search term..." @bind="searchTerm">
-            }
-        </div>
-        <div class="col">
-            <button class="btn btn-primary" @onclick="PerformSearch">Search</button>
-        </div>
+<div class="row">
+    <div class="col-12 d-flex justify-content-end">
+        <select @bind="searchModel.Category" class="form-select">
+            <option value="">Select Category</option>
+            <option value="Movie">Movie By Title</option>
+            <option value="PopularMovies">Popular Movies</option>
+            <option value="TopRated">Top Rated</option>
+            <option value="Upcoming">Upcoming</option>
+            <option value="NowPlaying">Now Playing</option>
+        </select>
     </div>
-    @if (!string.IsNullOrWhiteSpace(errorMessage))
+    @if (!string.IsNullOrWhiteSpace(searchModel.Category))
     {
-        <div class="alert alert-danger mt-3" role="alert">
-            @errorMessage
-        </div>
+        <div class="input-group"> 
+            <input type="text" class="form-control" placeholder="Enter search term..." @bind="searchTerm">
+            <button class="btn btn-primary" @onclick="PerformSearch">Search</button>
+       </div>
     }
+
+
 </div>
+@if (!string.IsNullOrWhiteSpace(errorMessage))
+{
+    <div class="alert alert-danger mt-3" role="alert">
+        @errorMessage
+    </div>
+}
+
 @code {
     private bool showSearchBox = false;
     private string selectedCategory = "";
@@ -39,7 +38,7 @@
     private IEnumerable<SearchModel> searchResults = [];
     private string errorMessage = "";
 
-    
+
     private SearchModel? Category { get; set; }
 
     [Parameter]
@@ -66,7 +65,7 @@
         else if (searchResults != null && searchResults.Any())
         {
             var singleResult = searchResults.First();
-           
+
             if (singleResult.MovieDetails != null)
             {
                 OnMovieSelected(singleResult.MovieDetails);
@@ -75,17 +74,17 @@
             {
                 //show error message to user indicating movie details not available
                 errorMessage = "Movie details are not available.";
-                    
+
             }
         }
-            
+
     }
     private void OnMovieSelected(MovieDetails movieDetails)
     {
         if (movieDetails is not null)
         {
-           NavigationManager.NavigateTo($"/movie/{movieDetails.Id}");
-            
+            NavigationManager.NavigateTo($"/movie/{movieDetails.Id}");
+
         }
         else
         {
