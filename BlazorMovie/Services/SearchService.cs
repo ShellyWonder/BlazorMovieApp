@@ -16,7 +16,7 @@ namespace BlazorMovie.Services
 
         public async Task<IEnumerable<SearchModel>> GetSearchModelAsync(string Category, string SearchTerm)
         {
-            if (Category == "Movie")
+            if (Category == "Movie By Title")
             {
                 var movieDetails = await _TMDBClient.GetMovieByTitleAsnyc(SearchTerm);
                 
@@ -24,28 +24,15 @@ namespace BlazorMovie.Services
                 {
                     var searchModel = new SearchModel
                     {
-                        Category = "Movie",
+                        Category = "Movie By Title",
                         SearchTerm = SearchTerm,
                         MovieDetails = movieDetails
                     };
-                    return new[] { searchModel };
+                    //return new[] { searchModel };
+
                 }
             }
-            //else if (Category == "Actor")
-            //{
-            //    var actorDetails = await _TMDBClient.GetActorByName(SearchTerm);
-            //    if (actorDetails != null)
-            //    {
-            //        var searchModel = new SearchModel
-            //        {
-            //            Category = "Actor",
-            //            SearchTerm = SearchTerm,
-            //            ActorDetails = actorDetails
-            //        };
-            //        return new[] { searchModel };
-            //    }
-            //}
-            // Handle other categories or return null / empty IEnumerable
+           
             return Enumerable.Empty<SearchModel>();
         }
     }

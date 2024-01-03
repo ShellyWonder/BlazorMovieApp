@@ -18,7 +18,7 @@
         <div class="col-6">
             @if (!string.IsNullOrWhiteSpace(searchModel.Category))
             {
-                <input type="text" class="form-control" placeholder="Enter search term..." @bind="searchModel.SearchTerm">
+                <input type="text" class="form-control" placeholder="Enter search term..." @bind="searchTerm">
             }
         </div>
         <div class="col">
@@ -39,7 +39,7 @@
     private IEnumerable<SearchModel> searchResults = [];
     private string errorMessage = "";
 
-    [SupplyParameterFromQuery(Name = "category")]
+    
     private SearchModel? Category { get; set; }
 
     [Parameter]
@@ -78,11 +78,21 @@
                     
             }
         }
-
             
     }
     private void OnMovieSelected(MovieDetails movieDetails)
     {
-       NavigationManager.NavigateTo($"/movie/{movieDetails.Id}");
+        if (movieDetails is not null)
+        {
+           NavigationManager.NavigateTo($"/movie/{movieDetails.Id}");
+            
+        }
+        else
+        {
+            //show error message to user indicating movie details not available
+            errorMessage = "Movie details are not available.";
+
+        }
+
     }
 }
