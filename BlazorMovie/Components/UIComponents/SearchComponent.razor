@@ -30,7 +30,7 @@
                     <option value="NowPlaying">Now Playing</option>
                 </select>
                 <input type="text" class="form-control" placeholder="Enter search term..." @bind="searchTerm">
-                <button class="btn btn-primary" @onclick="PerformSearch">Search</button>
+                <button class="btn btn-primary" type="submit" @onclick="PerformSearch">Search</button>
             </div>
         }
 
@@ -46,10 +46,10 @@
 
 @code {
     private bool showSearchBox = false;
-    private string selectedCategory = "";
-    private string searchTerm = "";
+    private string selectedCategory = string.Empty;
+    private string searchTerm = string.Empty;
     private IEnumerable<SearchModel> searchResults = [];
-    private string errorMessage = "";
+    private string errorMessage = string.Empty;
 
 
     private SearchModel? Category { get; set; }
@@ -68,8 +68,8 @@
     }
 
     private async Task PerformSearch()
-    {
-        searchResults = await searchService.GetSearchModelAsync("Movie", searchTerm);
+    {  //intended flow: if response returns more than one result, show modal with result options
+        searchResults = await searchService.GetSearchModelAsync(selectedCategory, searchTerm);
 
         if (searchResults != null && searchResults.Count() >= 2)
         {

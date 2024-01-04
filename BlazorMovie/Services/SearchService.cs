@@ -24,11 +24,11 @@ namespace BlazorMovie.Services
                 {
                     var searchModel = new SearchModel
                     {
-                        Category = "Movie By Title",
+                        Category  = Category,
                         SearchTerm = SearchTerm,
                         MovieDetails = movieDetails
                     };
-                    //return new[] { searchModel };
+                    return new[] { searchModel };
 
                 }
             }
