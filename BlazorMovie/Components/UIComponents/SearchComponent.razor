@@ -10,7 +10,7 @@
         {
             <select @bind="searchModel.Category" class="form-select">
                 <option value="">Select Category</option>
-                <option value="Movie">Movie By Title</option>
+                <option value="MovieByTitle">Movie By Title</option>
                 <option value="PopularMovies">Popular Movies</option>
                 <option value="TopRated">Top Rated</option>
                 <option value="Upcoming">Upcoming</option>
@@ -23,7 +23,7 @@
             <div class="input-group">
                 <select @bind="searchModel.Category" class="form-select">
                     <option value="">Select Category</option>
-                    <option value="Movie">Movie By Title</option>
+                    <option value="MovieByTitle">Movie By Title</option>
                     <option value="PopularMovies">Popular Movies</option>
                     <option value="TopRated">Top Rated</option>
                     <option value="Upcoming">Upcoming</option>
@@ -68,43 +68,76 @@
     }
 
     private async Task PerformSearch()
-    {  //intended flow: if response returns more than one result, show modal with result options
-        searchResults = await searchService.GetSearchModelAsync(selectedCategory, searchTerm);
-
-        if (searchResults != null && searchResults.Count() >= 2)
-        {
-            await OnMultipleResultsFound.InvokeAsync(searchResults);
-        }
-        else if (searchResults != null && searchResults.Any())
-        {
-            var singleResult = searchResults.First();
-
-            if (singleResult.MovieDetails != null)
-            {
-                OnMovieSelected(singleResult.MovieDetails);
-            }
-            else
-            {
-                //show error message to user indicating movie details not available
-                errorMessage = "Movie details are not available.";
-
-            }
-        }
-
-    }
-    private void OnMovieSelected(MovieDetails movieDetails)
     {
-        if (movieDetails is not null)
-        {
-            NavigationManager.NavigateTo($"/movie/{movieDetails.Id}");
+        if (!ValidateSearchTerm())
+            return;
 
+        await FetchSearchResults();
+
+        if (searchResults == null || !searchResults.Any())
+        {
+            ShowErrorMessage("No results found.");
+            return;
+        }
+
+        if (searchResults.Count() > 1)
+        {
+            await HandleMultipleResults();
         }
         else
         {
-            //show error message to user indicating movie details not available
-            errorMessage = "Movie details are not available.";
+            HandleSingleResult(searchResults.First());
+        }
+    }
+    private async Task FetchSearchResults()
+    {
+        Console.WriteLine($"Category: {selectedCategory}, SearchTerm: {searchTerm}");
+        searchResults = await searchService.GetSearchModelAsync(selectedCategory, searchTerm);
+        StateHasChanged();
+    }
 
+    private bool ValidateSearchTerm()
+    {
+        if (string.IsNullOrWhiteSpace(searchTerm))
+        {
+            ShowErrorMessage("Please enter a search term.");
+            return false;
+        }
+        return true;
+    }
+    private void ShowErrorMessage(string message)
+    {
+        errorMessage = message;
+    }
+
+    //intended flow: if response returns more than one result, show modal with result options
+    private async Task HandleMultipleResults()
+    {
+        await OnMultipleResultsFound.InvokeAsync(searchResults);
+    }
+
+    private void HandleSingleResult(SearchModel singleResult)
+    {
+        if (singleResult.MovieDetails != null)
+        {
+            OnMovieSelected(singleResult.MovieDetails);
+        }
+        else
+        {
+            ShowErrorMessage("Movie details are not available.");
+        }
+    }
+
+        private void OnMovieSelected(MovieDetails movieDetails)
+        {
+            if (movieDetails is not null)
+            {
+                NavigationManager.NavigateTo($"/movie/{movieDetails.Id}");
+            }
+            else
+            {
+                errorMessage = "Movie details are not available.";
+            }
         }
 
-    }
 }

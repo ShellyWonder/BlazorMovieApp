@@ -9,6 +9,7 @@ namespace BlazorMovie.Services
     {
         private readonly HttpClient _httpClient;
 
+#region CONSTRUCTOR
         public TMDBClient(HttpClient httpClient, IConfiguration config)
         {
             _httpClient = httpClient;
@@ -18,7 +19,9 @@ namespace BlazorMovie.Services
 
             string apiKey = config["TMDBKey"] ?? throw new Exception("TMDBKey not found.");
             _httpClient.DefaultRequestHeaders.Authorization = new("Bearer", apiKey);
-        }
+        } 
+        #endregion
+
         #region PopularMovies 
         public Task<PopularMoviesPageResponse?> GetPopularMoviesAsync(int page = 1)
         {
@@ -68,8 +71,10 @@ namespace BlazorMovie.Services
         {
             page = MovieCount(page);
             // encode the title to make it URL safe
-            string encodedTitle = HttpUtility.UrlEncode(title);
-            return _httpClient.GetFromJsonAsync<MovieDetails>($"search/movie?query={encodedTitle}&page={page}");
+            //string encodedTitle = HttpUtility.UrlEncode(title);
+            var adult = false;
+            var language = "en-US";
+            return _httpClient.GetFromJsonAsync<MovieDetails>($"search/movie?query={title}&include_adult={adult}&language={language}& page={page}");
         }
         #endregion
 
