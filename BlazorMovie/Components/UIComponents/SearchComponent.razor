@@ -29,8 +29,15 @@
                     <option value="Upcoming">Upcoming</option>
                     <option value="NowPlaying">Now Playing</option>
                 </select>
-                <input type="text" class="form-control" placeholder="Enter search term..." @bind="searchTerm">
+                <input type="text" class="form-control" placeholder="@dynamicPlaceholder" @bind="searchTerm"
+                @onfocus="ClearPlaceholder"
+                @onblur="RestorePlaceholder" @onkeyup="HandleKeyUp"/>
                 <button class="btn btn-primary" type="submit" @onclick="PerformSearch">Search</button>
+                @if (IsSearchActive)
+                {
+                    <button class="btn btn-danger border border-2" @onclick="OnClearSearchClick">Clear Search</button>
+                }
+
             </div>
         }
 
@@ -51,15 +58,29 @@
     private IEnumerable<SearchModel> searchResults = [];
     private string errorMessage = string.Empty;
 
-
     private SearchModel? Category { get; set; }
+
+    [Parameter]
+    public string Placeholder { get; set; } = "Enter Search Term . . . ";
+    private string? dynamicPlaceholder;
+
+    [Parameter]
+    public bool IsSearchActive { get; set; }
 
     [Parameter]
     public EventCallback<IEnumerable<SearchModel>> OnMultipleResultsFound { get; set; }
 
+    [Parameter]
+    public EventCallback OnClearSearch { get; set; }
+
     private SearchModel searchModel { get; set; } = new SearchModel();
 
     public NavigationManager NavigationManager { get; set; } = null!;
+
+    protected override void OnInitialized()
+    {
+        dynamicPlaceholder = Placeholder;
+    }
 
     private void OnCategoryChanged(ChangeEventArgs e)
     {
@@ -88,6 +109,7 @@
         {
             HandleSingleResult(searchResults.First());
         }
+        IsSearchActive = true;
     }
     private async Task FetchSearchResults()
     {
@@ -105,7 +127,33 @@
         }
     }
 
+    private void ClearPlaceholder()
+    {
+        dynamicPlaceholder = string.Empty;
+    }
 
+    private void RestorePlaceholder()
+    {
+        dynamicPlaceholder = string.IsNullOrEmpty(searchTerm) ? Placeholder : string.Empty;
+    }
+
+    private async Task HandleKeyUp(KeyboardEventArgs e)
+    {
+        if (e.Key == "Enter")
+        {
+            await PerformSearch(); // Trigger the search on Enter key press
+        }
+    }
+
+    private async Task OnClearSearchClick()
+    {
+        IsSearchActive = false;
+        searchTerm = string.Empty;
+        searchResults = Enumerable.Empty<SearchModel>(); // Clear results
+        dynamicPlaceholder = Placeholder;
+        await OnClearSearch.InvokeAsync(); // Trigger parent callback (if any)
+        StateHasChanged();
+    }
     private bool ValidateSearchTerm()
     {
         if (string.IsNullOrWhiteSpace(searchTerm))
