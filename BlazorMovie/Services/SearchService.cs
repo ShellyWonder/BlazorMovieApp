@@ -1,6 +1,6 @@
 ﻿using BlazorMovie.Models;
-using BlazorMovie.Models.Interfaces;
-using System.Reflection.Metadata;
+using BlazorMovie.Services.Interfaces;
+using System.ComponentModel.DataAnnotations;
 
 
 namespace BlazorMovie.Services
@@ -35,6 +35,39 @@ namespace BlazorMovie.Services
 
             Console.WriteLine("No results found.");
             return Enumerable.Empty<SearchModel>();
+        }
+
+        public async Task<IEnumerable<SearchModel>> GetMoviesByCategoryAsync(string category)
+        {
+            Console.WriteLine($"Fetching movies for category: {category}");
+            IEnumerable<MovieDetails>? movies;
+
+            if (category == "PopularMovies")
+            {
+                movies = (IEnumerable<MovieDetails>?)await _TMDBClient.GetPopularMoviesAsync();
+            }
+            else if (category == "TopRated")
+            {
+                movies = (IEnumerable<MovieDetails>?)await _TMDBClient.GetTopRatedAsync();
+            }
+            else if (category == "Upcoming")
+            {
+                movies = (IEnumerable<MovieDetails>?)await _TMDBClient.GetUpcomingAsync();
+            }
+            else if (category == "NowPlaying")
+            {
+                movies = (IEnumerable<MovieDetails>?)await _TMDBClient.GetNowPlayingAsync();
+            }
+            else
+            {
+                movies = null;
+            }
+
+            return movies?.Select(movie => new SearchModel
+            {
+                Category = category,
+                MovieDetails = movie
+            }) ?? Enumerable.Empty<SearchModel>();
         }
 
     }
