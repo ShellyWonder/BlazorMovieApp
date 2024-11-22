@@ -1,4 +1,5 @@
-﻿@using BlazorMovie.Models
+﻿@using BlazorMovie.Services.Interfaces
+@using BlazorMovie.Models
 
 @inject ISearchService searchService
 @inject NavigationManager NavManager
@@ -29,14 +30,13 @@
                     <option value="Upcoming">Upcoming</option>
                     <option value="NowPlaying">Now Playing</option>
                 </select>
-                <input type="text" class="form-control" placeholder="@Placeholder" @bind="searchTerm"
-                @onkeyup="HandleKeyUp"/>
-                <button class="btn btn-primary" type="submit" @onclick="PerformSearch">Search</button>
-                @if (IsSearchActive)
+                @if (searchModel.Category == "MovieByTitle" && IsSearchActive)
                 {
+                    <input type="text" class="form-control" placeholder="@Placeholder" @bind="searchTerm" @onkeyup="HandleKeyUp"/>
+                    <button class="btn btn-primary" type="submit" @onclick="PerformSearch">Search</button>
                     <button class="btn btn-danger border border-2" @onclick="OnClearSearchClick">Clear Search</button>
                 }
-
+                
             </div>
         }
 
@@ -51,16 +51,9 @@
 }
 
 @code {
-    private bool showSearchBox = false;
-    private string searchTerm = string.Empty;
-    private IEnumerable<SearchModel> searchResults = [];
-    private string errorMessage = string.Empty;
-
-    private SearchModel? Category { get; set; }
-
+    #region PARAMETERS
     [Parameter]
     public string Placeholder { get; set; } = "Enter Search Term";
-    
 
     [Parameter]
     public bool IsSearchActive { get; set; }
@@ -70,30 +63,52 @@
 
     [Parameter]
     public EventCallback OnClearSearch { get; set; }
+    #endregion
 
+    private bool showSearchBox = false;
+    private string searchTerm = string.Empty;
+    private IEnumerable<SearchModel> searchResults = [];
+    private string errorMessage = string.Empty;
+    private SearchModel? Category { get; set; }
     private SearchModel searchModel { get; set; } = new SearchModel();
-
     public NavigationManager NavigationManager { get; set; } = null!;
 
-
-    private void OnCategoryChanged(ChangeEventArgs e)
+    #region CATEGORY CHANGED
+    private async Task OnCategoryChanged(ChangeEventArgs e)
     {
         searchModel.Category = e.Value?.ToString() ?? string.Empty;
-        showSearchBox = !string.IsNullOrWhiteSpace(searchModel.Category);
-        Console.WriteLine($"Category changed to: {searchModel.Category}, ShowSearchBox: {showSearchBox}");
+        showSearchBox = searchModel.Category == "MovieByTitle"; // Show input box only for MovieByTitle
 
+        if (!showSearchBox && !string.IsNullOrWhiteSpace(searchModel.Category))
+        {
+            await FetchMoviesByCategory(searchModel.Category);
+            // Map category to route
+            var route = searchModel.Category switch
+            {
+                "PopularMovies" => "/",
+                "TopRated" => "/top_rated",
+                "Upcoming" => "/upcoming",
+                "NowPlaying" => "/now_playing",
+                _ => "/"
+            };
+
+            // Navigate to the route
+            NavigationManager.NavigateTo(route);
+        }
     }
+    #endregion
 
+    #region PERFORM SEARCH
     private async Task PerformSearch()
     {
-        if (!ValidateSearchTerm())
+        if (!await ValidateSearchTerm())
             return;
 
         await FetchSearchResults();
 
         if (searchResults == null || !searchResults.Any())
         {
-            ShowErrorMessage("No results found.");
+            await ShowErrorMessage("No results found.");
             return;
         }
 
@@ -107,6 +122,9 @@
         }
         IsSearchActive = true;
     }
+    #endregion
+
+    #region FETCH SEARCH RESULTS
     private async Task FetchSearchResults()
     {
         try
@@ -119,11 +137,38 @@
         catch (Exception ex)
         {
             Console.WriteLine($"Error fetching search results: {ex.Message}");
-            ShowErrorMessage("An error occurred while fetching search results.");
+            await ShowErrorMessage("An error occurred while fetching search results.");
         }
     }
+    #endregion
 
-    #region HANDLE KEY UP
+    #region FETCH BY CATEGORY
+    private async Task FetchMoviesByCategory(string category)
+    {
+        try
+        {
+            searchResults = await searchService.GetMoviesByCategoryAsync(category);
+            if (searchResults != null && searchResults.Any())
+            {
+                Console.WriteLine($"Movies fetched for category {category}: {searchResults.Count()}");
+                IsSearchActive = true;
+            }
+            else
+            {
+                await ShowErrorMessage("No results found for the selected category.");
+            }
+
+            StateHasChanged();
+        }
+        catch (Exception)
+        {
+            
+            throw;
+        }
+    }
+    #endregion
+
+#region HANDLE KEY UP
     private async Task HandleKeyUp(KeyboardEventArgs e)
     {
         if (e.Key == "Enter")
@@ -133,31 +178,33 @@
     }
 #endregion
 
+#region CLEAR SEARCH
     private async Task OnClearSearchClick()
     {
         IsSearchActive = false;
         searchTerm = string.Empty; // Clear text input
         searchModel.Category = string.Empty; // Reset dropdown
-        OnCategoryChanged(new ChangeEventArgs { Value = string.Empty }); // Trigger the category change logic
+       await OnCategoryChanged(new ChangeEventArgs { Value = string.Empty }); // Trigger the category change logic
         searchResults = Enumerable.Empty<SearchModel>(); // Clear results
         await OnClearSearch.InvokeAsync(); // Trigger parent callback (if any)
         StateHasChanged(); // Update the UI
     }
+#endregion
 
 #region VALIDATE SEARCH
-    private bool ValidateSearchTerm()
+    private async Task<bool> ValidateSearchTerm()
     {
         if (string.IsNullOrWhiteSpace(searchTerm))
         {
-            ShowErrorMessage("Please enter a search term.");
+            await ShowErrorMessage("Please enter a search term.");
             return false;
         }
         return true;
     }
     #endregion
 
-    #region SHOW ERROR MESSAGE
-    private async void ShowErrorMessage(string message)
+ #region SHOW ERROR MESSAGE
+    private async Task ShowErrorMessage(string message)
     {
         errorMessage = message;
         StateHasChanged(); // Update the UI to show the error message
@@ -181,7 +228,7 @@
     #endregion
 
     #region HANDLE ONE RESULT
-    private void HandleSingleResult(SearchModel singleResult)
+    private async void HandleSingleResult(SearchModel singleResult)
     {
         if (singleResult.MovieDetails != null)
         {
@@ -189,7 +236,7 @@
         }
         else
         {
-            ShowErrorMessage("Movie details are not available.");
+            await ShowErrorMessage("Movie details are not available.");
         }
     }
     #endregion
@@ -207,5 +254,6 @@
             }
         }
     #endregion
-#endregion
+
+     #endregion
 }
