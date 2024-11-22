@@ -29,9 +29,8 @@
                     <option value="Upcoming">Upcoming</option>
                     <option value="NowPlaying">Now Playing</option>
                 </select>
-                <input type="text" class="form-control" placeholder="@dynamicPlaceholder" @bind="searchTerm"
-                @onfocus="ClearPlaceholder"
-                @onblur="RestorePlaceholder" @onkeyup="HandleKeyUp"/>
+                <input type="text" class="form-control" placeholder="@Placeholder" @bind="searchTerm"
+                @onkeyup="HandleKeyUp"/>
                 <button class="btn btn-primary" type="submit" @onclick="PerformSearch">Search</button>
                 @if (IsSearchActive)
                 {
@@ -61,7 +60,7 @@
 
     [Parameter]
     public string Placeholder { get; set; } = "Enter Search Term";
-    private string? dynamicPlaceholder;
+    
 
     [Parameter]
     public bool IsSearchActive { get; set; }
@@ -76,10 +75,6 @@
 
     public NavigationManager NavigationManager { get; set; } = null!;
 
-    protected override void OnInitialized()
-    {
-        dynamicPlaceholder = Placeholder;
-    }
 
     private void OnCategoryChanged(ChangeEventArgs e)
     {
@@ -128,20 +123,6 @@
         }
     }
 
-    #region CLEAR PLACEHOLDER
-    private void ClearPlaceholder()
-    {
-        dynamicPlaceholder = string.Empty;
-    }
-    #endregion
-
-    #region RESTORE PLACEHOLDER
-    private void RestorePlaceholder()
-    {
-        dynamicPlaceholder = string.IsNullOrEmpty(searchTerm) ? Placeholder : string.Empty;
-    }
-    #endregion
-
     #region HANDLE KEY UP
     private async Task HandleKeyUp(KeyboardEventArgs e)
     {
@@ -159,7 +140,6 @@
         searchModel.Category = string.Empty; // Reset dropdown
         OnCategoryChanged(new ChangeEventArgs { Value = string.Empty }); // Trigger the category change logic
         searchResults = Enumerable.Empty<SearchModel>(); // Clear results
-        dynamicPlaceholder = Placeholder; // Reset placeholder
         await OnClearSearch.InvokeAsync(); // Trigger parent callback (if any)
         StateHasChanged(); // Update the UI
     }
