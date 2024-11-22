@@ -32,13 +32,6 @@ namespace BlazorMovie.Services
         }
         #endregion
 
-        #region MovieDetails
-        public Task<MovieDetails?> GetMovieDetailsAsync(int id)
-        {
-            return _httpClient.GetFromJsonAsync<MovieDetails>($"movie/{id}");
-        }
-        #endregion
-
         #region NowPlaying 
         public Task<NowPlayingPageResponse?> GetNowPlayingAsync(int page = 1)
         {
@@ -64,6 +57,13 @@ namespace BlazorMovie.Services
             page = MovieCount(page);
 
             return _httpClient.GetFromJsonAsync<PageResponse<Upcoming>>($"movie/upcoming?page={page}");
+        }
+        #endregion
+
+        #region MovieDetails
+        public Task<MovieDetails?> GetMovieDetailsAsync(int id)
+        {
+            return _httpClient.GetFromJsonAsync<MovieDetails>($"movie/{id}");
         }
         #endregion
 

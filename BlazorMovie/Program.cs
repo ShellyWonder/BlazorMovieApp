@@ -2,6 +2,7 @@ using BlazorMovie.Components;
 using BlazorMovie.Models;
 using BlazorMovie.Models.Interfaces;
 using BlazorMovie.Services;
+using BlazorMovie.Services.Interfaces;
 using Microsoft.AspNetCore.Components.Web;
 using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
 

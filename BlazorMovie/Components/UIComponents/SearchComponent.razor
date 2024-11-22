@@ -1,43 +1,29 @@
 ﻿@using BlazorMovie.Services.Interfaces
 @using BlazorMovie.Models
-
 @inject ISearchService searchService
 @inject NavigationManager NavManager
 
 
 <div class="row">
     <div class="col-12 d-flex justify-content-end">
-        @if (string.IsNullOrWhiteSpace(searchModel.Category))
-        {
-            <select @bind="searchModel.Category" class="form-select">
+
+        <div class="input-group">
+            <select class="form-select" @onchange="NavigateToCategory">
                 <option value="">Select Category</option>
                 <option value="MovieByTitle">Movie By Title</option>
                 <option value="PopularMovies">Popular Movies</option>
                 <option value="TopRated">Top Rated</option>
-                <option value="Upcoming">Upcoming</option>
+                <option value="Upcoming">Coming Soon</option>
                 <option value="NowPlaying">Now Playing</option>
             </select>
+            @if (searchModel.Category == "MovieByTitle")
+            {
+                <input type="text" class="form-control" placeholder="@Placeholder" @bind="searchModel.Query"  @onkeyup="HandleKeyUp" />
+                <button class="btn btn-primary" type="submit" @onclick="SearchMoviesByTitle">Search</button>
+            }
+            <button class="btn btn-danger border border-2" @onclick="OnClearSearchClick">Clear Search</button>
 
-        }
-        else 
-        {
-            <div class="input-group">
-                <select @bind="searchModel.Category" class="form-select">
-                    <option value="">Select Category</option>
-                    <option value="MovieByTitle">Movie By Title</option>
-                    <option value="PopularMovies">Popular Movies</option>
-                    <option value="TopRated">Top Rated</option>
-                    <option value="Upcoming">Upcoming</option>
-                    <option value="NowPlaying">Now Playing</option>
-                </select>
-                @if (searchModel.Category == "MovieByTitle" && IsSearchActive)
-                {
-                    <input type="text" class="form-control" placeholder="@Placeholder" @bind="searchTerm" @onkeyup="HandleKeyUp"/>
-                    <button class="btn btn-primary" type="submit" @onclick="PerformSearch">Search</button>
-                    <button class="btn btn-danger border border-2" @onclick="OnClearSearchClick">Clear Search</button>
-                }
-                
-            </div>
+        </div>
         }
 
     </div>
@@ -67,35 +53,26 @@
 
     private bool showSearchBox = false;
     private string searchTerm = string.Empty;
+    private int page { get; set; } = 1;
     private IEnumerable<SearchModel> searchResults = [];
     private string errorMessage = string.Empty;
     private SearchModel? Category { get; set; }
+    private SearchModel? Query { get; set; }
     private SearchModel searchModel { get; set; } = new SearchModel();
     public NavigationManager NavigationManager { get; set; } = null!;
 
     #region CATEGORY CHANGED
-    private async Task OnCategoryChanged(ChangeEventArgs e)
+    private void OnCategoryChanged(ChangeEventArgs e)
     {
         searchModel.Category = e.Value?.ToString() ?? string.Empty;
         showSearchBox = searchModel.Category == "MovieByTitle"; // Show input box only for MovieByTitle
 
         if (!showSearchBox && !string.IsNullOrWhiteSpace(searchModel.Category))
         {
-            await FetchMoviesByCategory(searchModel.Category);
-            // Map category to route
-            var route = searchModel.Category switch
-            {
-                "PopularMovies" => "/",
-                "TopRated" => "/top_rated",
-                "Upcoming" => "/upcoming",
-                "NowPlaying" => "/now_playing",
-                _ => "/"
-            };
-
-            // Navigate to the route
-            NavigationManager.NavigateTo(route);
+            NavigateToCategory(e); // Navigate to the appropriate route
         }
     }
+
     #endregion
 
     #region PERFORM SEARCH
@@ -142,29 +119,51 @@
     }
     #endregion
 
-    #region FETCH BY CATEGORY
-    private async Task FetchMoviesByCategory(string category)
+    private void NavigateToCategory(ChangeEventArgs e)
+    {
+        if (e?.Value == null)
+        {
+            errorMessage = "Invalid category selection.";
+            return;
+
+        }
+        var category = e.Value?.ToString();
+        if (!string.IsNullOrWhiteSpace(category))
+        {
+            // Map category to route
+            var route = category switch
+            {
+                "PopularMovies" => "/",
+                "TopRated" => "/top_rated",
+                "Upcoming" => "/upcoming",
+                "NowPlaying" => "/now_playing",
+                _ => "/"
+            };
+
+            NavManager.NavigateTo(route);
+        }
+    }
+
+    #region SEARCH BY TITLE
+    private async Task SearchMoviesByTitle()
     {
         try
         {
-            searchResults = await searchService.GetMoviesByCategoryAsync(category);
-            if (searchResults != null && searchResults.Any())
+            if (!string.IsNullOrWhiteSpace(searchModel.Query))
             {
-                Console.WriteLine($"Movies fetched for category {category}: {searchResults.Count()}");
-                IsSearchActive = true;
+                searchResults = await searchService.GetSearchModelAsync(searchModel.Category, searchTerm);
             }
             else
             {
-                await ShowErrorMessage("No results found for the selected category.");
+                errorMessage = "Please enter a movie title to search.";
             }
-
-            StateHasChanged();
         }
-        catch (Exception)
+        catch (Exception ex)
         {
-            
-            throw;
+            errorMessage = $"An error occurred while searching for movies: {ex.Message}";
         }
+
+        StateHasChanged();
     }
     #endregion
 
@@ -184,7 +183,7 @@
         IsSearchActive = false;
         searchTerm = string.Empty; // Clear text input
         searchModel.Category = string.Empty; // Reset dropdown
-       await OnCategoryChanged(new ChangeEventArgs { Value = string.Empty }); // Trigger the category change logic
+       OnCategoryChanged(new ChangeEventArgs { Value = string.Empty }); // Trigger the category change logic
         searchResults = Enumerable.Empty<SearchModel>(); // Clear results
         await OnClearSearch.InvokeAsync(); // Trigger parent callback (if any)
         StateHasChanged(); // Update the UI

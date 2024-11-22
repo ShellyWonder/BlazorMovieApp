@@ -29,4 +29,8 @@
     <_ContentIncludedByDefault Remove="Components\UIComponents\SearchResultsComponent.razor" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Components\UIComponents\SearchComponents\" />
+  </ItemGroup>
+
 </Project>
