@@ -4,13 +4,12 @@
     --sjw-body-font: 'montserrat-alternates', sans-serif;
     /*colors*/
     --sjw-background-color: #fdfdfd;
-    --sjw-primary-color: #3D048C; /*blue*/
+    --sjw-primary-color: #3D048C;
     --sjw-secondary-color: #6E038C; /*Purple*/
     --sjw-golden-color: #ffa060;
     --sjw-tertiary-color: #F2BF5E; /*Mustard*/
     --sjw-font-color: #0b0b45;
     --sjw-footer-font-color: #faebd7; /*Antique white*/
-   
     /*text styles*/
     --sjw-font-size: 1rem;
     /*box shadow*/
@@ -43,9 +42,33 @@ h1 .focus {
 #app {
     height: 100%;
 }
+.navStyle {
+    background-color: var( --sjw-golden-color);
+    color: white;
+    font-family: var(--sjw-title-font);
+    font-size: 1.2rem;
+    padding: 0.5rem;
+}
 
 
+.navStyle .nav-link {
+    color: var(--sjw-font-color); 
+    font-weight: 400; 
+    text-decoration: none; 
+}
 
+    .navStyle .nav-link:hover {
+        color: var(--sjw-primary-color); 
+        font-weight: 500; 
+    }
+
+    .navStyle .nav-link.active {
+        color: white;
+        font-weight: 600; /* Bold active item for emphasis */
+    }
+.dropdownSelect {
+    background-color: var(--sjw-font-color)!important;
+}
 .btn-primary {
     --bs-btn-bg: var(--sjw-secondary-color);
     --bs-btn-border-color: var(--sjw-primary-color);
