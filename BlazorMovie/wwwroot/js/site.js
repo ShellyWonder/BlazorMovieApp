@@ -1,5 +1,5 @@
 //accessing sessionStorage
-if (window.sessionStorageHelper) {
+
     window.sessionStorageHelper = {
         setItem: function (key, value) {
             sessionStorage.setItem(key, JSON.stringify(value));
@@ -9,9 +9,7 @@ if (window.sessionStorageHelper) {
             return item ? JSON.parse(item) : null;
         }
     }
-} else {
-    console.error("sessionStorageHelper is not initialized");
-}
+
 
 
 function showModal(modalId) {
