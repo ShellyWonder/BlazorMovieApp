@@ -1,0 +1,44 @@
+﻿<div class="@animationClass">
+    <select class="form-select dropdownSelect" @onchange="OnCategoryChanged" value="@SelectedCategory">
+        <option value="">Choose Category</option>
+        <option value="MovieByTitle">Movie By Title</option>
+        <option value="PopularMovies">Popular Movies</option>
+        <option value="TopRated">Top Rated</option>
+        <option value="Upcoming">Coming Soon</option>
+        <option value="NowPlaying">Now Playing</option>
+    </select>
+</div>
+
+@code {
+    [Parameter]
+    public string SelectedCategory { get; set; } = string.Empty;
+
+    [Parameter]
+    public EventCallback<string> OnCategorySelected { get; set; }
+
+    private string animationClass = string.Empty;
+
+    private async Task OnCategoryChanged(ChangeEventArgs e)
+    {
+        SelectedCategory = e.Value?.ToString() ?? string.Empty;
+        await OnCategorySelected.InvokeAsync(SelectedCategory);
+    }
+
+    public async void ResetDropdown()
+    {
+        // Trigger animation
+        animationClass = "fade-out";
+        StateHasChanged(); // Update UI with the animation class
+
+        await Task.Delay(300); // Wait for the fade-out animation to complete
+
+        SelectedCategory = string.Empty;
+        animationClass = "fade-in"; // Trigger fade-in effect
+        StateHasChanged();
+
+        await Task.Delay(300); // Allow the fade-in animation to complete
+        animationClass = string.Empty; // Remove animation class after reset
+        StateHasChanged();
+    }
+}
+
