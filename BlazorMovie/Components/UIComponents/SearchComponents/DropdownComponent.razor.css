@@ -1,4 +1,9 @@
-﻿.fade-out {
+﻿
+.dropdownSelect {
+    background-color: var(--sjw-font-color) !important;
+}
+/*dropdown reset*/
+.fade-out {
     opacity: 0;
     transition: opacity 0.3s ease-out;
 }

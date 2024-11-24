@@ -66,9 +66,7 @@ h1 .focus {
         color: white;
         font-weight: 600; /* Bold active item for emphasis */
     }
-.dropdownSelect {
-    background-color: var(--sjw-font-color)!important;
-}
+
 .btn-primary {
     --bs-btn-bg: var(--sjw-secondary-color);
     --bs-btn-border-color: var(--sjw-primary-color);
