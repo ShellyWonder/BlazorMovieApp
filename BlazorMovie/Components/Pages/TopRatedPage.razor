@@ -7,6 +7,7 @@
 @inject TMDBClient TMDB
 @inject NavigationManager navManager
 @inject IMovieService<TopRated> TopRatedService
+@inject IJSRuntime JSRuntime
 
 <MovieListComponent TMovie="TopRated" movies="@movies" Title="Top Rated Movies" OnPageChanged="GetPage" />
 
@@ -21,9 +22,30 @@
 
     protected override async Task OnParametersSetAsync()
     {
-  
-        movies = await TopRatedService.GetMoviesAsync(Page);
+        // Check if data is already in sessionStorage
+        var cachedMoviesJson = await JSRuntime.InvokeAsync<string>("sessionStorageHelper.getItem", $"topRatedPage{Page}");
+        Console.WriteLine(cachedMoviesJson);
+
+        if (string.IsNullOrEmpty(cachedMoviesJson))
+        {
+            // No cached data, make the API call
+            movies = await TopRatedService.GetMoviesAsync(Page);
+
+            // Store the API response in sessionStorage for future use
+            if (movies != null)
+            {
+                // Serialize the entire PageResponse<TopRated> object to JSON and store it
+                var moviesJson = System.Text.Json.JsonSerializer.Serialize(movies);
+                await JSRuntime.InvokeVoidAsync("sessionStorageHelper.setItem", $"topRatedPage{Page}", moviesJson);
+            }
+        }
+        else
+        {
+            // Data exists, deserialize the cached data into PageResponse<TopRated>
+            movies = System.Text.Json.JsonSerializer.Deserialize<PageResponse<TopRated>>(cachedMoviesJson);
+        }
     }
+
 
 
     private void GetPage(int pageNum)
