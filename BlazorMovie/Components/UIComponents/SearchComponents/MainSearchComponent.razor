@@ -8,23 +8,16 @@
     <div class="col-12 d-flex justify-content-end">
 
         <div class="input-group">
-            <select class="form-select dropdownSelect" @onchange="NavigateToCategory">
-                <option value="">Select Category</option>
-                <option value="MovieByTitle">Movie By Title</option>
-                <option value="PopularMovies">Popular Movies</option>
-                <option value="TopRated">Top Rated</option>
-                <option value="Upcoming">Coming Soon</option>
-                <option value="NowPlaying">Now Playing</option>
-            </select>
-            @if (searchModel.Category == "MovieByTitle")
+            <DropdownComponent @ref="dropdownComponent" OnCategorySelected="HandleCategorySelected" />
+            @if (showSearchBox)
             {
                 <input type="text" class="form-control" placeholder="@Placeholder" @bind="searchModel.Query"  @onkeyup="HandleKeyUp" />
                 <button class="btn btn-primary" type="submit" @onclick="SearchMoviesByTitle">Search</button>
+                <button class="btn btn-danger border border-2" @onclick="OnClearSearchClick">Clear Search</button>
             }
-            <button class="btn btn-danger border border-2" @onclick="OnClearSearchClick">Clear Search</button>
 
         </div>
-        
+
     </div>
 
 </div>
@@ -55,6 +48,7 @@
     private int page { get; set; } = 1;
     private IEnumerable<SearchModel> searchResults = [];
     private string errorMessage = string.Empty;
+    private DropdownComponent? dropdownComponent;
     private SearchModel? Category { get; set; }
     private SearchModel? Query { get; set; }
     private SearchModel searchModel { get; set; } = new SearchModel();
@@ -68,10 +62,11 @@
 
         if (!showSearchBox && !string.IsNullOrWhiteSpace(searchModel.Category))
         {
-            NavigateToCategory(e); // Navigate to the appropriate route
+            NavigateToCategory(searchModel.Category); // Navigate to the appropriate route
         }
+        //update UI
+        StateHasChanged();
     }
-
     #endregion
 
     #region PERFORM SEARCH
@@ -118,17 +113,31 @@
     }
     #endregion
 
-    private void NavigateToCategory(ChangeEventArgs e)
+    #region HANDLE CATEGORY SELECTED
+    private void HandleCategorySelected(string selectedCategory)
     {
-        if (e?.Value == null)
-        {
-            errorMessage = "Invalid category selection.";
-            return;
+        searchModel.Category = selectedCategory;
+        showSearchBox = selectedCategory == "MovieByTitle";
 
-        }
-        var category = e.Value?.ToString();
-        if (!string.IsNullOrWhiteSpace(category))
+        if (!showSearchBox && !string.IsNullOrWhiteSpace(selectedCategory))
         {
+            NavigateToCategory(selectedCategory); // Your existing navigation logic
+        }
+
+        StateHasChanged(); // Update the UI
+    }
+    #endregion
+
+    #region NAVIGATE TO CATEGORY PAGE
+    private void NavigateToCategory(string category)
+    {
+        // Null or empty category check
+        if (string.IsNullOrWhiteSpace(category))
+            {
+                Console.WriteLine("Invalid category provided for navigation.");
+                return; // Exit the method if category is null or empty
+            }
+       
             // Map category to route
             var route = category switch
             {
@@ -140,8 +149,10 @@
             };
 
             NavManager.NavigateTo(route);
-        }
+        // Reset dropdown after navigating
+        dropdownComponent?.ResetDropdown();
     }
+    #endregion
 
     #region SEARCH BY TITLE
     private async Task SearchMoviesByTitle()
@@ -151,6 +162,8 @@
             if (!string.IsNullOrWhiteSpace(searchModel.Query))
             {
                 searchResults = await searchService.GetSearchModelAsync(searchModel.Category, searchTerm);
+                // Reset dropdown after searching
+                dropdownComponent?.ResetDropdown();
             }
             else
             {
@@ -162,7 +175,6 @@
             errorMessage = $"An error occurred while searching for movies: {ex.Message}";
         }
 
-        StateHasChanged();
     }
     #endregion
 
@@ -207,8 +219,8 @@
         errorMessage = message;
         StateHasChanged(); // Update the UI to show the error message
 
-        // Wait for 2.5 seconds before clearing the error message
-        await Task.Delay(2500);
+        // Wait for 1.5 seconds before clearing the error message
+        await Task.Delay(1500);
 
         errorMessage = string.Empty; // Clear the error message
         StateHasChanged(); // Update the UI to hide the error message
