@@ -6,7 +6,7 @@
         },
         getItem: function (key) {
             const item = sessionStorage.getItem(key);
-            return item ? JSON.parse(item) : null;
+            return sessionStorage.getItem(key);
         }
     }
 

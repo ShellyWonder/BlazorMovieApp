@@ -13,29 +13,29 @@
 
     <div class="d-flex flex-column flex-md-row justify-content-between my-3">
 
-        <div class="row row-cols-2 row-cols-lg-4 row-cols-xl-5 g-3 justify-content-center justify-content-md-start">
             @if (movies?.Results is not null && movies.Results.Any())
             {
+                <div class="row row-cols-2 row-cols-lg-4 row-cols-xl-5 g-3 justify-content-center justify-content-md-start">
 
-                @foreach (var movie in movies.Results)
-                {
-                    <div class="col">
-                        <MovieCardDetails Movie="@movie" />
-                    </div>
-                }
+                    @foreach (var movie in movies.Results)
+                    {
+                        <div class="col">
+                            <MovieCardDetails Movie="@movie" />
+                        </div>
+                    }
+
+                 </div>
 
             }
             else
             {
 
-                <div class="text-center">
+                <div class="col-12 text-center">
                     <p>Currently, no movies are available to display.</p>
-
                 </div>
 
             }
 
-        </div>
     </div>
     @if (movies?.TotalPages > 1)
     {
