@@ -8,7 +8,7 @@ namespace BlazorMovie.Models
         public int Page { get; set; }
 
         [JsonPropertyName("results")]
-        public IEnumerable<T> Results { get; set; } = [];
+        public List<T> Results { get; set; } =new();
 
         [JsonPropertyName("total_pages")]
         public int TotalPages { get; set; }

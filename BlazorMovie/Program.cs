@@ -14,7 +14,7 @@ builder.RootComponents.Add<HeadOutlet>("head::after");
 builder.Services.AddScoped(sp => new HttpClient { BaseAddress = new Uri(builder.HostEnvironment.BaseAddress) });
 builder.Services.AddScoped<TMDBClient>();
 builder.Services.AddScoped<IMovieService<PopularMovie>, PopularMovieService>();
-builder.Services.AddScoped<IMovieService<NowPlaying>, NowPlayingService>();
+builder.Services.AddScoped<INowPlayingMovieService, NowPlayingService>();
 builder.Services.AddScoped<IMovieService<TopRated>, TopRatedService>();
 builder.Services.AddScoped<IMovieService<Upcoming>, UpcomingComingSoonService>();
 builder.Services.AddScoped<ISearchService, SearchService>();

@@ -9,7 +9,7 @@ namespace BlazorMovie.Models
         [JsonPropertyName("dates")]
         public Dates? Dates { get; set; }
 
-        
+
     }
 
 

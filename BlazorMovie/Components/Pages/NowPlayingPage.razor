@@ -7,14 +7,14 @@
 
 @inject TMDBClient TMDB
 @inject NavigationManager navManager
-@inject IMovieService<NowPlaying> NowPlayingService
+@inject INowPlayingMovieService NowPlayingService
 @inject IJSRuntime JSRuntime
 
 <MovieListComponent TMovie="NowPlaying" movies="@movies" Title="Playing Now" OnPageChanged="GetPage" />
 
 
 @code {
-    private PageResponse<NowPlaying>? movies;
+    private NowPlayingPageResponse? movies;
 
     [Parameter]
     public string? Title { get; set; } = "Movies Playing Now";
@@ -43,7 +43,7 @@
         else
         {
             // Data exists, deserialize the cached data
-            movies = JsonSerializer.Deserialize<PageResponse<NowPlaying>>(cachedMoviesJson);
+            movies = JsonSerializer.Deserialize<NowPlayingPageResponse?>(cachedMoviesJson);
         }
     }
 
