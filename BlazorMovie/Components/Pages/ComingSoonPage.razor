@@ -5,8 +5,10 @@
 @using BlazorMovie.Services
 
 @inject TMDBClient TMDB
+@using System.Text.Json
 @inject NavigationManager navManager
 @inject IMovieService<Upcoming> UpcomingComingSoonService
+@inject IJSRuntime JSRuntime
 
 <MovieListComponent TMovie="Upcoming" movies="@movies" Title="Coming Soon" OnPageChanged="GetPage" />
 
@@ -21,8 +23,27 @@
 
     protected override async Task OnParametersSetAsync()
     {
+        // Check if data is already in sessionStorage
+        var cachedMoviesJson = await JSRuntime.InvokeAsync<string>("sessionStorageHelper.getItem", $"comingSoonPage{Page}");
 
-        movies = await UpcomingComingSoonService.GetMoviesAsync(Page);
+        if (string.IsNullOrEmpty(cachedMoviesJson))
+        {
+            // No cached data, make the API call
+            movies = await UpcomingComingSoonService.GetMoviesAsync(Page);
+
+            // Store the API response in sessionStorage for future use
+            if (movies != null)
+            {
+                // Serialize the entire PageResponse<PopularMovie> object to JSON and store it
+                var moviesJson = JsonSerializer.Serialize(movies);
+                await JSRuntime.InvokeVoidAsync("sessionStorageHelper.setItem", $"comingSoonPage{Page}", movies);
+            }
+        }
+        else
+        {
+            // Data exists, deserialize the cached data
+            movies = JsonSerializer.Deserialize<PageResponse<Upcoming>>(cachedMoviesJson);
+        }
     }
 
 
