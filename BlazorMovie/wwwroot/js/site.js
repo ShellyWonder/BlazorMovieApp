@@ -1,14 +1,16 @@
 //accessing sessionStorage
 
-    window.sessionStorageHelper = {
-        setItem: function (key, value) {
-            sessionStorage.setItem(key, JSON.stringify(value));
-        },
-        getItem: function (key) {
-            const item = sessionStorage.getItem(key);
-            return sessionStorage.getItem(key);
-        }
+window.sessionStorageHelper = {
+    setItem: function (key, value) {
+        sessionStorage.setItem(key, JSON.stringify(value));
+    },
+
+    getItem: function (key) {
+        // Return raw JSON string for debugging purposes
+        return sessionStorage.getItem(key);
+        console.log(sessionStorage.getItem(key));
     }
+};
 
 
 

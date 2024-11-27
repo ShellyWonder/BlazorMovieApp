@@ -13,7 +13,7 @@ namespace BlazorMovie.Models
         public string BackdropPath { get; set; } = String.Empty;
 
         [JsonPropertyName("genre_ids")]
-        public int[] GenreIds { get; set; } = [];
+        public List<int> GenreIds { get; set; } = new();
 
         [JsonPropertyName("id")]
         public int Id { get; set; }

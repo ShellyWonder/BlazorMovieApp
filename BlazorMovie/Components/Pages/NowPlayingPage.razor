@@ -35,7 +35,7 @@
             // Store the API response in sessionStorage for future use
             if (movies != null)
             {
-                // Serialize the entire PageResponse<PopularMovie> object to JSON and store it
+                // Serialize the entire PageResponse<NowPlaying> object to JSON and store it
                 var moviesJson = JsonSerializer.Serialize(movies);
                 await JSRuntime.InvokeVoidAsync("sessionStorageHelper.setItem", $"nowPlayingPage{Page}", movies);
             }

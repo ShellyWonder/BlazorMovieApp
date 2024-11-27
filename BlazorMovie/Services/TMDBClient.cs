@@ -37,9 +37,9 @@ namespace BlazorMovie.Services
         {
             page = MovieCount(page);
 
-            return _httpClient.GetFromJsonAsync<NowPlayingPageResponse>($"movie/now_playing?page={page}");
-        }
 
+            return _httpClient.GetFromJsonAsync<NowPlayingPageResponse>($"movie/now_playing?page={page}&language=en-US");
+        }
         #endregion
 
         #region TopRated
