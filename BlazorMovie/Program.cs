@@ -1,4 +1,6 @@
 using BlazorMovie.Components;
+using BlazorMovie.Factories;
+using BlazorMovie.Factories.Interfaces;
 using BlazorMovie.Models;
 using BlazorMovie.Services;
 using BlazorMovie.Services.Interfaces;
@@ -18,5 +20,6 @@ builder.Services.AddScoped<IMovieService<TopRated>, TopRatedService>();
 builder.Services.AddScoped<IMovieService<Upcoming>, UpcomingComingSoonService>();
 builder.Services.AddScoped<ISearchService, SearchService>();
 builder.Services.AddScoped<MovieCacheService>();
+builder.Services.AddScoped<IMovieServiceFactory, MovieServiceFactory>();
 
 await builder.Build().RunAsync();
