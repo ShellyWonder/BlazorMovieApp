@@ -15,5 +15,9 @@ namespace BlazorMovie.Models
 
         [JsonPropertyName("total_results")]
         public int TotalResults { get; set; }
+
+        // Explicit property for Dates, used only in Now Playing
+        [JsonPropertyName("dates")]
+        public Dates? Dates { get; set; }
     }
 }
