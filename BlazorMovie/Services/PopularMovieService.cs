@@ -1,5 +1,5 @@
 ﻿using BlazorMovie.Models;
-using BlazorMovie.Models.Interfaces;
+using BlazorMovie.Services.Interfaces;
 
 namespace BlazorMovie.Services
 {
