@@ -24,39 +24,42 @@ namespace BlazorMovie.Services
         #endregion
 
         #region PopularMovies 
-        public Task<PopularMoviesPageResponse?> GetPopularMoviesAsync(int page = 1)
+        public async Task<PopularMoviesPageResponse?> GetPopularMoviesAsync(int page = 1)
         {
             page = MovieCount(page);
 
-            return _httpClient.GetFromJsonAsync<PopularMoviesPageResponse>($"movie/popular?page={page}");
+            var response = await _httpClient.GetFromJsonAsync<PopularMoviesPageResponse>($"movie/popular?page={page}") ?? throw new Exception("No movie data returned");
+            return response;
         }
         #endregion
 
         #region NowPlaying 
-        public Task<NowPlayingPageResponse?> GetNowPlayingAsync(int page = 1)
+        public async Task<PageResponse<NowPlaying>> GetNowPlayingAsync(int page = 1)
         {
             page = MovieCount(page);
 
-
-            return _httpClient.GetFromJsonAsync<NowPlayingPageResponse>($"movie/now_playing?page={page}&language=en-US");
+           var response = await _httpClient.GetFromJsonAsync<PageResponse<NowPlaying>>($"movie/now_playing?page={page}&language=en-US") ?? throw new Exception("No movie data returned"); 
+            return response;
         }
         #endregion
 
         #region TopRated
-        public Task<PageResponse<TopRated>?> GetTopRatedAsync(int page = 1)
+        public  async Task<PageResponse<TopRated>?> GetTopRatedAsync(int page = 1)
         {
             page = MovieCount(page);
 
-            return _httpClient.GetFromJsonAsync<PageResponse<TopRated>>($"movie/top_rated?page={page}");
+            var response = await _httpClient.GetFromJsonAsync<PageResponse<TopRated>>($"movie/top_rated?page={page}") ?? throw new Exception("No movie data returned"); 
+            return response;
         }
         #endregion
 
         #region Upcoming
-        public Task<PageResponse<Upcoming>?> GetUpcomingAsync(int page = 1)
+        public async Task<PageResponse<Upcoming>?> GetUpcomingAsync(int page = 1)
         {
             page = MovieCount(page);
 
-            return _httpClient.GetFromJsonAsync<PageResponse<Upcoming>>($"movie/upcoming?page={page}");
+            var response = await _httpClient.GetFromJsonAsync<PageResponse<Upcoming>>($"movie/upcoming?page={page}") ?? throw new Exception("No movie data returned");
+            return response;
         }
         #endregion
 
