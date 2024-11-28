@@ -1,4 +1,6 @@
-﻿namespace BlazorMovie.Models.Interfaces
+﻿using BlazorMovie.Models;
+
+namespace BlazorMovie.Services.Interfaces
 {
     public interface INowPlayingMovieService
     {
