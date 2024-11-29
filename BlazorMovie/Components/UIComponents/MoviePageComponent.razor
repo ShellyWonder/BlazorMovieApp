@@ -1,4 +1,4 @@
-﻿@page "/movies/{category}"
+﻿@page "/{category}"
 @page "/"
 
 @using BlazorMovie.Factories.Interfaces
@@ -32,8 +32,11 @@
 
     protected override async Task OnParametersSetAsync()
     {
+        // Pull service in by category 
         var movieService = MovieServiceFactory.GetService(Category);
+        //check if json response is available from sessionStorage; if so, display on UI
         movies = await MovieCacheService.GetOrFetchMoviesAsync(
+            //if not, call API, display to UI and send to sessionStorage
             movieService.GetMoviesAsync,
             $"{Category}Page",
             Page
