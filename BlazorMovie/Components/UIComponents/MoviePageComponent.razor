@@ -1,0 +1,48 @@
+﻿@page "/movies/{category}"
+@page "/"
+
+@using BlazorMovie.Factories.Interfaces
+@using BlazorMovie.Models
+@using BlazorMovie.Services
+@inject MovieCacheService MovieCacheService
+@inject IMovieServiceFactory MovieServiceFactory
+@inject NavigationManager navManager
+
+<MovieListComponent TMovie="IMovie"
+                    movies="@movies"
+                    Title="@Title"
+                    OnPageChanged="GetPage" />
+
+@code {
+    private PageResponse<IMovie>? movies;
+
+    [Parameter]
+    public string Category { get; set; } = "popular";
+
+    [SupplyParameterFromQuery]
+    public int Page { get; set; } = 1;
+
+    public string Title => Category switch
+    {
+        "now_playing" => "Playing Now",
+        "upcoming" => "Coming Soon",
+        "top_rated"=> "Top Rated",
+        _ => "Popular Movies"
+    };
+
+    protected override async Task OnParametersSetAsync()
+    {
+        var movieService = MovieServiceFactory.GetService(Category);
+        movies = await MovieCacheService.GetOrFetchMoviesAsync(
+            movieService.GetMoviesAsync,
+            $"{Category}Page",
+            Page
+        );
+    }
+
+    private void GetPage(int pageNum)
+    {
+        string url = navManager.GetUriWithQueryParameter("page", pageNum);
+        navManager.NavigateTo(url);
+    }
+}

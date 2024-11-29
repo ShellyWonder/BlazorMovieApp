@@ -12,7 +12,7 @@ namespace BlazorMovie.Services
             _tmdbClient = tmdbClient;
         }
 
-        public  async Task<PageResponse<Upcoming>> GetMoviesAsync(int page)
+        public  async Task<PageResponse<Upcoming>?> GetMoviesAsync(int page)
         {
             return await _tmdbClient.GetUpcomingAsync(page) ?? throw new Exception("No movie data returned");
         }

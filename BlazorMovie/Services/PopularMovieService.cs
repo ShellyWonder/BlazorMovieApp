@@ -13,7 +13,7 @@ namespace BlazorMovie.Services
         }
 
         
-       public async Task<PageResponse<PopularMovie>> GetMoviesAsync(int page)
+       public async Task<PageResponse<PopularMovie>?> GetMoviesAsync(int page)
         {
             return await _tmdbClient.GetPopularMoviesAsync(page) ?? throw new Exception("No movie data returned");
         }
