@@ -1,8 +1,8 @@
 ﻿using System.Text.Json.Serialization;
 
-namespace BlazorMovie.Models.Interfaces
+namespace BlazorMovie.Models
 {
-    public interface IMovie
+    public class Movie
     {
         [JsonPropertyName("id")]
         public int Id { get; set; }
@@ -15,5 +15,11 @@ namespace BlazorMovie.Models.Interfaces
 
         [JsonPropertyName("release_date")]
         public string? ReleaseDate { get; set; }
+
+        [JsonPropertyName("popularity")]
+        public float Popularity { get; set; }
+
+        [JsonPropertyName("backdrop_path")]
+        public string BackdropPath { get; set; } = string.Empty;
     }
 }
