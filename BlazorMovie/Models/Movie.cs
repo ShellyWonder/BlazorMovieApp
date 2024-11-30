@@ -13,7 +13,6 @@ namespace BlazorMovie.Models
         [JsonPropertyName("adult")]
         public bool Adult { get; set; }
 
-
         [JsonPropertyName("poster_path")]
         public string? PosterPath { get; set; }
 
