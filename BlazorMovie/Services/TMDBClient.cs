@@ -28,7 +28,7 @@ namespace BlazorMovie.Services
         {
             page = MovieCount(page);
 
-            var response = await _httpClient.GetFromJsonAsync<PopularMoviesPageResponse>($"movie/popular?page={page}") ?? throw new Exception("No movie data returned");
+            var response = await _httpClient.GetFromJsonAsync<PopularMoviesPageResponse>($"movie/popular?page={page}&language=en-US") ?? throw new Exception("No movie data returned");
             return response;
         }
         #endregion
