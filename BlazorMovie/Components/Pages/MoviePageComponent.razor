@@ -8,13 +8,13 @@
 @inject IMovieServiceFactory MovieServiceFactory
 @inject NavigationManager navManager
 
-<MovieListComponent TMovie="IMovie"
+<MovieListComponent TMovie="Movie"
                     movies="@movies"
                     Title="@Title"
                     OnPageChanged="GetPage" />
 
 @code {
-    private PageResponse<IMovie>? movies;
+    private PageResponse<Movie>? movies;
 
     [Parameter]
     public string Category { get; set; } = "popular";
@@ -24,7 +24,7 @@
 
     public string Title => Category switch
     {
-        "now_playing" => "Playing Now",
+        "now_playing" => "Now Playing",
         "upcoming" => "Coming Soon",
         "top_rated"=> "Top Rated",
         _ => "Popular Movies"
@@ -32,6 +32,7 @@
 
     protected override async Task OnParametersSetAsync()
     {
+        Console.WriteLine($"From Movie Page: Category: {Category}, Page: {Page}");
         // Pull service in by category 
         var movieService = MovieServiceFactory.GetService(Category);
         //check if json response is available from sessionStorage; if so, display on UI

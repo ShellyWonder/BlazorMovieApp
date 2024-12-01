@@ -1,10 +1,10 @@
 ﻿using BlazorMovie.Models;
-using BlazorMovie.Models.Interfaces;
 
 namespace BlazorMovie.Services.Interfaces
 {
-    public interface IMovieService<T> where T : IMovie
+
+    public interface IMovieService
     {
-        Task<PageResponse<T>?> GetMoviesAsync(int page);
+        Task<PageResponse<Movie>?> GetMoviesAsync(int page);
     }
 }
