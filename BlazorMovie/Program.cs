@@ -1,7 +1,6 @@
 using BlazorMovie.Components;
 using BlazorMovie.Factories;
 using BlazorMovie.Factories.Interfaces;
-using BlazorMovie.Models;
 using BlazorMovie.Services;
 using BlazorMovie.Services.Interfaces;
 using Microsoft.AspNetCore.Components.Web;
@@ -14,10 +13,13 @@ builder.RootComponents.Add<HeadOutlet>("head::after");
 
 builder.Services.AddScoped(sp => new HttpClient { BaseAddress = new Uri(builder.HostEnvironment.BaseAddress) });
 builder.Services.AddScoped<TMDBClient>();
-builder.Services.AddScoped<IMovieService<PopularMovie>, PopularMovieService>();
-builder.Services.AddScoped<IMovieService<NowPlaying>, NowPlayingMovieService>();
-builder.Services.AddScoped<IMovieService<TopRated>, TopRatedService>();
-builder.Services.AddScoped<IMovieService<Upcoming>, UpcomingComingSoonService>();
+
+
+builder.Services.AddTransient<PopularMovieService>();
+builder.Services.AddTransient<NowPlayingMovieService>();
+builder.Services.AddTransient<TopRatedService>();
+builder.Services.AddTransient<UpcomingComingSoonService>();
+
 builder.Services.AddScoped<ISearchService, SearchService>();
 builder.Services.AddScoped<MovieCacheService>();
 builder.Services.AddScoped<IMovieServiceFactory, MovieServiceFactory>();
