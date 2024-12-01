@@ -1,5 +1,5 @@
-﻿using BlazorMovie.Models;
-using Microsoft.JSInterop;
+﻿using Microsoft.JSInterop;
+using BlazorMovie.Models;
 using System.Text.Json;
 
 namespace BlazorMovie.Services
@@ -13,28 +13,38 @@ namespace BlazorMovie.Services
             _jsRuntime = jsRuntime;
         }
 
-        public async Task<PageResponse<TMovie>?> GetOrFetchMoviesAsync<TMovie>(
-            Func<int, Task<PageResponse<TMovie>?>> fetchMoviesFunc,
+        public async Task<PageResponse<Movie>?> GetOrFetchMoviesAsync(
+            Func<int, Task<PageResponse<Movie>?>> fetchFunc,
             string cacheKey,
             int page)
         {
-            var cachedMoviesJson = await _jsRuntime.InvokeAsync<string>("sessionStorageHelper.getItem", $"{cacheKey}{page}");
+            string fullCacheKey = $"{cacheKey}{page}";
 
-            if (!string.IsNullOrEmpty(cachedMoviesJson))
+            try
             {
-                return JsonSerializer.Deserialize<PageResponse<TMovie>>(cachedMoviesJson);
+                // Check if data exists in sessionStorage
+                var cachedMoviesJson = await _jsRuntime.InvokeAsync<string>("sessionStorageHelper.getItem", fullCacheKey);
+                if (!string.IsNullOrEmpty(cachedMoviesJson))
+                {
+                    return JsonSerializer.Deserialize<PageResponse<Movie>>(cachedMoviesJson);
+                }
+
+                // Fetch data if not available in cache
+                var moviesFromApi = await fetchFunc(page);
+                if (moviesFromApi != null)
+                {
+                    // Store the fetched movies in sessionStorage
+                    await _jsRuntime.InvokeVoidAsync("sessionStorageHelper.setItem", fullCacheKey, moviesFromApi);
+                }
+
+                return moviesFromApi;
             }
-
-            var movies = await fetchMoviesFunc(page);
-
-            if (movies != null)
+            catch (Exception ex)
             {
-                var moviesJson = JsonSerializer.Serialize(movies);
-                await _jsRuntime.InvokeVoidAsync("sessionStorageHelper.setItem", $"{cacheKey}{page}", moviesJson);
+                // Log error
+                Console.WriteLine($"Error in GetOrFetchMoviesAsync: {ex.Message}");
+                return null;
             }
-
-            return movies;
         }
     }
-
 }
