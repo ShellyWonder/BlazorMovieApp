@@ -1,7 +1,5 @@
 ﻿using BlazorMovie.Models;
-using BlazorMovie.Models.Interfaces;
 using BlazorMovie.Services.Interfaces;
-using System.ComponentModel.DataAnnotations;
 
 
 namespace BlazorMovie.Services
