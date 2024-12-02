@@ -22,12 +22,4 @@
     <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly.DevServer" Version="8.0.0" PrivateAssets="all" />
   </ItemGroup>
 
-  <ItemGroup>
-    <UpToDateCheckInput Remove="Components\UIComponents\SearchResultsComponent.razor" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <_ContentIncludedByDefault Remove="Components\UIComponents\SearchResultsComponent.razor" />
-  </ItemGroup>
-
 </Project>
