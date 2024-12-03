@@ -2,7 +2,6 @@ using BlazorMovie.Components;
 using BlazorMovie.Factories;
 using BlazorMovie.Factories.Interfaces;
 using BlazorMovie.Services;
-using BlazorMovie.Services.Interfaces;
 using Microsoft.AspNetCore.Components.Web;
 using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
 
@@ -20,7 +19,7 @@ builder.Services.AddTransient<NowPlayingMovieService>();
 builder.Services.AddTransient<TopRatedService>();
 builder.Services.AddTransient<UpcomingComingSoonService>();
 
-builder.Services.AddScoped<ISearchService, SearchService>();
+
 builder.Services.AddScoped<MovieCacheService>();
 builder.Services.AddScoped<IMovieServiceFactory, MovieServiceFactory>();
 
