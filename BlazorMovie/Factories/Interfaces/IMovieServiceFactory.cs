@@ -4,6 +4,6 @@ namespace BlazorMovie.Factories.Interfaces
 {
     public interface IMovieServiceFactory
     {
-        IMovieService GetService(string category);
+        IBaseMovieService GetService(string category);
     }
 }
