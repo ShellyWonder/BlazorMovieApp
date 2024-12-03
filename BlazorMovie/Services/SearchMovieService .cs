@@ -4,7 +4,7 @@ using BlazorMovie.Services.Interfaces;
 
 namespace BlazorMovie.Services
 {
-    public class SearchMovieService : IMovieService
+    public class SearchMovieService : ISearchMovieService
     {
         private readonly TMDBClient _tmdbClient;
 
@@ -13,12 +13,7 @@ namespace BlazorMovie.Services
             _tmdbClient = tmdbClient;
         }
 
-        public async Task<PageResponse<Movie>?> GetMoviesAsync(int page)
-        {
-            Console.WriteLine($"Fetching popular movies for page: {page}");
-            return await _tmdbClient.GetPopularMoviesAsync(page); // Assuming GetPopularMoviesAsync is defined in TMDBClient
-        }
-
+        
         public async Task<PageResponse<Movie>?> GetMoviesAsync(int page, string searchQuery = "")
         {
             // Ensure searchQuery is provided for searches
