@@ -1,5 +1,4 @@
 ﻿using BlazorMovie.Models;
-using BlazorMovie.Models.SearchResults;
 using System.Net.Http.Json;
 using System.Web;
 
@@ -24,11 +23,11 @@ namespace BlazorMovie.Services
         #endregion
 
         #region PopularMovies 
-        public async Task<PopularMoviesPageResponse?> GetPopularMoviesAsync(int page = 1)
+        public async Task<PageResponse<PopularMovie>?> GetPopularMoviesAsync(int page = 1)
         {
             page = MovieCount(page);
 
-            var response = await _httpClient.GetFromJsonAsync<PopularMoviesPageResponse>($"movie/popular?page={page}&language=en-US") ?? throw new Exception("No movie data returned");
+            var response = await _httpClient.GetFromJsonAsync<PageResponse<PopularMovie>>($"movie/popular?page={page}&language=en-US") ?? throw new Exception("No movie data returned");
             return response;
         }
         #endregion
@@ -74,14 +73,14 @@ namespace BlazorMovie.Services
         #endregion
 
         #region GET Movie Search
-        public Task<MovieSearchPagedResponse?> SearchMoviesByTitle(string title, int page=1)
+        public Task<PageResponse<Movie>?> SearchMoviesByTitle(string title, int page=1)
         {
             page = MovieCount(page);
             // encode the title to make it URL safe
             string encodedTitle = HttpUtility.UrlEncode(title);
             var adult = false;
             var language = "en-US";
-            return  _httpClient.GetFromJsonAsync<MovieSearchPagedResponse>($"search/movie?query={encodedTitle}&include_adult={adult}&language={language}&page={page}");
+            return  _httpClient.GetFromJsonAsync<PageResponse<Movie>?>($"search/movie?query={encodedTitle}&include_adult={adult}&language={language}&page={page}");
         }
         #endregion
 
