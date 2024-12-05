@@ -32,25 +32,13 @@
                     </NavLink>
                   </li>
             </ul>
-        <MainSearchComponent/>
+            <MainSearchComponent/>
         
-        <SearchResultsComponent @ref="searchResultsModal" SearchResults="@searchResults"/>
         </div>
        
     </div>
 </nav>
 
 @code {
-    private IEnumerable<MovieDetails>? searchResults;
-    private SearchResultsComponent? searchResultsModal;
-
-    private void ShowSearchResultsModal(IEnumerable<SearchModel> results)
-    {
-        searchResults = results
-             .Select(sm => sm.MovieDetails)
-             .Where(md => md != null) // Exclude null MovieDetails
-             .Cast<MovieDetails>(); // Cast to non-nullable MovieDetails
-
-        searchResultsModal?.ShowModal();
-    }
+    
 }
