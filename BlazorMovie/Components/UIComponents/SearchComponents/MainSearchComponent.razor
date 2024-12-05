@@ -1,6 +1,6 @@
 ﻿@using BlazorMovie.Services.Interfaces
 @using BlazorMovie.Models
-@inject ISearchService searchService
+@inject ISearchMovieService searchMovieService
 @inject NavigationManager NavManager
 
 
@@ -11,7 +11,7 @@
             <DropdownComponent @ref="dropdownComponent" OnCategorySelected="HandleCategorySelected" />
             @if (showSearchBox)
             {
-                <input type="text" class="form-control" placeholder="@Placeholder" @bind="searchModel.Query"  @onkeyup="HandleKeyUp" />
+                <input type="text" class="form-control" placeholder="@Placeholder" @bind="searchQuery" @onkeyup="HandleKeyUp" />
                 <button class="btn btn-primary" type="submit" @onclick="SearchMoviesByTitle">Search</button>
                 <button class="btn btn-danger border border-2" @onclick="OnClearSearchClick">Clear Search</button>
             }
@@ -36,8 +36,8 @@
     [Parameter]
     public bool IsSearchActive { get; set; }
 
-    [Parameter]
-    public EventCallback<IEnumerable<SearchModel>> OnMultipleResultsFound { get; set; }
+    [SupplyParameterFromQuery]
+    public string searchQuery { get; set; } = string.Empty;
 
     [Parameter]
     public EventCallback OnClearSearch { get; set; }
@@ -46,7 +46,7 @@
     private bool showSearchBox = false;
     private string searchTerm = string.Empty;
     private int page { get; set; } = 1;
-    private IEnumerable<SearchModel> searchResults = [];
+    private PageResponse<Movie>? searchResults;
     private string errorMessage = string.Empty;
     private DropdownComponent? dropdownComponent;
     private SearchModel? Category { get; set; }
@@ -77,20 +77,12 @@
 
         await FetchSearchResults();
 
-        if (searchResults == null || !searchResults.Any())
+        if (searchResults?.Results == null || !searchResults.Results.Any())
         {
             await ShowErrorMessage("No results found.");
             return;
         }
 
-        if (searchResults.Count() > 1)
-        {
-            await HandleMultipleResults();
-        }
-        else
-        {
-            HandleSingleResult(searchResults.First());
-        }
         IsSearchActive = true;
     }
     #endregion
@@ -101,8 +93,7 @@
         try
         {
             Console.WriteLine($"Category: {searchModel.Category}, SearchTerm: {searchTerm}");
-            searchResults = await searchService.GetSearchModelAsync(searchModel.Category, searchTerm);
-            Console.WriteLine($"Search Results Count: {searchResults?.Count()}");
+            searchResults = await searchMovieService.GetMoviesAsync(page, searchQuery);
             StateHasChanged();
         }
         catch (Exception ex)
@@ -133,22 +124,23 @@
     {
         // Null or empty category check
         if (string.IsNullOrWhiteSpace(category))
-            {
-                Console.WriteLine("Invalid category provided for navigation.");
-                return; // Exit the method if category is null or empty
-            }
-       
-            // Map category to route
-            var route = category switch
-            {
-                "PopularMovies" => "/",
-                "TopRated" => "/top_rated",
-                "Upcoming" => "/upcoming",
-                "NowPlaying" => "/now_playing",
-                _ => "/"
-            };
+        {
+            Console.WriteLine("Invalid category provided for navigation.");
+            return; // Exit the method if category is null or empty
+        }
 
-            NavManager.NavigateTo(route);
+        // Map category to route
+        var route = category switch
+        {
+            "PopularMovies" => "/",
+            "TopRated" => "/top_rated",
+            "Upcoming" => "/upcoming",
+            "NowPlaying" => "/now_playing",
+            "SearchResults" => "/search_result",
+            _ => "/"
+        };
+
+        NavManager.NavigateTo(route);
         // Reset dropdown after navigating
         dropdownComponent?.ResetDropdown();
     }
@@ -159,9 +151,10 @@
     {
         try
         {
-            if (!string.IsNullOrWhiteSpace(searchModel.Query))
+            if (!string.IsNullOrWhiteSpace(searchQuery))
             {
-                searchResults = await searchService.GetSearchModelAsync(searchModel.Category, searchTerm);
+                searchResults = await searchMovieService.GetMoviesAsync(page, searchQuery);
+
                 // Reset dropdown after searching
                 dropdownComponent?.ResetDropdown();
             }
@@ -178,7 +171,7 @@
     }
     #endregion
 
-#region HANDLE KEY UP
+    #region HANDLE KEY UP
     private async Task HandleKeyUp(KeyboardEventArgs e)
     {
         if (e.Key == "Enter")
@@ -186,22 +179,31 @@
             await PerformSearch(); // Trigger the search on Enter key press
         }
     }
-#endregion
+    #endregion
 
-#region CLEAR SEARCH
+    #region CLEAR SEARCH
     private async Task OnClearSearchClick()
     {
         IsSearchActive = false;
         searchTerm = string.Empty; // Clear text input
         searchModel.Category = string.Empty; // Reset dropdown
-       OnCategoryChanged(new ChangeEventArgs { Value = string.Empty }); // Trigger the category change logic
-        searchResults = Enumerable.Empty<SearchModel>(); // Clear results
+        OnCategoryChanged(new ChangeEventArgs { Value = string.Empty }); // Trigger the category change logic
+
+        // Reset searchResults to an empty PageResponse<Movie> object
+        searchResults = new PageResponse<Movie>
+            {
+                Results = Enumerable.Empty<Movie>().ToList(), // Empty list of movies
+                Page = 1,
+                TotalResults = 0,
+                TotalPages = 0
+            };
+
         await OnClearSearch.InvokeAsync(); // Trigger parent callback (if any)
         StateHasChanged(); // Update the UI
     }
-#endregion
+    #endregion
 
-#region VALIDATE SEARCH
+    #region VALIDATE SEARCH
     private async Task<bool> ValidateSearchTerm()
     {
         if (string.IsNullOrWhiteSpace(searchTerm))
@@ -213,7 +215,7 @@
     }
     #endregion
 
- #region SHOW ERROR MESSAGE
+    #region SHOW ERROR MESSAGE
     private async Task ShowErrorMessage(string message)
     {
         errorMessage = message;
@@ -227,43 +229,21 @@
     }
     #endregion
 
-#region RESULTS HANDLING
+    #region RESULTS HANDLING
 
-    #region HANDLE MULTIPLE SEARCH RESULTS
-    private async Task HandleMultipleResults()
-    //intended flow: if response returns more than one result, show modal with result options
+    #region RESULT ROUTING
+    private void OnMovieSelected(MovieDetails movieDetails)
     {
-        await OnMultipleResultsFound.InvokeAsync(searchResults);
-    }
-    #endregion
-
-    #region HANDLE ONE RESULT
-    private async void HandleSingleResult(SearchModel singleResult)
-    {
-        if (singleResult.MovieDetails != null)
+        if (movieDetails is not null)
         {
-            OnMovieSelected(singleResult.MovieDetails);
+            NavigationManager.NavigateTo($"/movie/{movieDetails.Id}");
         }
         else
         {
-            await ShowErrorMessage("Movie details are not available.");
+            errorMessage = "Movie details are not available.";
         }
     }
     #endregion
 
-    #region RESULT ROUTING
-        private void OnMovieSelected(MovieDetails movieDetails)
-        {
-            if (movieDetails is not null)
-            {
-                NavigationManager.NavigateTo($"/movie/{movieDetails.Id}");
-            }
-            else
-            {
-                errorMessage = "Movie details are not available.";
-            }
-        }
     #endregion
-
-     #endregion
 }

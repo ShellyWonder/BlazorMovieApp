@@ -1,9 +1,13 @@
 ﻿@page "/{category}"
 @page "/"
+@page "/search"
 
 @using BlazorMovie.Factories.Interfaces
 @using BlazorMovie.Models
 @using BlazorMovie.Services
+@using BlazorMovie.Services.Interfaces
+@using System.Web;
+
 @inject MovieCacheService MovieCacheService
 @inject IMovieServiceFactory MovieServiceFactory
 @inject NavigationManager navManager
@@ -16,37 +20,84 @@
 @code {
     private PageResponse<Movie>? movies;
 
+    #region PARAMETERS
     [Parameter]
     public string Category { get; set; } = "popular";
 
     [SupplyParameterFromQuery]
-    public int Page { get; set; } = 1;
+    public string SearchQuery { get; set; } = string.Empty;
 
+    [SupplyParameterFromQuery]
+    public int Page { get; set; } = 1;
+    #endregion
+
+    #region CATEGORY SWITCH FOR TITLE
     public string Title => Category switch
     {
         "now_playing" => "Now Playing",
         "upcoming" => "Coming Soon",
-        "top_rated"=> "Top Rated",
+        "top_rated" => "Top Rated",
+        "search_results" => "Search Results",
         _ => "Popular Movies"
     };
+    #endregion
 
+    #region ON INITIALIZED
+    protected override void OnInitialized()
+    {
+        var uri = new Uri(navManager.Uri); // navManager is the injected NavigationManager
+        var queryString = uri.Query;
+
+        // Use System.Web.HttpUtility to parse the query string
+        var queryParameters = HttpUtility.ParseQueryString(queryString);
+        var searchQuery = queryParameters["searchQuery"];
+
+        // Use searchQuery
+        Console.WriteLine($"Search Query: {searchQuery}");
+    }
+    #endregion
+
+    #region ON PARAMETERS SET ASYNC
     protected override async Task OnParametersSetAsync()
     {
         Console.WriteLine($"From Movie Page: Category: {Category}, Page: {Page}");
-        // Pull service in by category 
         var movieService = MovieServiceFactory.GetService(Category);
-        //check if json response is available from sessionStorage; if so, display on UI
-        movies = await MovieCacheService.GetOrFetchMoviesAsync(
-            //if not, call API, display to UI and send to sessionStorage
-            movieService.GetMoviesAsync,
-            $"{Category}Page",
-            Page
-        );
+        movies = await FetchMoviesAsync(movieService, Page);
     }
+    #endregion
 
+    #region FETCH MOVIES
+    private async Task<PageResponse<Movie>?> FetchMoviesAsync(IBaseMovieService movieService, int page)
+    {
+        if (movieService is ISearchMovieService searchMovieService)
+        {
+            return await MovieCacheService.GetOrFetchMoviesAsync(
+                (p) => searchMovieService.GetMoviesAsync(p, SearchQuery),
+                $"{Category}Page",
+                page
+            );
+        }
+        else if (movieService is IMovieService generalMovieService)
+        {
+            //First, check if response is already cashed
+            return await MovieCacheService.GetOrFetchMoviesAsync(
+                //If not, make API call and cashe the response
+                (p) => generalMovieService.GetMoviesAsync(p),
+                $"{Category}Page",
+                page
+            );
+        }
+
+        throw new InvalidOperationException("Unsupported movie service type.");
+    }
+    #endregion
+
+    #region GET PAGE
     private void GetPage(int pageNum)
     {
         string url = navManager.GetUriWithQueryParameter("page", pageNum);
         navManager.NavigateTo(url);
     }
+    #endregion
+
 }
