@@ -15,19 +15,23 @@
     border-color: var(--sjw-footer-font-color);
 }
 
+.releaseDate, .runtime, .rating, .poster-container img {
+    cursor: default;
+}
+
 .releaseDate {
     background-color: var(--sjw-secondary-color);
 }
 
 .runtime {
     background-color: var(--sjw-golden-color);
+    color: var(--sjw-secondary-color);
+    font-weight:900;
 }
 
 .rating {
     background-color: var(--sjw-primary-color);
 }
-
-
 
 
 .hero-container-xxl {
