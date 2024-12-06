@@ -1,5 +1,6 @@
 ﻿@using BlazorMovie.Services.Interfaces
 @using BlazorMovie.Models
+@using System.Web
 @inject ISearchMovieService searchMovieService
 @inject NavigationManager NavManager
 
@@ -82,6 +83,8 @@
             await ShowErrorMessage("No results found.");
             return;
         }
+        // Navigate to the search results page
+        NavManager.NavigateTo($"/search_result?SearchQuery={HttpUtility.UrlEncode(searchQuery)}&Page={page}");
 
         IsSearchActive = true;
     }
@@ -142,7 +145,7 @@
 
         NavManager.NavigateTo(route);
         // Reset dropdown after navigating
-        dropdownComponent?.ResetDropdown();
+        // dropdownComponent?.ResetDropdown();
     }
     #endregion
 
@@ -155,8 +158,11 @@
             {
                 searchResults = await searchMovieService.GetMoviesAsync(page, searchQuery);
 
+                // Navigate to the search results route, passing the search query as a query parameter
+                NavManager.NavigateTo($"/search_result?SearchQuery={HttpUtility.UrlEncode(searchQuery)}&Page=1");
+
                 // Reset dropdown after searching
-                dropdownComponent?.ResetDropdown();
+                // dropdownComponent?.ResetDropdown();
             }
             else
             {

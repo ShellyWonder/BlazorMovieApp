@@ -40,7 +40,7 @@ namespace BlazorMovie.Factories
                 "now_playing" => _nowPlayingMovieService,
                 "top_rated"=> _topRatedService,
                 "upcoming" => _upcomingService,
-                "search_results" => _searchMovieService,
+                "search_result" => _searchMovieService,
                 _ => _popularMovieService
             };
             
