@@ -3,19 +3,17 @@
 @if (Movie is not null)
 {
     <div class="card h-100 fade-in shadow p-3 mb-5 bg-body-tertiary rounded">
-        @if (string.IsNullOrEmpty(Movie.PosterPath))
-        {
+        <img class="card-img-top" alt="Movie Poster"
+             src="@(string.IsNullOrEmpty(Movie.PosterPath)
+         ? "/img/PosterPlaceHolder.png"
+         : $"https://image.tmdb.org/t/p/w500/{Movie.PosterPath}")" />
 
-            <img class="card-img-top" alt="Movie Poster" src="/img/PosterPlaceHolder.png" />
-        }
-        else
-        {
-            <img class="card-img-top" alt="Movie Poster" src="@($"https://image.tmdb.org/t/p/w500/{Movie.PosterPath}")" />
-        }
         <div class="card-body border-top bg-light d-flex flex-column">
             <h5 class="card-title">@Movie.Title?.ToUpper()</h5>
             <p class="card-text">
-                @DateTime.Parse(Movie.ReleaseDate!).ToString("MMMM dd, yyyy")
+                @(DateTime.TryParse(Movie.ReleaseDate, out var parsedDate)
+                    ? parsedDate.ToString("MMMM dd, yyyy")
+                    : "Release date not available")
             </p>
             <!-- Spacer div to fill available space -->
             <div class="flex-grow-1"></div>
