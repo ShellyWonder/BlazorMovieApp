@@ -23,10 +23,13 @@
     background-color: var(--sjw-secondary-color);
 }
 
-.runtime {
+.runtime, .genre {
     background-color: var(--sjw-golden-color);
     color: var(--sjw-secondary-color);
-    font-weight:900;
+   font-weight:900;
+}
+.genre {
+    box-shadow: var(--sjw-box-shadow2);
 }
 
 .rating {
