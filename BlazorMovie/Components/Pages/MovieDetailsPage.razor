@@ -95,42 +95,51 @@ else
             </p>
 
             <div class="row mb-2">
-                <!-- Language and Genres -->
+                <!-- Status and Revenue -->
+                <div class="col-6 text-start">
+                   <strong class="me-2">Status:</strong>
+                    @((movieDetails?.Status != null) ? movieDetails.Status
+                        : "Status Not Available")
+                </div>
+                <div class="col-6 text-end">
+                 <strong>Revenue:</strong>
+                    @((movieDetails?.Revenue != null)
+                        ? @movieDetails.Revenue.ToString("C", new System.Globalization.CultureInfo("en-US"))
+                        : "Revenue Not Available")   
+                </div>
+            </div>
+
+            <div class="row mb-2">
+                <!-- Language and Budget -->
                 <div class="col-6 text-start">
                     <strong>Language:</strong>
                     @(movieDetails?.SpokenLanguages?.Any() == true
                         ? string.Join(", ", movieDetails.SpokenLanguages.Select(sl => sl.EnglishName))
                         : "Not Available")
                 </div>
-                <div class="col-6 text-end">
-                    <strong class="me-2">Genres:</strong>
-                    @if (movieDetails?.Genres?.Any() == true)
-                    {
-                        @foreach (var genre in movieDetails.Genres)
-                        {
-                            <span class="badge genre me-2">@genre.Name</span>
-                        }
-                    }
-                    else
-                    {
-                        <span>Genres Not Available</span>
-                    }
-                </div>
-            </div>
 
-            <div class="row mb-2">
-                <!-- Revenue and Budget -->
-                <div class="col-6 text-start">
-                    <strong>Revenue:</strong>
-                    @((movieDetails?.Revenue != null)
-                        ? @movieDetails.Revenue.ToString("C", new System.Globalization.CultureInfo("en-US"))
-                        : "Revenue Not Available")
-                </div>
                 <div class="col-6 text-end">
                     <strong>Budget:</strong>
                     @((movieDetails?.Budget != null)
                         ? @movieDetails.Budget.ToString("C", new System.Globalization.CultureInfo("en-US"))
                         : "Budget Not Available")
+                </div>
+            </div>
+
+                <!-- Genres -->
+            <div class="row mb-2">
+                <div class="col-12 text-center">
+                 <strong class="me-2">Genres:</strong>
+                    @if (movieDetails?.Genres?.Any() == true)
+                    {
+                        @foreach (var genre in movieDetails.Genres)
+                        {
+                            <span class="badge genre me-2">@genre.Name</span>
+                        }                    }
+                    else
+                    {
+                        <span>Genres Not Available</span>
+                    }
                 </div>
             </div>
 
