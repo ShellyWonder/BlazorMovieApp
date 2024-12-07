@@ -78,6 +78,16 @@ h1 .focus {
     --bs-btn-font-family: var( --sjw-title-font);
 }
 
+/* property display badges */
+.badge {
+    font-size: 0.75rem;
+    font-weight: 400;
+    color: var(--sjw-footer-font-color);
+    margin-bottom: 1rem;
+    border: 2px solid;
+    border-color: var(--sjw-footer-font-color);
+}
+
 /*Blazor Default Styles*/
 .valid.modified:not([type=checkbox]) {
     outline: 1px solid #26b050;
