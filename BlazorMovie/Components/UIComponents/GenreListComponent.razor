@@ -1,4 +1,5 @@
-﻿@using System.Linq
+﻿@* GenreListComponent *@
+@using System.Linq
 
 <div class="row">
     @if (Genres != null && Genres.Any())
@@ -8,7 +9,7 @@
             <div class="col-12 d-flex flex-wrap justify-content-center mb-2">
                 @for (int j = i; j < i + MaxGenresPerRow && j < Genres.Count; j++)
                 {
-                    <span class="badge genre me-2">@Genres[j].Name</span>
+                    <span class="btn btn-sm genre me-2">@Genres[j].Name</span>
                 }
             </div>
         }

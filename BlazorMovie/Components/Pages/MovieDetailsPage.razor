@@ -1,4 +1,6 @@
-﻿@page "/movie/{id:int}"
+﻿@* MovieDetailsPage *@
+@page "/movie/{id:int}"
+@using System.Linq;
 @using BlazorMovie.Services
 @using BlazorMovie.Components.UIComponents
 @inject TMDBClient TMDB
@@ -130,16 +132,7 @@ else
             <div class="row mb-2">
                 <div class="col-12 text-center">
                  <strong class="me-2">Genres:</strong>
-                    @if (movieDetails?.Genres?.Any() == true)
-                    {
-                        @foreach (var genre in movieDetails.Genres)
-                        {
-                            <span class="badge genre me-2">@genre.Name</span>
-                        }                    }
-                    else
-                    {
-                        <span>Genres Not Available</span>
-                    }
+                    <GenreListComponent Genres="movieDetails?.Genres?.ToList()" MaxGenresPerRow="3" />
                 </div>
             </div>
 
