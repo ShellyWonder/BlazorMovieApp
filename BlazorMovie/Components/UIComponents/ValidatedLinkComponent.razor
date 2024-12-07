@@ -1,0 +1,51 @@
+﻿@* ValidatedLink.razor *@
+@using System.Net.Http
+
+<div>
+    @if (isValid is null)
+    {
+        <span class="text-light">Checking link...</span>
+    }
+    else if (isValid == true)
+    {
+        <a href="@Url" target="_blank" class="@ButtonClass">@LinkText</a>
+    }
+    else
+    {
+        <button class="@ButtonClass" title="@($"{LinkText} not found")">@LinkText Unavailable</button>
+    }
+</div>
+
+@code {
+    [Parameter] public string Url { get; set; } = string.Empty;
+    [Parameter] public string LinkText { get; set; } = "Link";
+    [Parameter] public string ButtonClass { get; set; } = "btn btn-outline-light rounded-pill";
+
+    private bool? isValid;
+
+    protected override async Task OnParametersSetAsync()
+    {
+        if (!string.IsNullOrEmpty(Url))
+        {
+            isValid = await CheckLinkValidity(Url);
+        }
+        else
+        {
+            isValid = false;
+        }
+    }
+
+    private async Task<bool> CheckLinkValidity(string url)
+    {
+        try
+        {
+            using var httpClient = new HttpClient();
+            var response = await httpClient.GetAsync(url);
+            return response.IsSuccessStatusCode;
+        }
+        catch
+        {
+            return false;
+        }
+    }
+}

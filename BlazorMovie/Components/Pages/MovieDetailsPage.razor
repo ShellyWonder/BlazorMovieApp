@@ -39,32 +39,17 @@ else
                     <span class="badge me-2 rating" title="Movie Rating">@rating%<i class="bi bi-stars"></i></span>
                     <div class="movie-links">
                         <div class="d-flex justify-content-center justify-content-md-end p-3">
+                            <!-- Website Link -->
                             @if (!string.IsNullOrEmpty(movieDetails?.Homepage))
                             {
-                                @if (isLinkAvailable == true)
-                                {
-                                    <div class="text-center px-2">
+                              <ValidatedLinkComponent Url="@movieDetails?.Homepage" LinkText="Website" ButtonClass="btn btn-outline-light rounded-pill" />
 
-                                        <a href="@movieDetails.Homepage" target="_blank" class="btn btn-outline-light rounded-pill">Website</a>
-                                    </div>
-                                }
-                                else if (isLinkAvailable == false)
-                                {
-                                    <div class="text-center px-2">
-                                        <button class="btn btn-outline-light rounded-pill" title="Website not found" >Website Unavailable</button>
-                                    </div>
-                                }
-                                else
-                                {
-                                    <div class="text-center px-2">
-                                        <span class="text-light">Checking link...</span>
-                                    </div>
-                                }
                             }
+                            <!-- IMDb Link -->
                             @if (!string.IsNullOrEmpty(movieDetails?.ImdbId))
                             {
                                 <div class="text-center px-2">
-                                    <a href="@($"https://www.imdb.com/title/{movieDetails.ImdbId}")" target="_blank" class="btn btn-outline-warning rounded-pill">IMDB</a>
+                                   <ValidatedLinkComponent Url="@($"https://www.imdb.com/title/{movieDetails.ImdbId}")" LinkText="IMDB" ButtonClass="btn btn-outline-warning rounded-pill" />
                                 </div>
                             }
                         </div>
@@ -146,39 +131,10 @@ else
     public int Id { get; set; }
 
     private MovieDetails? movieDetails;
-    private bool? isLinkAvailable;
 
     protected override async Task OnInitializedAsync()
     {
         movieDetails = await TMDB.GetMovieDetailsAsync(Id);
     }
     
-    protected override async Task OnParametersSetAsync()
-    {
-        if (!string.IsNullOrEmpty(movieDetails?.Homepage))
-        {
-            isLinkAvailable = await IsLinkAvailable(movieDetails.Homepage);
-        }
-        else
-        {
-            isLinkAvailable = false;
-        }
-    }
-
-    private async Task<bool> IsLinkAvailable(string url)
-    {
-        if (string.IsNullOrEmpty(url))
-            return false;
-
-        try
-        {
-            using var httpClient = new HttpClient();
-            var response = await httpClient.GetAsync(url);
-            return response.IsSuccessStatusCode;
-        }
-        catch
-        {
-            return false;
-        }
-    }
-}
+}   
