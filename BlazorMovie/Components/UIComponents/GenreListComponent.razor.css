@@ -1,0 +1,32 @@
+﻿.genre {
+   /* color: var(--sjw-footer-font-color);*/
+    background-color: var(--sjw-golden-color);
+    color: var(--sjw-secondary-color);
+    font-size: 1rem;
+    font-weight: 800;
+    border: 2px solid;
+    border-color: var(--sjw-footer-font-color);
+    border-radius: 2rem;
+    flex: 1 1 calc(33.333% - 1rem); /* Each badge takes 1/3 of the row minus spacing */
+    text-align: center;
+    box-shadow: var(--sjw-box-shadow2);
+    margin: 0.5rem 0; /* Adds vertical spacing for wrap behavior */
+    padding: 0.5rem;
+    max-width: calc(33.333% - 1rem); /* Prevents oversized badges */
+}
+
+/** Media Queries **/
+/* Ensure badges display properly on smaller screens */
+@media (max-width: 768px) {
+    .genre {
+        flex: 1 1 calc(50% - 1rem); /* Reduce to 2 badges per row on small screens */
+        font-size: 0.5rem;
+    }
+}
+
+@media (max-width: 576px) {
+    .genre {
+        flex: 1 1 100%; /* Full width on very small screens */
+    }
+}
+/** END Media Queries **/

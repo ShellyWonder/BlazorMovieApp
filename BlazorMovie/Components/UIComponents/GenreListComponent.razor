@@ -1,0 +1,36 @@
+﻿@* GenreListComponent *@
+@using System.Linq
+
+<div class="row">
+    @if (Genres != null && Genres.Any())
+    {
+        @for (int i = 0; i < Genres.Count; i += MaxGenresPerRow)
+        {
+            <div class="col-12 d-flex flex-wrap justify-content-center mb-2">
+                @for (int j = i; j < i + MaxGenresPerRow && j < Genres.Count; j++)
+                {
+                    <span class="btn btn-sm genre me-2">@Genres[j].Name</span>
+                }
+            </div>
+        }
+    }
+    else
+    {
+        <div class="col-12 text-center">
+            <span>Genres Not Available</span>
+        </div>
+    }
+</div>
+
+@code {
+    [Parameter]
+    public List<Genre> Genres { get; set; } = new();
+
+    [Parameter]
+    public int MaxGenresPerRow { get; set; } = 3;
+
+    private string Genre { get; set; } = string.Empty;
+    private Genre Name { get; set; } = new();
+
+
+}
