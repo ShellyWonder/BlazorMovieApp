@@ -1,0 +1,24 @@
+﻿@* ErrorMessageComponent *@
+
+@if (!string.IsNullOrWhiteSpace(Message))
+{
+    <div class="alert alert-danger mt-3" role="alert">
+        @Message
+    </div>
+}
+
+@code {
+    [Parameter]
+    public string Message { get; set; } = string.Empty;
+
+    public async Task DisplayMessage(string message, int delayMilliseconds = 1500)
+    {
+        Message = message;
+        StateHasChanged();
+
+        await Task.Delay(delayMilliseconds);
+
+        Message = string.Empty;
+        StateHasChanged();
+    }
+}
