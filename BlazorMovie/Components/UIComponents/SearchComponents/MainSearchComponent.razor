@@ -1,9 +1,9 @@
-﻿@using BlazorMovie.Services.Interfaces
+﻿@*MainSearchComponent(Parent)*@
+@using BlazorMovie.Services.Interfaces
 @using BlazorMovie.Models
 @using System.Web
 @inject ISearchMovieService searchMovieService
 @inject NavigationManager NavManager
-
 
 <div class="row">
     <div class="col-12 d-flex justify-content-end">
@@ -12,16 +12,15 @@
             <DropdownComponent @ref="dropdownComponent" OnCategorySelected="HandleCategorySelected" />
             @if (showSearchBox)
             {
-                <input type="text" class="form-control" placeholder="@Placeholder" @bind="searchQuery" @onkeyup="HandleKeyUp" />
-                <button class="btn btn-primary" type="submit" @onclick="SearchMoviesByTitle">Search</button>
-                <button class="btn btn-danger border border-2" @onclick="OnClearSearchClick">Clear Search</button>
+                <SearchBoxInputComponent Placeholder="@Placeholder"
+                SearchQuery="@searchQuery"
+                OnSearch="PerformSearch"
+                OnClearSearch="OnClearSearchClick" />
             }
-
         </div>
-
     </div>
-
 </div>
+
 @if (!string.IsNullOrWhiteSpace(errorMessage))
 {
     <div class="alert alert-danger mt-3" role="alert">
@@ -33,6 +32,9 @@
     #region PARAMETERS
     [Parameter]
     public string Placeholder { get; set; } = "Enter Search Term";
+
+    [Parameter]
+    public string SearchQuery { get; set; } = string.Empty;
 
     [Parameter]
     public bool IsSearchActive { get; set; }
@@ -48,12 +50,14 @@
     private string searchTerm = string.Empty;
     private int page { get; set; } = 1;
     private PageResponse<Movie>? searchResults;
-    private string errorMessage = string.Empty;
+    private string errorMessage { get; set; } = string.Empty;
     private DropdownComponent? dropdownComponent;
     private SearchModel? Category { get; set; }
     private SearchModel? Query { get; set; }
     private SearchModel searchModel { get; set; } = new SearchModel();
     public NavigationManager NavigationManager { get; set; } = null!;
+
+    private string ErrorMessage { get; set; } = string.Empty;
 
     #region CATEGORY CHANGED
     private void OnCategoryChanged(ChangeEventArgs e)
@@ -149,63 +153,16 @@
     }
     #endregion
 
-    #region SEARCH BY TITLE
-    private async Task SearchMoviesByTitle()
+    #region SHOW ERROR MESSAGE
+    private async Task ShowErrorMessage(string message)
     {
-        try
-        {
-            if (!string.IsNullOrWhiteSpace(searchQuery))
-            {
-                searchResults = await searchMovieService.GetMoviesAsync(page, searchQuery);
+        ErrorMessage = message;
+        StateHasChanged();
 
-                // Navigate to the search results route, passing the search query as a query parameter
-                NavManager.NavigateTo($"/search_result?SearchQuery={HttpUtility.UrlEncode(searchQuery)}&Page=1");
+        await Task.Delay(1500);
 
-                // Reset dropdown after searching
-                // dropdownComponent?.ResetDropdown();
-            }
-            else
-            {
-                errorMessage = "Please enter a movie title to search.";
-            }
-        }
-        catch (Exception ex)
-        {
-            errorMessage = $"An error occurred while searching for movies: {ex.Message}";
-        }
-
-    }
-    #endregion
-
-    #region HANDLE KEY UP
-    private async Task HandleKeyUp(KeyboardEventArgs e)
-    {
-        if (e.Key == "Enter")
-        {
-            await PerformSearch(); // Trigger the search on Enter key press
-        }
-    }
-    #endregion
-
-    #region CLEAR SEARCH
-    private async Task OnClearSearchClick()
-    {
-        IsSearchActive = false;
-        searchTerm = string.Empty; // Clear text input
-        searchModel.Category = string.Empty; // Reset dropdown
-        OnCategoryChanged(new ChangeEventArgs { Value = string.Empty }); // Trigger the category change logic
-
-        // Reset searchResults to an empty PageResponse<Movie> object
-        searchResults = new PageResponse<Movie>
-            {
-                Results = Enumerable.Empty<Movie>().ToList(), // Empty list of movies
-                Page = 1,
-                TotalResults = 0,
-                TotalPages = 0
-            };
-
-        await OnClearSearch.InvokeAsync(); // Trigger parent callback (if any)
-        StateHasChanged(); // Update the UI
+        ErrorMessage = string.Empty;
+        StateHasChanged();
     }
     #endregion
 
@@ -221,35 +178,15 @@
     }
     #endregion
 
-    #region SHOW ERROR MESSAGE
-    private async Task ShowErrorMessage(string message)
+    #region CLEAR SEARCH
+    private async Task OnClearSearchClick()
     {
-        errorMessage = message;
-        StateHasChanged(); // Update the UI to show the error message
-
-        // Wait for 1.5 seconds before clearing the error message
-        await Task.Delay(1500);
-
-        errorMessage = string.Empty; // Clear the error message
-        StateHasChanged(); // Update the UI to hide the error message
+        SearchQuery = string.Empty;
+        await OnClearSearch.InvokeAsync();
     }
-    #endregion
-
-    #region RESULTS HANDLING
-
-    #region RESULT ROUTING
-    private void OnMovieSelected(MovieDetails movieDetails)
-    {
-        if (movieDetails is not null)
-        {
-            NavigationManager.NavigateTo($"/movie/{movieDetails.Id}");
-        }
-        else
-        {
-            errorMessage = "Movie details are not available.";
-        }
-    }
-    #endregion
-
     #endregion
 }
+
+    
+
+   
