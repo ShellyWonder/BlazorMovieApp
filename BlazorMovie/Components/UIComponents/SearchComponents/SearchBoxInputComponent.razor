@@ -6,12 +6,7 @@
     <button class="btn btn-danger border border-2" @onclick="OnClearSearchClick">Clear Search</button>
 </div>
 
-@if (!string.IsNullOrWhiteSpace(ErrorMessage))
-{
-    <div class="alert alert-danger mt-3" role="alert">
-        @ErrorMessage
-    </div>
-}
+<ErrorMessageComponent Message="@errorMessage" />
 
 @code {
     #region PARAMETERS
@@ -28,14 +23,14 @@
     public EventCallback OnClearSearch { get; set; }
     #endregion
 
-    private string ErrorMessage { get; set; } = string.Empty;
+    private string errorMessage { get; set; } = string.Empty;
 
     #region SEARCH BY TITLE
     private async Task SearchMoviesByTitle()
     {
         if (string.IsNullOrWhiteSpace(SearchQuery))
         {
-            await ShowErrorMessage("Please enter a movie title to search.");
+            errorMessage = "Please enter a movie title to search.";
             return;
         }
 
@@ -61,16 +56,4 @@
     }
     #endregion
 
-    #region SHOW ERROR MESSAGE
-    private async Task ShowErrorMessage(string message)
-    {
-        ErrorMessage = message;
-        StateHasChanged();
-
-        await Task.Delay(1500);
-
-        ErrorMessage = string.Empty;
-        StateHasChanged();
-    }
-    #endregion
-}
+}   
