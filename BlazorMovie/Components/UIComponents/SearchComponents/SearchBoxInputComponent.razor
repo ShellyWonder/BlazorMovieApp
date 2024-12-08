@@ -1,0 +1,76 @@
+﻿@* SearchBoxInputComponent *@
+
+<div class="input-group">
+    <input type="text" class="form-control border border-bottom border-top" placeholder="@Placeholder" @bind="SearchQuery" @onkeyup="HandleKeyUp" />
+    <button class="btn btn-primary" type="submit" @onclick="SearchMoviesByTitle">Search</button>
+    <button class="btn btn-danger border border-2" @onclick="OnClearSearchClick">Clear Search</button>
+</div>
+
+@if (!string.IsNullOrWhiteSpace(ErrorMessage))
+{
+    <div class="alert alert-danger mt-3" role="alert">
+        @ErrorMessage
+    </div>
+}
+
+@code {
+    #region PARAMETERS
+    [Parameter]
+    public string Placeholder { get; set; } = "Enter Search Term";
+
+    [Parameter]
+    public string SearchQuery { get; set; } = string.Empty;
+
+    [Parameter]
+    public EventCallback<string> OnSearch { get; set; }
+
+    [Parameter]
+    public EventCallback OnClearSearch { get; set; }
+    #endregion
+
+    private string ErrorMessage { get; set; } = string.Empty;
+
+    #region SEARCH BY TITLE
+    private async Task SearchMoviesByTitle()
+    {
+        if (string.IsNullOrWhiteSpace(SearchQuery))
+        {
+            await ShowErrorMessage("Please enter a movie title to search.");
+            return;
+        }
+
+        await OnSearch.InvokeAsync(SearchQuery);
+    }
+    #endregion
+
+    #region HANDLE KEY UP
+    private async Task HandleKeyUp(KeyboardEventArgs e)
+    {
+        if (e.Key == "Enter")
+        {
+            await SearchMoviesByTitle();
+        }
+    }
+    #endregion
+
+    #region CLEAR SEARCH
+    private async Task OnClearSearchClick()
+    {
+        SearchQuery = string.Empty;
+        await OnClearSearch.InvokeAsync();
+    }
+    #endregion
+
+    #region SHOW ERROR MESSAGE
+    private async Task ShowErrorMessage(string message)
+    {
+        ErrorMessage = message;
+        StateHasChanged();
+
+        await Task.Delay(1500);
+
+        ErrorMessage = string.Empty;
+        StateHasChanged();
+    }
+    #endregion
+}
