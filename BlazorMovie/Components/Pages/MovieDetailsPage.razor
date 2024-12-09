@@ -1,6 +1,7 @@
 ﻿@* MovieDetailsPage *@
 @page "/movie/{id:int}"
 @using System.Linq;
+@using BlazorMovie.Components.UIComponents.PropertyComponents
 @using BlazorMovie.Services
 @using BlazorMovie.Components.UIComponents
 @inject TMDBClient TMDB
@@ -18,63 +19,39 @@ else
     <div class="hero-bg" style="@($"--bg-img:url(https://image.tmdb.org/t/p/original/{movieDetails?.BackdropPath})")">
         <div class="hero-container-xxl d-flex flex-column flex-md-row">
 
-            <!--title content goes here-->
+            <!--title content, tagline, badges and weblinks -->
             <div class="flex-grow-1 d-flex align-items-center justify-content-center justify-content-md-end">
                 <HeroBadgesComponent MovieDetails="movieDetails" />
             </div>
 
-            <!--poster goes here-->
+            <!-- poster -->
             <div class="order-last order-md-first d-flex justify-content-center">
-                <div class="poster-container">
-                    @if (string.IsNullOrEmpty(movieDetails?.PosterPath))
-                    {
-                        <img src="/img/PosterPlaceHolder.png" alt="Movie Poster" title="Movie Poster" />
-                    }
-                    else
-                    {
-                        <img src="@($"https://image.tmdb.org/t/p/w500/{movieDetails.PosterPath}")" alt="@movieDetails.Title" class="img-fluid rounded shadow-lg" />
-                    }
-
-                </div>
+                <PosterPropComponent MovieDetails="movieDetails" />
             </div>
         </div>
     </div>
     <div class="container-xxl">
         <div class="overview d-flex flex-column">
-            <p>
-                @((movieDetails?.Overview != null) ? movieDetails.Overview
-                    : "Overview Summary Not Available")
-            </p>
+            <!-- Summary of Plot -->
+            <OverviewPropComponent movieDetails="movieDetails" />
 
             <div class="row mb-2">
                 <!-- Status and Revenue -->
                 <div class="col-6 text-start">
-                   <strong class="me-2">Status:</strong>
-                    @((movieDetails?.Status != null) ? movieDetails.Status
-                        : "Status Not Available")
+                   <StatusPropComponent MovieDetails="movieDetails" />
                 </div>
                 <div class="col-6 text-end">
-                 <strong>Revenue:</strong>
-                    @((movieDetails?.Revenue != null)
-                        ? @movieDetails.Revenue.ToString("C", new System.Globalization.CultureInfo("en-US"))
-                        : "Revenue Not Available")   
+                 <RevenuePropComponent MovieDetails ="movieDetails" />   
                 </div>
             </div>
 
             <div class="row mb-2">
                 <!-- Language and Budget -->
                 <div class="col-6 text-start">
-                    <strong>Language:</strong>
-                    @(movieDetails?.SpokenLanguages?.Any() == true
-                        ? string.Join(", ", movieDetails.SpokenLanguages.Select(sl => sl.EnglishName))
-                        : "Not Available")
+                    <LanguagePropComponent MovieDetails ="movieDetails"/>
                 </div>
-
                 <div class="col-6 text-end">
-                    <strong>Budget:</strong>
-                    @((movieDetails?.Budget != null)
-                        ? @movieDetails.Budget.ToString("C", new System.Globalization.CultureInfo("en-US"))
-                        : "Budget Not Available")
+                    <BudgetPropComponent MovieDetails ="movieDetails"/>
                 </div>
             </div>
 
