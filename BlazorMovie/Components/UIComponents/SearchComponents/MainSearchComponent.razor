@@ -13,9 +13,9 @@
             @if (showSearchBox)
             {
                 <SearchBoxInputComponent Placeholder="@Placeholder"
-                SearchQuery="@searchQuery"
-                OnSearch="PerformSearch"
-                OnClearSearch="OnClearSearchClick" />
+                                         @bind-SearchQuery="searchQuery"
+                                         OnSearch="PerformSearch"
+                                         OnClearSearch="OnClearSearchClick" />
             }
         </div>
     </div>
@@ -29,20 +29,17 @@
     public string Placeholder { get; set; } = "Enter Search Term";
 
     [Parameter]
-    public string SearchQuery { get; set; } = string.Empty;
+    [SupplyParameterFromQuery]
+    public string searchQuery { get; set; } = string.Empty;
 
     [Parameter]
     public bool IsSearchActive { get; set; }
-
-    [SupplyParameterFromQuery]
-    public string searchQuery { get; set; } = string.Empty;
 
     [Parameter]
     public EventCallback OnClearSearch { get; set; }
     #endregion
 
     private bool showSearchBox = false;
-    private string searchTerm = string.Empty;
     private int page { get; set; } = 1;
     private PageResponse<Movie>? searchResults;
     private string errorMessage { get; set; } = string.Empty;
@@ -70,6 +67,7 @@
     #region PERFORM SEARCH
     private async Task PerformSearch()
     {
+        Console.WriteLine($"Parent searchQuery: {searchQuery}");
         if (!await ValidateSearchTerm())
             return;
 
@@ -92,7 +90,7 @@
     {
         try
         {
-            Console.WriteLine($"Category: {searchModel.Category}, SearchTerm: {searchTerm}");
+            Console.WriteLine($"Category: {searchModel.Category}, SearchTerm: {searchQuery}");
             searchResults = await searchMovieService.GetMoviesAsync(page, searchQuery);
             StateHasChanged();
         }
@@ -149,7 +147,7 @@
     #region VALIDATE SEARCH
     private async Task<bool> ValidateSearchTerm()
     {
-        if (string.IsNullOrWhiteSpace(searchTerm))
+        if (string.IsNullOrWhiteSpace(searchQuery))
         {
             errorMessage = "Please enter a search term.";
             StateHasChanged();
@@ -165,7 +163,7 @@
     #region CLEAR SEARCH
     private async Task OnClearSearchClick()
     {
-        SearchQuery = string.Empty;
+        searchQuery = string.Empty;
         await OnClearSearch.InvokeAsync();
     }
     #endregion

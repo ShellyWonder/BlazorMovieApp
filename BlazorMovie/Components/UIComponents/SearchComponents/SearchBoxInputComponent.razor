@@ -1,7 +1,11 @@
 ﻿@* SearchBoxInputComponent *@
 
 <div class="input-group">
-    <input type="text" class="form-control border border-bottom border-top" placeholder="@Placeholder" @bind="SearchQuery" @onkeyup="HandleKeyUp" />
+    <input type="text" class="form-control border border-bottom border-top"
+                        placeholder="@Placeholder"
+                        value="@searchQuery"
+                        @oninput="OnSearchQueryChanged"
+                       @onkeyup="HandleKeyUp" />
     <button class="btn btn-primary" type="submit" @onclick="SearchMoviesByTitle">Search</button>
     <button class="btn btn-danger border border-2" @onclick="OnClearSearchClick">Clear Search</button>
 </div>
@@ -14,13 +18,16 @@
     public string Placeholder { get; set; } = "Enter Search Term";
 
     [Parameter]
-    public string SearchQuery { get; set; } = string.Empty;
+    public string searchQuery { get; set; } = string.Empty;
 
     [Parameter]
     public EventCallback<string> OnSearch { get; set; }
 
     [Parameter]
     public EventCallback OnClearSearch { get; set; }
+
+    [Parameter]
+    public EventCallback<string> SearchQueryChanged { get; set; }
     #endregion
 
     private string errorMessage { get; set; } = string.Empty;
@@ -28,30 +35,38 @@
     #region SEARCH BY TITLE
     private async Task SearchMoviesByTitle()
     {
-        if (string.IsNullOrWhiteSpace(SearchQuery))
+        if (string.IsNullOrWhiteSpace(searchQuery))
         {
             errorMessage = "Please enter a movie title to search.";
             return;
         }
 
-        await OnSearch.InvokeAsync(SearchQuery);
+        await OnSearch.InvokeAsync(searchQuery);
     }
     #endregion
 
     #region HANDLE KEY UP
     private async Task HandleKeyUp(KeyboardEventArgs e)
     {
+        Console.WriteLine($"Child searchQuery: {searchQuery}");
         if (e.Key == "Enter")
         {
             await SearchMoviesByTitle();
         }
     }
     #endregion
+    #region SEARCH QUERY CHANGED
+    private async Task OnSearchQueryChanged(ChangeEventArgs e)
+    {
+        searchQuery = e.Value?.ToString() ?? string.Empty;
+        await SearchQueryChanged.InvokeAsync(searchQuery); // Notify parent
+    }
+    #endregion
 
     #region CLEAR SEARCH
     private async Task OnClearSearchClick()
     {
-        SearchQuery = string.Empty;
+        searchQuery = string.Empty;
         await OnClearSearch.InvokeAsync();
     }
     #endregion
