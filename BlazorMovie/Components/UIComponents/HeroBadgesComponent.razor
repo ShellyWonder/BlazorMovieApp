@@ -1,0 +1,42 @@
+﻿@* HeroBadgesComponent *@
+<div class="mt-3 text-center text-md-end pe-3">
+    <h1 class="text-light">@((MovieDetails?.Title != null) ? MovieDetails.Title.ToUpper() : "Title Not Available")</h1>
+    <h2 class="text-light">@((MovieDetails?.Tagline != null) ? MovieDetails.Tagline : "Tagline Not Available")</h2>
+
+    <span class="badge me-2 releaseDate" title="Release Date">
+        @(DateTime.TryParse(MovieDetails?.ReleaseDate, out DateTime releaseDate)
+            ? $"{releaseDate:MMM dd, yyyy}"
+            : "Release Date Not Available")
+    </span>
+
+    @* Runtime and Rating *@
+    @{
+        var runtime = MovieDetails != null ? $"{MovieDetails?.Runtime / 60}h {MovieDetails?.Runtime % 60}m" : "Runtime Not Available";
+        var rating = MovieDetails != null ? (MovieDetails.VoteAverage * 10).ToString("F1") : "Rating Not Available";
+    }
+    <span class="badge me-2 runtime" title="Movie Runtime">@runtime</span>
+    <span class="badge me-2 rating" title="Movie Rating">@rating%<i class="bi bi-stars"></i></span>
+
+    @* Links *@
+    <div class="movie-links">
+        <div class="d-flex justify-content-center justify-content-md-end p-3">
+            <!-- Website Link -->
+            @if (!string.IsNullOrEmpty(MovieDetails?.Homepage))
+            {
+                <ValidatedLinkComponent Url="@MovieDetails?.Homepage" LinkText="Website" ButtonClass="btn btn-outline-light rounded-pill" />
+            }
+            <!-- IMDb Link -->
+            @if (!string.IsNullOrEmpty(MovieDetails?.ImdbId))
+            {
+                <div class="text-center px-2">
+                    <ValidatedLinkComponent Url="@($"https://www.imdb.com/title/{MovieDetails.ImdbId}")" LinkText="IMDB" ButtonClass="btn btn-outline-warning rounded-pill" />
+                </div>
+            }
+        </div>
+    </div>
+</div>
+
+@code {
+    [Parameter]
+    public MovieDetails? MovieDetails { get; set; }
+}

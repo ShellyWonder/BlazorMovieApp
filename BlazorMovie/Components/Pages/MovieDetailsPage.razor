@@ -17,47 +17,12 @@ else
     <!--Page Banner-->
     <div class="hero-bg" style="@($"--bg-img:url(https://image.tmdb.org/t/p/original/{movieDetails?.BackdropPath})")">
         <div class="hero-container-xxl d-flex flex-column flex-md-row">
+
             <!--title content goes here-->
             <div class="flex-grow-1 d-flex align-items-center justify-content-center justify-content-md-end">
-                <div class="mt-3 text-center text-md-end pe-3">
-                    <h1 class="text-light">@((movieDetails?.Title != null) ? movieDetails.Title.ToUpper() 
-                        : "Title Not Available")</h1>
-                        <h2 class="text-light">@((movieDetails?.Tagline != null) ? movieDetails.Tagline 
-                        : "Tagline Not Available")</h2>
-
-                    <span class="badge me-2 releaseDate" title="Release Date">
-                        @(DateTime.TryParse(movieDetails?.ReleaseDate, out DateTime releaseDate)
-                            ? $"{releaseDate:MMM dd, yyyy}"
-                            : "Release Date Not Available")
-                    </span>
-
-                    @{
-                        var runtime = movieDetails !=null ? $"{movieDetails?.Runtime / 60}h {movieDetails?.Runtime % 60}m" : "Runtime Not Available";
-                        var rating = movieDetails !=null ? (movieDetails.VoteAverage * 10).ToString("F1"): "Rating Not Available";
-                    }
-                    <span class="badge me-2 runtime" title="Movie Runtime">@runtime</span>
-                    <span class="badge me-2 rating" title="Movie Rating">@rating%<i class="bi bi-stars"></i></span>
-                    <div class="movie-links">
-                        <div class="d-flex justify-content-center justify-content-md-end p-3">
-                            <!-- Website Link -->
-                            @if (!string.IsNullOrEmpty(movieDetails?.Homepage))
-                            {
-                              <ValidatedLinkComponent Url="@movieDetails?.Homepage" LinkText="Website" ButtonClass="btn btn-outline-light rounded-pill" />
-
-                            }
-                            <!-- IMDb Link -->
-                            @if (!string.IsNullOrEmpty(movieDetails?.ImdbId))
-                            {
-                                <div class="text-center px-2">
-                                   <ValidatedLinkComponent Url="@($"https://www.imdb.com/title/{movieDetails.ImdbId}")" LinkText="IMDB" ButtonClass="btn btn-outline-warning rounded-pill" />
-                                </div>
-                            }
-                        </div>
-
-                    </div>
-
-                </div>
+                <HeroBadgesComponent MovieDetails="movieDetails" />
             </div>
+
             <!--poster goes here-->
             <div class="order-last order-md-first d-flex justify-content-center">
                 <div class="poster-container">
