@@ -12,10 +12,11 @@
             <DropdownComponent @ref="dropdownComponent" OnCategorySelected="HandleCategorySelected" />
             @if (showSearchBox)
             {
-                <SearchBoxInputComponent Placeholder="@Placeholder"
+                <SearchBoxInputComponent @ref ="searchBox"
+                                        Placeholder="@Placeholder"
                                          @bind-SearchQuery="searchQuery"
                                          OnSearch="PerformSearch"
-                                         OnClearSearch="OnClearSearchClick" />
+                                         OnClearSearch="HandleClearSearch" />
             }
         </div>
     </div>
@@ -43,6 +44,7 @@
     private int page { get; set; } = 1;
     private PageResponse<Movie>? searchResults;
     private string errorMessage { get; set; } = string.Empty;
+    private SearchBoxInputComponent? searchBox;
     private DropdownComponent? dropdownComponent;
     private SearchModel? Category { get; set; }
     private SearchModel? Query { get; set; }
@@ -168,12 +170,23 @@
     #endregion
 
     #region CLEAR SEARCH
-    private async Task OnClearSearchClick()
+    private void HandleClearSearch()
     {
+        // Reset the searchQuery to an empty string
         searchQuery = string.Empty;
-        await OnClearSearch.InvokeAsync();
+
+        // Hide the input group
+        showSearchBox = false;
+
+        // Reset the dropdown component to its default value
+        dropdownComponent?.ResetDropdown();
+
+        // Preserve the displayed search results
+        Console.WriteLine("Search cleared. Input and dropdown reset, but results remain displayed.");
+        StateHasChanged(); // Update UI
     }
     #endregion
+
 }
 
     

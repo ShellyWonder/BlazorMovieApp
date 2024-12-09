@@ -1,5 +1,4 @@
 ﻿@* SearchBoxInputComponent *@
-
 <div class="input-group">
     <input type="text" class="form-control border border-bottom border-top"
                         placeholder="@Placeholder"
@@ -30,7 +29,12 @@
     public EventCallback<string> SearchQueryChanged { get; set; }
     #endregion
 
+    // Controls input group visibility
+    private bool isVisible = true;
+
     private string errorMessage { get; set; } = string.Empty;
+
+    private DropdownComponent? dropdownComponent;
 
     #region SEARCH BY TITLE
     private async Task SearchMoviesByTitle()
@@ -67,8 +71,18 @@
     private async Task OnClearSearchClick()
     {
         searchQuery = string.Empty;
+        // Hide the input group
+        isVisible = false;
         await OnClearSearch.InvokeAsync();
+        ResetDropdownComponent();
     }
+    #endregion
+    #region RESET DROPDOWN
+    private void ResetDropdownComponent()
+    {
+        dropdownComponent?.ResetDropdown();
+    }
+
     #endregion
 
 }   
