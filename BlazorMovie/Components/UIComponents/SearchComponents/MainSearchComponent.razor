@@ -71,6 +71,12 @@
         if (!await ValidateSearchTerm())
             return;
 
+        // Clear previous search results
+        searchResults = null;
+        errorMessage = string.Empty;
+        // Update UI to reflect clearing results
+        StateHasChanged(); 
+
         await FetchSearchResults();
 
         if (searchResults?.Results == null || !searchResults.Results.Any())
@@ -90,8 +96,9 @@
     {
         try
         {
-            Console.WriteLine($"Category: {searchModel.Category}, SearchTerm: {searchQuery}");
+            Console.WriteLine($"Fetching results for Category: {searchModel.Category}, SearchTerm: {searchQuery}");
             searchResults = await searchMovieService.GetMoviesAsync(page, searchQuery);
+            Console.WriteLine($"Results fetched: {searchResults?.Results?.Count ?? 0}");
             StateHasChanged();
         }
         catch (Exception ex)
