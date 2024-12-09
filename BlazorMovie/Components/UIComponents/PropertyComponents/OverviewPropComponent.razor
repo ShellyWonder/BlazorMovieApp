@@ -1,0 +1,9 @@
+﻿@* OverviewPropComponent *@
+<p>
+    @((movieDetails?.Overview != null) ? movieDetails.Overview
+        : "Overview Summary Not Available")
+</p>
+@code {
+[Parameter]
+public MovieDetails? movieDetails { get; set; }
+}

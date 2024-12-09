@@ -1,0 +1,18 @@
+﻿@* PosterPropComponent *@
+
+<div class="poster-container">
+    @if (string.IsNullOrEmpty(movieDetails?.PosterPath))
+    {
+        <img src="/img/PosterPlaceHolder.png" alt="Movie Poster" title="Movie Poster" />
+    }
+    else
+    {
+        <img src="@($"https://image.tmdb.org/t/p/w500/{movieDetails.PosterPath}")" alt="@movieDetails.Title" class="img-fluid rounded shadow-lg" />
+    }
+
+</div>
+
+@code {
+[Parameter]
+public MovieDetails? movieDetails { get; set; }
+}

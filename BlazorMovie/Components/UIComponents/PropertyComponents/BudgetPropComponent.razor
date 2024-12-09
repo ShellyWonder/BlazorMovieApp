@@ -1,0 +1,12 @@
+﻿@* BudgetPropComponent *@
+
+<strong>Budget:</strong>
+@((movieDetails?.Budget != null && movieDetails.Budget != 0.00m)
+        ? @movieDetails.Budget.ToString("C", new System.Globalization.CultureInfo("en-US"))
+        : "Budget Not Available")
+
+@code {
+    [Parameter]
+    public MovieDetails? movieDetails { get;  set; }
+    
+}

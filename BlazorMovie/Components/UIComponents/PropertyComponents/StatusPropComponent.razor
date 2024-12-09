@@ -1,0 +1,9 @@
+﻿@* StatusPropComponent *@
+<strong class="me-2">Status:</strong>
+@((movieDetails?.Status != null) ? movieDetails.Status
+        : "Status Not Available")
+
+@code {
+    [Parameter]
+    public MovieDetails? movieDetails{ get; set; }
+}

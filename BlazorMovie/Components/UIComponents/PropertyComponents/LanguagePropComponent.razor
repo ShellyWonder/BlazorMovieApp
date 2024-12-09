@@ -1,0 +1,11 @@
+﻿@* LanguagePropComponent *@
+
+<strong>Language:</strong>
+@(movieDetails?.SpokenLanguages?.Any() == true
+        ? string.Join(", ", movieDetails.SpokenLanguages.Select(sl => sl.EnglishName))
+        : "Not Available")
+
+@code {
+    [Parameter]
+    public MovieDetails? movieDetails{ get; set; }
+}
