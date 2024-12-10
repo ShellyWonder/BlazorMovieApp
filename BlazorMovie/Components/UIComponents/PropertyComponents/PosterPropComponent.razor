@@ -4,6 +4,9 @@
     @if (string.IsNullOrEmpty(movieDetails?.PosterPath))
     {
         <img src="/img/PosterPlaceHolder.png" alt="Movie Poster" title="Movie Poster" />
+        <div class="placeholderText">
+            Movie poster unavailable
+        </div>
     }
     else
     {
@@ -11,6 +14,9 @@
     }
 
 </div>
+
+
+
 
 @code {
 [Parameter]

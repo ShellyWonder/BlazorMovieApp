@@ -3,7 +3,7 @@
 <strong>Language:</strong>
 @(movieDetails?.SpokenLanguages?.Any() == true
         ? string.Join(", ", movieDetails.SpokenLanguages.Select(sl => sl.EnglishName))
-        : "Not Available")
+        : "Unavailable")
 
 @code {
     [Parameter]

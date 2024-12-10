@@ -3,7 +3,7 @@
 <strong>Revenue:</strong>
 @((movieDetails?.Revenue != null && movieDetails.Revenue != 0.00m)
         ? @movieDetails.Revenue.ToString("C", new System.Globalization.CultureInfo("en-US"))
-        : "Revenue Not Available")
+        : "Unavailable")
 
 @code {
     [Parameter]
