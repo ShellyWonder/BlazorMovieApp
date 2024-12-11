@@ -12,4 +12,4 @@ namespace BlazorMovie.Models.Credits
         public string Job { get; set; } = string.Empty;
     }
 
-    }
+}
