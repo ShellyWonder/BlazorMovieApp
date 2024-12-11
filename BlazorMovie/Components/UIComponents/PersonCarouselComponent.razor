@@ -1,0 +1,56 @@
+﻿@*PersonCarouselComponent*@
+@using BlazorMovie.Models.Credits
+
+@if (People is not null && People.Any())
+{
+    <div id="personCarousel" class="carousel slide" data-bs-ride="carousel">
+        <div class="carousel-indicators">
+            @for (int i = 0; i < Math.Ceiling(People.Count / 3.0); i++)
+            {
+                <button type="button" 
+                        data-bs-target="#personCarousel" 
+                        data-bs-slide-to="@i" 
+                        class="@(i == 0 ? "active" : "")" 
+                        aria-current="@(i == 0 ? "true" : "false")" 
+                        aria-label="Slide @(i + 1)">
+                </button>
+            }
+        </div>
+        <div class="carousel-inner">
+            @foreach (var (group, index) in People.Chunk(3).Select((chunk, i) => (chunk, i)))
+            {
+                <div class="carousel-item @(index == 0 ? "active" : "")">
+                    <div class="row g-3">
+                        @foreach (var person in group)
+                        {
+                            <div class="col-lg-4 col-md-6">
+                                <PersonCardComponent Person="person" SubText="@($"Role: {person.KnownForDepartment}")" />
+                            </div>
+                        }
+                    </div>
+                </div>
+            }
+        </div>
+        <button class="carousel-control-prev" type="button" data-bs-target="#personCarousel" data-bs-slide="prev">
+            <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+            <span class="visually-hidden">Previous</span>
+        </button>
+        <button class="carousel-control-next" type="button" data-bs-target="#personCarousel" data-bs-slide="next">
+            <span class="carousel-control-next-icon" aria-hidden="true"></span>
+            <span class="visually-hidden">Next</span>
+        </button>
+    </div>
+}
+else
+{
+    <p>No people available to display.</p>
+}
+
+@code {
+    [Parameter]
+    public List<Person>? People { get; set; }
+
+    [Parameter]
+    public Person? Person { get; set; }
+}
+
