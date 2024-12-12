@@ -1,4 +1,5 @@
 ﻿using BlazorMovie.Models.Credits;
+using BlazorMovie.Models.Providers;
 using System.Text.Json.Serialization;
 
 namespace BlazorMovie.Models
@@ -24,7 +25,11 @@ namespace BlazorMovie.Models
         [JsonPropertyName("production_companies")]
         public ProductionCompanies[] ProductionCompanies { get; set; } = [];
 
+        [JsonPropertyName("credits")]
         public Credit Credits { get; set; } = new();
+
+        [JsonPropertyName("providers")]
+        public Provider? Providers { get; set; }
 
         [JsonPropertyName("production_countries")]
         public ProductionCountries[] ProductionCountries { get; set; } = [];
