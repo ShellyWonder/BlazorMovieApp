@@ -9,7 +9,7 @@ namespace BlazorMovie.Models.Providers
         public int id { get; set; }
 
         [JsonPropertyName("results")]
-        public Dictionary<string, ProviderDetail> ProviderResults { get; set; } = new();
+        public Dictionary<string, ProviderDetail<ProviderOption, ProviderOption, ProviderOption>> ProviderResults { get; set; } = new();
     }
 
     public class AD : ProviderDetail<Flatrate, ProviderOption, ProviderOption> { }
