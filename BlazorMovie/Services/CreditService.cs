@@ -14,12 +14,8 @@ namespace BlazorMovie.Services
         public async Task<Credit> GetCreditsAsync(int movieId)
         {
               var response = await _tmdbClient.GetCreditsByMovieIdAsync(movieId);
-            if (response == null)
-            {
-                throw new Exception("No credit data returned");
-            }
-            return response;
+            return response == null ? throw new Exception("No credit data returned") : response;
         }
-            
+
     }
 }

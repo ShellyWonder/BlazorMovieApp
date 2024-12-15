@@ -9,7 +9,9 @@ namespace BlazorMovie.Services
 
         public async Task<ProviderDetail<ProviderOption, ProviderOption, ProviderOption>?> GetProvidersAsync(int id)
         {
-            return await _tmdbClient.GetProvidersByMovieIdAsync(id);
+            var response = await _tmdbClient.GetProvidersByMovieIdAsync(id) 
+                                                                            ?? throw new Exception("No provider data returned");
+            return response;
         }
     }
 }
