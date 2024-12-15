@@ -10,10 +10,8 @@ var builder = WebAssemblyHostBuilder.CreateDefault(args);
 builder.RootComponents.Add<App>("#app");
 builder.RootComponents.Add<HeadOutlet>("head::after");
 
-
 builder.Services.AddScoped(sp => new HttpClient { BaseAddress = new Uri(builder.HostEnvironment.BaseAddress) });
 builder.Services.AddScoped<TMDBClient>();
-
 
 builder.Services.AddTransient<PopularMovieService>();
 builder.Services.AddTransient<NowPlayingMovieService>();
@@ -21,8 +19,7 @@ builder.Services.AddTransient<TopRatedService>();
 builder.Services.AddTransient<UpcomingComingSoonService>();
 builder.Services.AddScoped<ISearchMovieService, SearchMovieService>();
 builder.Services.AddTransient<ICreditService, CreditService>();
-
-
+builder.Services.AddTransient<IProviderService, ProviderService>();
 
 builder.Services.AddScoped<MovieCacheService>();
 builder.Services.AddScoped<IMovieServiceFactory, MovieServiceFactory>();
