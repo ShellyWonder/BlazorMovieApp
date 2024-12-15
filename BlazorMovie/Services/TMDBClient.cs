@@ -1,4 +1,5 @@
 ﻿using BlazorMovie.Models;
+using BlazorMovie.Models.Providers;
 using System.Net.Http.Json;
 using System.Web;
 
@@ -9,7 +10,7 @@ namespace BlazorMovie.Services
     {
         private readonly HttpClient _httpClient;
 
-#region CONSTRUCTOR
+#region CONSTRUCTOR/CONFIG
         public TMDBClient(HttpClient httpClient, IConfiguration config)
         {
             _httpClient = httpClient;
@@ -27,7 +28,8 @@ namespace BlazorMovie.Services
         {
             page = MovieCount(page);
 
-            var response = await _httpClient.GetFromJsonAsync<PageResponse<PopularMovie>>($"movie/popular?page={page}&language=en-US") ?? throw new Exception("No movie data returned");
+            var response = await _httpClient.GetFromJsonAsync<PageResponse<PopularMovie>>($"movie/popular?page={page}&language=en-US") 
+                                                                                                               ?? throw new Exception("No movie data returned");
             return response;
         }
         #endregion
@@ -60,7 +62,8 @@ namespace BlazorMovie.Services
         {
             page = MovieCount(page);
 
-            var response = await _httpClient.GetFromJsonAsync<PageResponse<Upcoming>>($"movie/upcoming?page={page}") ?? throw new Exception("No movie data returned");
+            var response = await _httpClient.GetFromJsonAsync<PageResponse<Upcoming>>($"movie/upcoming?page={page}")
+                                                                                                        ?? throw new Exception("No movie data returned");
             return response;
         }
         #endregion
@@ -80,8 +83,31 @@ namespace BlazorMovie.Services
             string encodedTitle = HttpUtility.UrlEncode(title);
             var adult = false;
             var language = "en-US";
-            return  _httpClient.GetFromJsonAsync<PageResponse<Movie>?>($"search/movie?query={encodedTitle}&include_adult={adult}&language={language}&page={page}");
+            var response = _httpClient.GetFromJsonAsync<PageResponse<Movie>?>($"search/movie?query={encodedTitle}&include_adult={adult}&language={language}&page={page}")
+                                                                       ?? throw new Exception("No search data returned");
+            return response;
         }
+        #endregion
+
+        #region WATCH PROVIDERS(ATTRIBUTION TO WATCH PROVIDERS REQUIRED)
+        public  async Task<ProviderDetail<ProviderOption, ProviderOption, ProviderOption>?> GetProvidersByMovieIdAsync(int id)
+        {
+               var response =  await _httpClient.GetFromJsonAsync<ProviderDetail<ProviderOption, ProviderOption, ProviderOption>>($"/movie/{id}/watch/providers") 
+                                                                    ?? throw new Exception("No provider data returned");   
+            return response;
+        }
+
+         
+        #endregion
+
+        #region ACTOR(PERSON) DETAILS
+        //return  _httpClient.GetFromJsonAsync<PersonDetails<Person>?>($"person/{person.id}?language=en-US");
+
+        #endregion
+
+        #region GET CAST/CREW CREDITS
+        //return  _httpClient.GetFromJsonAsync<Cast<Credit>?>($"movie/{movie.id}/credits?language=en-US");
+
         #endregion
 
         #region Movie Count
