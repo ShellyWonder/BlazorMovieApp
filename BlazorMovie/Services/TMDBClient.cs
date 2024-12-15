@@ -1,4 +1,5 @@
 ﻿using BlazorMovie.Models;
+using BlazorMovie.Models.Credits;
 using BlazorMovie.Models.Providers;
 using System.Net.Http.Json;
 using System.Web;
@@ -106,7 +107,12 @@ namespace BlazorMovie.Services
         #endregion
 
         #region GET CAST/CREW CREDITS
-        //return  _httpClient.GetFromJsonAsync<Cast<Credit>?>($"movie/{movie.id}/credits?language=en-US");
+        public async Task<Credit?>GetCreditsByMovieIdAsync(int id)
+        {
+           var response = await _httpClient.GetFromJsonAsync<Credit?>($"movie/{id}/credits?language=en-US") 
+                                                      ?? throw new Exception("No cast data returned");
+            return response;
+        }
 
         #endregion
 

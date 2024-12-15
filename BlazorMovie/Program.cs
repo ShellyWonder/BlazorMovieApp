@@ -20,6 +20,8 @@ builder.Services.AddTransient<NowPlayingMovieService>();
 builder.Services.AddTransient<TopRatedService>();
 builder.Services.AddTransient<UpcomingComingSoonService>();
 builder.Services.AddScoped<ISearchMovieService, SearchMovieService>();
+builder.Services.AddTransient<ICreditService, CreditService>();
+
 
 
 builder.Services.AddScoped<MovieCacheService>();
