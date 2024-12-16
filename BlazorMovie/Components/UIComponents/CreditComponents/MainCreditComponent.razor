@@ -1,0 +1,58 @@
+﻿@* MainCreditComponent *@
+@using BlazorMovie.Models.Credits
+@using System.Linq
+@using BlazorMovie.Services.Interfaces
+
+@inject ICreditService _creditService
+
+<h3>Movie Credits</h3>
+
+@if (CreditsLoaded == false)
+{
+    <p>Loading . . .</p>
+}
+else if (Cast is not null && Crew is not null)
+{
+    <div class="col-12">
+        <h4>Cast</h4>
+        <PersonCarouselComponent People="Cast.Cast<Person>().ToList()" />
+    </div>
+    <div class="col-12 mt-4">
+        <h4>Crew</h4>
+        <PersonCarouselComponent People="Crew.Cast<Person>().ToList()" />
+    </div>
+}
+else
+{
+    <p>No credits available.</p>
+}
+
+@code {
+    [Parameter]
+    public int MovieId { get; set; }
+
+    private List<Cast>? Cast { get; set; }
+    private List<Crew>? Crew { get; set; }
+    private bool CreditsLoaded { get; set; } = false;
+
+    protected override async Task OnInitializedAsync()
+    {
+        try
+        {
+            var credits = await _creditService.GetCreditsAsync(MovieId);
+
+            Cast = credits.Cast;
+            Crew = credits.Crew;
+        }
+        catch (Exception ex)
+        {
+            Console.Error.WriteLine($"Error loading credits: {ex.Message}");
+        }
+        finally
+        {
+            CreditsLoaded = true;
+        }
+    }
+}
+
+
