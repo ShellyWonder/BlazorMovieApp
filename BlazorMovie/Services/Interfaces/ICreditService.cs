@@ -4,6 +4,6 @@ namespace BlazorMovie.Services.Interfaces
 {
     public interface ICreditService
     {
-        Task<Credit> GetCreditsAsync(int movieId);
+        Task<(List<Cast> Cast, List<Crew> Crew)> GetCreditsAsync(int movieId);
     }
 }
