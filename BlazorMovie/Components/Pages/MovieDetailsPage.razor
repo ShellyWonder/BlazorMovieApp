@@ -4,6 +4,7 @@
 @using BlazorMovie.Components.UIComponents.PropertyComponents
 @using BlazorMovie.Services
 @using BlazorMovie.Components.UIComponents
+@using BlazorMovie.Components.UIComponents.CreditComponents
 @inject TMDBClient TMDB
 
 @*movie details*@
@@ -38,10 +39,10 @@ else
             <div class="row mb-2">
                 <!-- Status and Revenue -->
                 <div class="col-6 text-start">
-                   <StatusPropComponent MovieDetails="movieDetails" />
+                    <StatusPropComponent MovieDetails="movieDetails" />
                 </div>
                 <div class="col-6 text-end">
-                 <RevenuePropComponent MovieDetails ="movieDetails" />   
+                    <RevenuePropComponent MovieDetails ="movieDetails" />   
                 </div>
             </div>
 
@@ -55,23 +56,30 @@ else
                 </div>
             </div>
 
-                <!-- Genres -->
+            <!-- Genres -->
             <div class="row mb-2">
                 <div class="col-12 text-center">
-                 <strong class="me-2">Genres:</strong>
+                    <strong class="me-2">Genres:</strong>
                     <GenreListComponent Genres="movieDetails?.Genres?.ToList()" MaxGenresPerRow="3" />
                 </div>
             </div>
 
         </div>
     </div>
+    <hr/>
+
+    <div class="row">
+        <MainCreditComponent  MovieId="Id"/>
+    </div>
+
+
 }
 
 @code {
 
     [Parameter]
     public int Id { get; set; }
-
+    
     private MovieDetails? movieDetails;
 
     protected override async Task OnInitializedAsync()
