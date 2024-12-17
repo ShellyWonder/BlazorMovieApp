@@ -32,7 +32,7 @@ namespace BlazorMovie.Services
         #endregion
 
         #region MAP CAST
-        private List<Cast> MapCast(Cast[] castArray)
+        private static List<Cast> MapCast(Cast[] castArray)
         {
             return castArray.Select(c => new Cast
             {
@@ -51,7 +51,7 @@ namespace BlazorMovie.Services
         #endregion
 
         #region MAP CREW
-        private List<Crew> MapCrew(Crew[] crewArray)
+        private static List<Crew> MapCrew(Crew[] crewArray)
         {
             return crewArray.Select(c => new Crew
             {

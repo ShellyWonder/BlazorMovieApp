@@ -1,6 +1,7 @@
 ﻿using BlazorMovie.Models;
 using BlazorMovie.Models.Credits;
 using BlazorMovie.Models.Providers;
+using System;
 using System.Net.Http.Json;
 using System.Web;
 
@@ -102,7 +103,13 @@ namespace BlazorMovie.Services
         #endregion
 
         #region ACTOR(PERSON) DETAILS
-        //return  _httpClient.GetFromJsonAsync<PersonDetails<Person>?>($"person/{person.id}?language=en-US");
+        public async Task<PersonDetails>GetPersonDetailsById(int id)
+        {
+            var response =  await _httpClient.GetFromJsonAsync<PersonDetails?>($"person/{id}?language=en-US")
+                                                   ?? throw new Exception("No data returned"); ;
+            return response;
+        }
+         
 
         #endregion
 
@@ -113,7 +120,6 @@ namespace BlazorMovie.Services
                                                       ?? throw new Exception("No cast data returned");
             return response;
         }
-
         #endregion
 
         #region Movie Count
