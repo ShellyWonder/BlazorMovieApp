@@ -1,0 +1,12 @@
+﻿@* ProfileImageComponent *@
+<img class="card-img-top" alt="Profile Image" src="@ImageSource" />
+
+@code {
+    [Parameter]
+    public string? ProfilePath { get; set; }
+
+    private string ImageSource => string.IsNullOrEmpty(ProfilePath)
+        ? "/img/ProfilePlaceholder.png"
+        : $"https://image.tmdb.org/t/p/w500/{ProfilePath}";
+
+}
