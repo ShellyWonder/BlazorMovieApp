@@ -3,39 +3,39 @@
 
 @if (People is not null && People.Any())
 {
-    <div id="personCarousel" class="carousel slide" data-bs-ride="carousel">
+    <div id="@carouselId" class="carousel slide" data-bs-ride="carousel">
         <div class="carousel-indicators">
-            @for (int i = 0; i < Math.Ceiling(People.Count / 3.0); i++)
+            @for (int i = 0; i < Math.Ceiling(People.Count() / 3.0); i++)
             {
-                <button type="button" 
-                data-bs-target="#personCarousel" 
-                data-bs-slide-to="@i" 
-                class="@(i == 0 ? "active" : "")" 
-                aria-current="@(i == 0 ? "true" : "false")" 
+                <button type="button"
+                data-bs-target="@carouselId"
+                data-bs-slide-to="@i"
+                class="@(i == 0 ? "active" : "")"
+                aria-current="@(i == 0 ? "true" : "false")"
                 aria-label="Slide @(i + 1)">
                 </button>
             }
         </div>
         <div class="carousel-inner">
-            @foreach (var (group, index) in People.Chunk(3).Select((chunk, i) => (chunk, i)))
+            @foreach (var (group, index) in ChunkPeople(People, 3))
             {
                 <div class="carousel-item @(index == 0 ? "active" : "")">
                     <div class="row g-3">
                         @foreach (var person in group)
                         {
                             <div class="col-lg-4 col-md-6">
-                                <PersonCardComponent Person="person" SubText="@($"Role: {person.KnownForDepartment}")" />
+                                <PersonCardComponent Person="person" SubText="@GetSubText(person)" />
                             </div>
                         }
                     </div>
                 </div>
             }
         </div>
-        <button class="carousel-control-prev" type="button" data-bs-target="#personCarousel" data-bs-slide="prev">
+        <button class="carousel-control-prev" type="button" data-bs-target="@carouselId" data-bs-slide="prev">
             <span class="carousel-control-prev-icon" aria-hidden="true"></span>
             <span class="visually-hidden">Previous</span>
         </button>
-        <button class="carousel-control-next" type="button" data-bs-target="#personCarousel" data-bs-slide="next">
+        <button class="carousel-control-next" type="button" data-bs-target="@carouselId" data-bs-slide="next">
             <span class="carousel-control-next-icon" aria-hidden="true"></span>
             <span class="visually-hidden">Next</span>
         </button>
@@ -48,9 +48,30 @@ else
 
 @code {
     [Parameter]
-    public List<Person>? People { get; set; } = new();
+    public IEnumerable<Person>? People { get; set; } = Enumerable.Empty<Person>();
 
     [Parameter]
     public Person? Person { get; set; }
+
+    private IEnumerable<(IEnumerable<Person> Group, int Index)> ChunkPeople(IEnumerable<Person> people, int size)
+    {
+        return people
+            .Select((person, i) => new { person, GroupIndex = i / size })
+            .GroupBy(x => x.GroupIndex)
+            .Select((group, i) => (group.Select(x => x.person), i));
+    }
+
+
+    private string GetSubText(Person person)
+    {
+        return person switch
+        {
+            Cast cast => $"Role: {cast.Character}",
+            Crew crew => $"Role: {crew.Job}",
+            _ => $"Department: {person.KnownForDepartment}"
+        };
+    }
+
+    private string carouselId = $"carousel-{Guid.NewGuid()}";
 }
 
