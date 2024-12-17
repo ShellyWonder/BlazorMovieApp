@@ -1,4 +1,5 @@
-﻿using BlazorMovie.Models.Credits;
+﻿using BlazorMovie.Mappers;
+using BlazorMovie.Models.Credits;
 using BlazorMovie.Services.Interfaces;
 
 namespace BlazorMovie.Services
@@ -6,11 +7,12 @@ namespace BlazorMovie.Services
     public class CreditService : ICreditService
     {
         private readonly TMDBClient _tmdbClient;
-
+        
         #region CONSTRUCTOR
         public CreditService(TMDBClient tmdbClient)
         {
             _tmdbClient = tmdbClient;
+            
         }
         #endregion
 
@@ -24,48 +26,13 @@ namespace BlazorMovie.Services
                 throw new Exception("No credit data returned");
             }
 
-            var cast = MapCast(response.Cast);
-            var crew = MapCrew(response.Crew);
+            var cast = CreditsMapper.MapCast(response.Cast);
+            var crew = CreditsMapper.MapCrew(response.Crew);
 
             return (Cast: cast, Crew: crew);
         }
         #endregion
 
-        #region MAP CAST
-        private static List<Cast> MapCast(Cast[] castArray)
-        {
-            return castArray.Select(c => new Cast
-            {
-                Id = c.Id,
-                Name = c.Name,
-                ProfilePath = c.ProfilePath,
-                KnownForDepartment = c.KnownForDepartment,
-                CreditId = c.CreditId,
-                Gender = c.Gender,
-                Popularity = c.Popularity,
-                CastId = c.CastId,
-                Character = c.Character,
-                Order = c.Order
-            }).ToList();
-        }
-        #endregion
-
-        #region MAP CREW
-        private static List<Crew> MapCrew(Crew[] crewArray)
-        {
-            return crewArray.Select(c => new Crew
-            {
-                Id = c.Id,
-                Name = c.Name,
-                ProfilePath = c.ProfilePath,
-                KnownForDepartment = c.KnownForDepartment,
-                CreditId = c.CreditId,
-                Gender = c.Gender,
-                Popularity = c.Popularity,
-                Department = c.Department,
-                Job = c.Job
-            }).ToList();
-        }
-        #endregion
+        
     }
 }

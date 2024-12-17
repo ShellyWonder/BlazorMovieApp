@@ -5,7 +5,7 @@
 
 @if (Person != null)
 {
-    <div class="card h-100 fade-in shadow p-3 mb-5 bg-body-tertiary rounded">
+    <div class="card h-100 fade-in shadow p-3 mb-5 bg-body-tertiary rounded position-relative card-hover">
 
              <ProfileImageComponent ProfilePath="@Person.ProfilePath" />
 
@@ -13,6 +13,24 @@
             <h5 class="card-title">@Person.Name</h5>
             <p class="card-text">@SubText</p>
             <div class="flex-grow-1"></div>
+        </div>
+        @* Hover Overlay *@
+        <div class="card-overlay">
+            <div class="overlay-content p-3">
+                    @*Check if Person is of type PersonDetails*@
+                    @if (Person is PersonDetails details)
+                    {
+                        <p><strong>AKA:</strong> @(details.AKA?.Any() == true ? string.Join(", ", details.AKA) : "N/A")</p>
+                        <p><strong>Birthdate:</strong> @(details.Birthdate?.ToString("yyyy-MM-dd") ?? "N/A")</p>
+                        @if (details.Deathdate != null)
+                        {
+                            <p><strong>Deathdate:</strong> @details.Deathdate.Value.ToString("yyyy-MM-dd")</p>
+                        }
+                        <p><strong>Birthplace:</strong> @(string.IsNullOrEmpty(details.Birthplace) ? "N/A" : details.Birthplace)</p>
+                        <p class="text-truncate"><strong>Biography:</strong> @(details.Biography.Length > 100 ? details.Biography.Substring(0, 100) + "..." : details.Biography)</p>
+                        <a href="#" class="stretched-link text-decoration-none fw-bold">View Details</a>
+                    }
+            </div>
         </div>
     </div>
 }
@@ -36,7 +54,16 @@ else
 @code {
     [Parameter]
     public Person? Person { get; set; }
+   
 
     [Parameter]
     public string SubText { get; set; } = string.Empty;
+
+    private PersonDetails? PersonDetails => Person as PersonDetails;
+
+
+    private string Truncate(string text, int maxLength)
+    {
+        return text.Length > maxLength ? text.Substring(0, maxLength) + "..." : text;
+    }
 }
