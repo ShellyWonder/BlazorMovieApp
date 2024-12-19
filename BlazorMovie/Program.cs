@@ -22,7 +22,7 @@ builder.Services.AddTransient<ICreditService, CreditService>();
 builder.Services.AddTransient<IProviderService, ProviderService>();
 builder.Services.AddTransient<IPersonService, PersonService>();
 
-builder.Services.AddScoped<MovieCacheService>();
+builder.Services.AddScoped<CacheService>();
 builder.Services.AddScoped<IMovieServiceFactory, MovieServiceFactory>();
 
 await builder.Build().RunAsync();
