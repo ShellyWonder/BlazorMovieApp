@@ -1,13 +1,18 @@
 ﻿@*PersonCardComponent*@
 @using BlazorMovie.Models.Credits
 @using BlazorMovie.Components.UIComponents.PropertyComponents
+@using BlazorMovie.Services.Interfaces
+@using BlazorMovie.Services
+
+@inject IPersonService _personService
+@inject CacheService _cacheService
 
 
 @if (Person != null)
 {
     <div class="card h-100 fade-in shadow p-3 mb-5 bg-body-tertiary rounded position-relative card-hover">
 
-             <ProfileImageComponent ProfilePath="@Person.ProfilePath" />
+        <ProfileImageComponent ProfilePath="@Person.ProfilePath" />
 
         <div class="card-body border-top bg-light d-flex flex-column">
             <h5 class="card-title">@Person.Name</h5>
@@ -17,19 +22,19 @@
         @* Hover Overlay *@
         <div class="card-overlay">
             <div class="overlay-content p-3">
-                    @*Check if Person is of type PersonDetails*@
-                    @if (Person is PersonDetails details)
+                @*Check if Person is of type PersonDetails*@
+                @if (Person is PersonDetails details)
+                {
+                    <p><strong>AKA:</strong> @(details.AKA?.Any() == true ? string.Join(", ", details.AKA) : "N/A")</p>
+                    <p><strong>Birthdate:</strong> @(details.Birthdate?.ToString("yyyy-MM-dd") ?? "N/A")</p>
+                    @if (details.Deathdate != null)
                     {
-                        <p><strong>AKA:</strong> @(details.AKA?.Any() == true ? string.Join(", ", details.AKA) : "N/A")</p>
-                        <p><strong>Birthdate:</strong> @(details.Birthdate?.ToString("yyyy-MM-dd") ?? "N/A")</p>
-                        @if (details.Deathdate != null)
-                        {
-                            <p><strong>Deathdate:</strong> @details.Deathdate.Value.ToString("yyyy-MM-dd")</p>
-                        }
-                        <p><strong>Birthplace:</strong> @(string.IsNullOrEmpty(details.Birthplace) ? "N/A" : details.Birthplace)</p>
-                        <p class="text-truncate"><strong>Biography:</strong> @(details.Biography.Length > 100 ? details.Biography.Substring(0, 100) + "..." : details.Biography)</p>
-                        <a href="#" class="stretched-link text-decoration-none fw-bold">View Details</a>
+                        <p><strong>Deathdate:</strong> @details.Deathdate.Value.ToString("yyyy-MM-dd")</p>
                     }
+                    <p><strong>Birthplace:</strong> @(string.IsNullOrEmpty(details.Birthplace) ? "N/A" : details.Birthplace)</p>
+                    <p class="text-truncate"><strong>Biography:</strong> @(details.Biography.Length > 100 ? details.Biography.Substring(0, 100) + "..." : details.Biography)</p>
+                    <a href="#" class="stretched-link text-decoration-none fw-bold">View Details</a>
+                }
             </div>
         </div>
     </div>
@@ -54,13 +59,29 @@ else
 @code {
     [Parameter]
     public Person? Person { get; set; }
-   
+
 
     [Parameter]
     public string SubText { get; set; } = string.Empty;
 
-    private PersonDetails? PersonDetails => Person as PersonDetails;
+    private PersonDetails? PersonDetails;
+    private int PersonId { get; set; }
 
+    protected override async Task OnInitializedAsync()
+    {
+        string cacheKey = $"PersonDetails_{PersonId}";
+
+        // Explicitly specify the type as PersonDetails
+        PersonDetails = await _cacheService.GetOrFetchAsync<PersonDetails>(
+            async () => await _personService.GetPersonDetails(PersonId),
+            cacheKey,
+            null);//null reference to page parameter not used for PersonDetails
+
+        if (PersonDetails == null)
+        {
+            Console.WriteLine("Failed to load person details.");
+        }
+    }
 
     private string Truncate(string text, int maxLength)
     {
