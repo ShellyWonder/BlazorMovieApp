@@ -65,24 +65,29 @@ else
     public string SubText { get; set; } = string.Empty;
 
     private PersonDetails? PersonDetails;
-    private int PersonId { get; set; }
 
     protected override async Task OnInitializedAsync()
     {
-        string cacheKey = $"PersonDetails_{PersonId}";
+        if (Person is null)
+        {
+            Console.WriteLine("Person parameter is null; cannot load details.");
+            return;
+        }
+        string cacheKey = $"PersonDetails_{Person.Id}";
 
         // Explicitly specify the type as PersonDetails
         PersonDetails = await _cacheService.GetOrFetchAsync<PersonDetails>(
-            async () => await _personService.GetPersonDetails(PersonId),
+            async () => await _personService.GetPersonDetails(Person.Id),
             cacheKey,
             null);//null reference to page parameter not used for PersonDetails
 
+            
         if (PersonDetails == null)
         {
             Console.WriteLine("Failed to load person details.");
         }
     }
-
+    //used to sample biography
     private string Truncate(string text, int maxLength)
     {
         return text.Length > maxLength ? text.Substring(0, maxLength) + "..." : text;

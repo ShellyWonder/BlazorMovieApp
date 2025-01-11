@@ -103,9 +103,9 @@ namespace BlazorMovie.Services
         #endregion
 
         #region ACTOR(PERSON) DETAILS
-        public async Task<PersonDetails>GetPersonDetailsById(int id)
+        public async Task<PersonDetails>GetPersonDetailsById(int personId)
         {
-            var response =  await _httpClient.GetFromJsonAsync<PersonDetails?>($"person/{id}?language=en-US")
+            var response =  await _httpClient.GetFromJsonAsync<PersonDetails?>($"person/{personId}?language=en-US")
                                                    ?? throw new Exception("No data returned"); ;
             return response;
         }

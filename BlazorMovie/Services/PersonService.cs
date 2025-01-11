@@ -15,9 +15,9 @@ namespace BlazorMovie.Services
         #endregion
 
         #region GET PERSON DETAILS
-        public async Task<PersonDetails>GetPersonDetails(int id)
+        public async Task<PersonDetails>GetPersonDetails(int personId)
         {
-            var Details = await _tmdbClient.GetPersonDetailsById(id) 
+            var Details = await _tmdbClient.GetPersonDetailsById(personId) 
                                       ?? throw new Exception("No details returned");
             return Details;
         }
