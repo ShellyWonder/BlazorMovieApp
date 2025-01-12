@@ -1,0 +1,70 @@
+﻿@* PersonDetailsPage *@
+@page "/person/{PersonId:int}"
+@using BlazorMovie.Services.Interfaces
+@using BlazorMovie.Models.Credits
+
+
+@inject IPersonService _personService
+@inject CacheService _cacheService
+
+<h3>@PersonDetails?.Name</h3>
+@if (PersonDetails is not null)
+{
+    <p>
+        <strong>AKA:</strong>
+        @(PersonDetails.AKA?.Any() == true
+            ? string.Join(", ", PersonDetails.AKA)
+            : "N/A")
+    </p>
+    <p><strong>Birthdate:</strong> @(PersonDetails.Birthdate?.ToString("yyyy-MM-dd") ?? "N/A")</p>
+    @if (PersonDetails.Deathdate != null)
+    {
+        <p><strong>Deathdate:</strong> @PersonDetails.Deathdate?.ToString("yyyy-MM-dd")</p>
+    }
+    <p>
+        <strong>Birthplace:</strong> @(string.IsNullOrEmpty(PersonDetails.Birthplace)
+    ? "N/A"
+    : PersonDetails.Birthplace)
+    </p>
+    <p><strong>Biography:</strong> @PersonDetails.Biography</p>
+}
+else
+{
+    <p>Loading person details...</p>
+}
+
+@code {
+    [Parameter]
+    public int PersonId { get; set; }
+
+    public Person? Person { get; set; }
+
+    private PersonDetails? PersonDetails;
+
+    protected override async Task OnInitializedAsync()
+    {
+        if (Person is null)
+        {
+            Console.WriteLine("Person parameter is null; cannot load details.");
+            return;
+        }
+        string cacheKey = $"PersonDetails_{Person.Id}";
+
+        // Explicitly specify the type as PersonDetails
+        PersonDetails = await _cacheService.GetOrFetchAsync<PersonDetails>(
+            async () => await _personService.GetPersonDetails(Person.Id),
+            cacheKey,
+            null);//null reference to page parameter not used for PersonDetails
+
+
+        if (PersonDetails == null)
+        {
+            Console.WriteLine("Failed to load person details.");
+        }
+    }
+    //used to sample biography
+    // private string Truncate(string text, int maxLength)
+    // {
+    //     return text.Length > maxLength ? text.Substring(0, maxLength) + "..." : text;
+    // }
+}
