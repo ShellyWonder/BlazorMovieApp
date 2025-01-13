@@ -14,17 +14,17 @@
             <h5 class="card-title">@Person.Name</h5>
             <p class="card-text">@SubText</p>
             <div class="flex-grow-1"></div>
-        </div>
-        @* Hover Overlay *@
-        <div class="card-overlay">
-            <div class="overlay-content p-3">
-                @* "More Details" button triggers navigation *@
                 <button class="btn btn-link stretched-link text-decoration-none fw-bold"
                         @onclick="() => NavigateToDetails(Person.Id)">
                     More Details
                 </button>
-            </div>
         </div>
+        @* Hover Overlay *@
+        @* <div class="card-overlay">
+            <div class="overlay-content p-3">
+               "More Details" button triggers navigation 
+            </div>
+        </div> *@
     </div>
 }
 else
