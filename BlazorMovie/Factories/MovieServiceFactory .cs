@@ -24,12 +24,12 @@ namespace BlazorMovie.Factories
             _upcomingService = upcomingService;
             _searchMovieService = searchMovieService;
 
-            Console.WriteLine("MovieServiceFactory initialized with:");
-            Console.WriteLine($"PopularMovieService: {_popularMovieService.GetType().Name}");
-            Console.WriteLine($"NowPlayingMovieService: {_nowPlayingMovieService.GetType().Name}");
-            Console.WriteLine($"TopRatedService: {_topRatedService.GetType().Name}");
-            Console.WriteLine($"UpcomingComingSoonService: {_upcomingService.GetType().Name}");
-            Console.WriteLine($"SearchMovieService: {_searchMovieService.GetType().Name}");
+            //Console.WriteLine("MovieServiceFactory initialized with:");
+            //Console.WriteLine($"PopularMovieService: {_popularMovieService.GetType().Name}");
+            //Console.WriteLine($"NowPlayingMovieService: {_nowPlayingMovieService.GetType().Name}");
+            //Console.WriteLine($"TopRatedService: {_topRatedService.GetType().Name}");
+            //Console.WriteLine($"UpcomingComingSoonService: {_upcomingService.GetType().Name}");
+            //Console.WriteLine($"SearchMovieService: {_searchMovieService.GetType().Name}");
         }
 
         public IBaseMovieService GetService(string category)

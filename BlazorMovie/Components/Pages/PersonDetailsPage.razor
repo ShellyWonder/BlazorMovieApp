@@ -13,8 +13,8 @@
     <p>
         <strong>AKA:</strong>
         @(PersonDetails.AKA?.Any() == true
-            ? string.Join(", ", PersonDetails.AKA)
-            : "N/A")
+                ? string.Join(", ", PersonDetails.AKA)
+                : "N/A")
     </p>
     <p><strong>Birthdate:</strong> @(PersonDetails.Birthdate?.ToString("yyyy-MM-dd") ?? "N/A")</p>
     @if (PersonDetails.Deathdate != null)
@@ -51,11 +51,7 @@ else
         string cacheKey = $"PersonDetails_{Person.Id}";
 
         // Explicitly specify the type as PersonDetails
-        PersonDetails = await _cacheService.GetOrFetchAsync<PersonDetails>(
-            async () => await _personService.GetPersonDetails(Person.Id),
-            cacheKey,
-            null);//null reference to page parameter not used for PersonDetails
-
+        PersonDetails = await _personService.GetPersonDetails(Person.Id);
 
         if (PersonDetails == null)
         {

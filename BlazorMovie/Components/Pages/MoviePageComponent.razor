@@ -98,28 +98,27 @@ OnPageChanged="GetPage" />
     {
         if (movieService is ISearchMovieService searchMovieService)
         {
-            string baseCacheKey = "Movies_Page";
             // Include SearchQuery in the cache key to differentiate search results
             string cacheKey = $"{Category}Page_{SearchQuery}_{page}";
 
-            return await cacheService.GetOrFetchAsync<PageResponse<Movie>>(
-            async () => await searchMovieService.GetMoviesAsync(CurrentPage),
-            baseCacheKey,
-            new { page = CurrentPage });
-        }
-        else if (movieService is IMovieService generalMovieService)
-        {
-            // Define a cache key unique to this category and page
-            string cacheKey = $"{Category}Page";
-
-            // Fetch the movies, leveraging caching
-            return await cacheService.GetOrFetchAsync<PageResponse<Movie>>(
-                // Define the API call function
-                async () => await generalMovieService.GetMoviesAsync(page),
+            return await cacheService.GetOrFetchAsync(
+                (p) => searchMovieService.GetMoviesAsync(p, SearchQuery),
+                // $"{Category}Page",
                 cacheKey,
                 page
             );
         }
+        else if (movieService is IMovieService generalMovieService)
+        {
+            //First, check if response is already cashed
+            return await cacheService.GetOrFetchAsync(
+                //If not, make API call and cashe the response
+                (p) => generalMovieService.GetMoviesAsync(p),
+                $"{Category}Page",
+                page
+            );
+        }
+
 
         throw new InvalidOperationException("Unsupported movie service type.");
     }
