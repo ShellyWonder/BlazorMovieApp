@@ -53,8 +53,8 @@ else
     public string SubText { get; set; } = string.Empty;
 
 
-    private void NavigateToDetails(int personId)
+    private void NavigateToDetails(int id)
     {
-        _navManager.NavigateTo($"/person/{personId}");
+        _navManager.NavigateTo($"/person/{Person?.Id}");
     }
 }
