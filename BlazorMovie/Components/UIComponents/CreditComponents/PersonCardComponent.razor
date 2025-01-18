@@ -14,17 +14,13 @@
             <h5 class="card-title">@Person.Name</h5>
             <p class="card-text">@SubText</p>
             <div class="flex-grow-1"></div>
-                <button class="btn btn-link stretched-link text-decoration-none fw-bold"
+            Cast Id: @Person.Id
+            <button class="btn cardBtn"
                         @onclick="() => NavigateToDetails(Person.Id)">
                     More Details
                 </button>
         </div>
-        @* Hover Overlay *@
-        @* <div class="card-overlay">
-            <div class="overlay-content p-3">
-               "More Details" button triggers navigation 
-            </div>
-        </div> *@
+        
     </div>
 }
 else
@@ -53,8 +49,8 @@ else
     public string SubText { get; set; } = string.Empty;
 
 
-    private void NavigateToDetails(int id)
+    private void NavigateToDetails(int personId)
     {
-        _navManager.NavigateTo($"/person/{Person?.Id}");
+        _navManager.NavigateTo($"/person/{personId}");
     }
 }
