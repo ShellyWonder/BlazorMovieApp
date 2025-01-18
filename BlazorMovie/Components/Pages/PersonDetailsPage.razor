@@ -12,9 +12,7 @@
 {
     <p>
         <strong>AKA:</strong>
-        @(PersonDetails.AKA?.Any() == true
-                ? string.Join(", ", PersonDetails.AKA)
-                : "N/A")
+        @GetFilteredAKAs(PersonDetails.AKA)
     </p>
     <p><strong>Birthdate:</strong> @(PersonDetails.Birthdate?.ToString("yyyy-MM-dd") ?? "N/A")</p>
     @if (PersonDetails.Deathdate != null)
@@ -37,26 +35,38 @@ else
     [Parameter]
     public int PersonId { get; set; }
 
-    public Person? Person { get; set; }
-
     private PersonDetails? PersonDetails;
 
     protected override async Task OnInitializedAsync()
     {
-        if (Person is null)
+        try
         {
-            Console.WriteLine("Person parameter is null; cannot load details.");
-            return;
+            PersonDetails = await _personService.GetPersonDetails(PersonId);
+
+            if (PersonDetails == null)
+            {
+                Console.WriteLine("Failed to load person details.");
+            }
         }
-        string cacheKey = $"PersonDetails_{Person.Id}";
-
-        // Explicitly specify the type as PersonDetails
-        PersonDetails = await _personService.GetPersonDetails(Person.Id);
-
-        if (PersonDetails == null)
+        catch (Exception ex)
         {
-            Console.WriteLine("Failed to load person details.");
+            
+            Console.WriteLine($"Error loading person details: {ex.Message}");
         }
     }
-    
+
+   
+    private string GetFilteredAKAs(string[]? aliases)
+    {
+        if (aliases == null || aliases.Length == 0)
+        {
+            return "N/A";
+        }
+
+        // Basic regex to filter names containing only English letters and spaces
+        var englishAliases = aliases.Where(alias => System.Text.RegularExpressions.Regex.IsMatch(alias, @"^[a-zA-Z\s]+$"));
+
+        return englishAliases.Any() ? string.Join(", ", englishAliases) : "N/A";
+    }
+
 }
