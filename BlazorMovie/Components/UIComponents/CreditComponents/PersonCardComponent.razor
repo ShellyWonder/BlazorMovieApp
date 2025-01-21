@@ -1,4 +1,4 @@
-﻿@*PersonCardComponent*@
+﻿﻿@*PersonCardComponent*@
 @using BlazorMovie.Models.Credits
 @using BlazorMovie.Components.UIComponents.PropertyComponents
 
@@ -6,7 +6,7 @@
 
 @if (Person != null)
 {
-    <div class="card h-100 fade-in shadow p-3 mb-5 bg-body-tertiary rounded position-relative card-hover">
+    <div class="card h-100 fade-in shadow p-3 mb-5 bg-body-tertiary rounded position-relative ">
 
         <ProfileImageComponent ProfilePath="@Person.ProfilePath" />
 
@@ -16,11 +16,11 @@
             <div class="flex-grow-1"></div>
             Cast Id: @Person.Id
             <button class="btn cardBtn"
-                        @onclick="() => NavigateToDetails(Person.Id)">
-                    More Details
-                </button>
+                    @onclick="() => NavigateToDetails(Person.Id)">
+                More Details
+            </button>
         </div>
-        
+
     </div>
 }
 else
