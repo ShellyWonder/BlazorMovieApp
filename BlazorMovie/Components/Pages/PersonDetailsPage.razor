@@ -1,4 +1,4 @@
-﻿@* PersonDetailsPage *@
+﻿﻿@* PersonDetailsPage *@
 @page "/person/{PersonId:int}"
 @using BlazorMovie.Services.Interfaces
 @using BlazorMovie.Models.Credits
@@ -7,30 +7,44 @@
 @inject IPersonService _personService
 @inject CacheService _cacheService
 
-<h3>@PersonDetails?.Name</h3>
-@if (PersonDetails is not null)
-{
-    <p>
-        <strong>AKA:</strong>
-        @GetFilteredAKAs(PersonDetails.AKA)
-    </p>
-    <p><strong>Birthdate:</strong> @(PersonDetails.Birthdate?.ToString("yyyy-MM-dd") ?? "N/A")</p>
-    @if (PersonDetails.Deathdate != null)
-    {
-        <p><strong>Deathdate:</strong> @PersonDetails.Deathdate?.ToString("yyyy-MM-dd")</p>
-    }
-    <p>
-        <strong>Birthplace:</strong> @(string.IsNullOrEmpty(PersonDetails.Birthplace)
-    ? "N/A"
-    : PersonDetails.Birthplace)
-    </p>
-    <p><strong>Biography:</strong> @PersonDetails.Biography</p>
-}
-else
-{
-    <p>Loading person details...</p>
-}
+@* <div class="container py-0"> *@
 
+    @if (PersonDetails != null)
+    {
+    <div class="hero-bg" style="@($"--bg-img:url(https://image.tmdb.org/t/p/original/{PersonDetails.ProfilePath})")">
+            <div class="hero-container-xxl d-flex flex-column flex-md-row">
+                  <div class="col-md-8 pt-2 ps-2">
+                    <h1 class="display-6">
+                        <span class="text-danger">
+                        <i class="bi bi-camera-reels"></i>
+                        </span>
+                                @PersonDetails?.Name
+                    </h1>
+                    <p>
+                        <strong>AKA:</strong>
+                        @GetFilteredAKAs(PersonDetails?.AKA)
+                    </p>
+                <p><strong>Birthdate:</strong> @(PersonDetails?.Birthdate?.ToString("MM-dd-yyyy") ?? "N/A")</p>
+                    @if (PersonDetails?.Deathdate != null)
+                    {
+                    <p><strong>Deathdate:</strong> @PersonDetails.Deathdate?.ToString("MM-dd-yyyy")</p>
+                    }
+                    <p>
+                        <strong>Birthplace:</strong> @(string.IsNullOrEmpty(PersonDetails?.Birthplace)
+                    ? "N/A"
+                    : PersonDetails.Birthplace)
+                    </p>
+                    <p><strong>Biography:</strong> @PersonDetails?.Biography</p>
+                 </div>
+            
+            </div>
+        </div>
+    
+    }
+    else
+    {
+        <p>Loading person details...</p>
+    }
 @code {
     [Parameter]
     public int PersonId { get; set; }
@@ -50,12 +64,12 @@ else
         }
         catch (Exception ex)
         {
-            
+
             Console.WriteLine($"Error loading person details: {ex.Message}");
         }
     }
 
-   
+
     private string GetFilteredAKAs(string[]? aliases)
     {
         if (aliases == null || aliases.Length == 0)
