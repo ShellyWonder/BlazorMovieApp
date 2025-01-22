@@ -109,8 +109,7 @@ namespace BlazorMovie.Services
                                                    ?? throw new Exception("No data returned"); ;
             return response;
         }
-         
-
+     
         #endregion
 
         #region GET CAST/CREW CREDITS
@@ -121,6 +120,15 @@ namespace BlazorMovie.Services
             return response;
         }
         #endregion
+
+        #region GET MOVIE CREDITS BY PERSON ID
+        public async Task<Credit?> GetMovieCreditsByPersonIdAsync(int personId)
+        {
+            var response = await _httpClient.GetFromJsonAsync<Credit?>($"person/{personId}/movie_credits?language=en-US")
+                                                      ?? throw new Exception("No movie data returned");
+            return response;
+        }
+       #endregion
 
         #region Movie Count
         private static int MovieCount(int page)

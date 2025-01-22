@@ -33,6 +33,12 @@ namespace BlazorMovie.Services
         }
         #endregion
 
-        
+        #region GET CREDITS BY PERSON ID
+        public async Task<Credit?> GetMovieCreditsByPersonIdAsync(int personId) 
+        { 
+            return await _tmdbClient.GetMovieCreditsByPersonIdAsync(personId);
+            
+        }
+        #endregion
     }
 }
