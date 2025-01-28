@@ -5,61 +5,92 @@
 
 
 @inject IPersonService _personService
-@inject CacheService _cacheService
+@inject ICreditService _creditService
 
-@* <div class="container py-0"> *@
 
-    @if (PersonDetails != null)
-    {
+@if (PersonDetails != null)
+{
     <div class="hero-bg" style="@($"--bg-img:url(https://image.tmdb.org/t/p/original/{PersonDetails.ProfilePath})")">
-            <div class="hero-container-xxl d-flex flex-column flex-md-row">
-                  <div class="col-md-8 pt-2 ps-2">
-                    <h1 class="display-6">
-                        <span class="text-danger">
+        <div class="hero-container-xxl d-flex flex-column flex-md-row">
+            <div class="col-md-8 pt-2 ps-2">
+                <h1 class="display-6">
+                    <span class="text-danger">
                         <i class="bi bi-camera-reels"></i>
-                        </span>
-                                @PersonDetails?.Name
-                    </h1>
-                    <p>
-                        <strong>AKA:</strong>
-                        @GetFilteredAKAs(PersonDetails?.AKA)
-                    </p>
+                    </span>
+                    @PersonDetails?.Name
+                </h1>
+                <p>
+                    <strong>AKA:</strong>
+                    @GetFilteredAKAs(PersonDetails?.AKA)
+                </p>
                 <p><strong>Birthdate:</strong> @(PersonDetails?.Birthdate?.ToString("MM-dd-yyyy") ?? "N/A")</p>
-                    @if (PersonDetails?.Deathdate != null)
-                    {
+                @if (PersonDetails?.Deathdate != null)
+                {
                     <p><strong>Deathdate:</strong> @PersonDetails.Deathdate?.ToString("MM-dd-yyyy")</p>
-                    }
-                    <p>
-                        <strong>Birthplace:</strong> @(string.IsNullOrEmpty(PersonDetails?.Birthplace)
+                }
+                <p>
+                    <strong>Birthplace:</strong> @(string.IsNullOrEmpty(PersonDetails?.Birthplace)
                     ? "N/A"
                     : PersonDetails.Birthplace)
-                    </p>
-                    <p><strong>Biography:</strong> @PersonDetails?.Biography</p>
-                 </div>
-            
+                </p>
+                <p><strong>Biography:</strong> @PersonDetails?.Biography</p>
             </div>
+
         </div>
-    
-    }
-    else
-    {
-        <p>Loading person details...</p>
-    }
+    </div>
+
+}
+@if (MovieCredits?.Cast != null && MovieCredits.Cast.Any())
+{
+    <div class="movie-credits">
+        @foreach (var cast in MovieCredits.Cast)
+        {
+            <MovieCardDetails Movie="new Movie {
+                Id = cast.Id,
+                Title = cast.Character,
+                PosterPath = cast.ProfilePath
+                
+            }" />
+        }
+    </div>
+}
+else
+{
+    <p>Loading person details...</p>
+}
 @code {
     [Parameter]
     public int PersonId { get; set; }
 
-    private PersonDetails? PersonDetails;
+    private PersonDetails? PersonDetails{ get; set; }
+    private Credit? MovieCredits { get; set; }
+    
 
     protected override async Task OnInitializedAsync()
     {
         try
         {
-            PersonDetails = await _personService.GetPersonDetails(PersonId);
+            //capturing the Task objects<PersonDetails> and <Credit>
+            var personTask = _personService.GetPersonDetails(PersonId); 
+            var creditsTask = _creditService.GetMovieCreditsByPersonIdAsync(PersonId); 
+
+            //NOTE: Task.WhenAll ensures the tasks run concurrently.
+            // wait for both tasks to complete
+            await Task.WhenAll(personTask, creditsTask);
+
+            // retrieves the result of the already-completed tasks &  assigns them to the respective properties
+            // i.e. unwrap Task<personDetails> and Task<Credit> converting to PersonDetails and MovieCredits
+            PersonDetails = await personTask;
+            MovieCredits = await creditsTask; 
+
 
             if (PersonDetails == null)
             {
                 Console.WriteLine("Failed to load person details.");
+            }
+            if (MovieCredits == null)
+            {
+                Console.WriteLine("Failed to load movie credits.");
             }
         }
         catch (Exception ex)
