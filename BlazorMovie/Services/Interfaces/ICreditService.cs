@@ -1,10 +1,11 @@
-﻿using BlazorMovie.Models.Credits;
+﻿using BlazorMovie.Models;
+using BlazorMovie.Models.Credits;
 
 namespace BlazorMovie.Services.Interfaces
 {
     public interface ICreditService
     {
         Task<(List<Cast> Cast, List<Crew> Crew)> GetCreditsAsync(int movieId);
-        Task<Credit?> GetMovieCreditsByPersonIdAsync(int personId);
+        Task<PageResponse<MovieWithCharacter>> GetMoviesByPersonIdAsync(int personId, int page = 1);
     }
 }
