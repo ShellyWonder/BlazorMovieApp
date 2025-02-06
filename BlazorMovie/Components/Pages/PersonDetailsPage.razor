@@ -40,19 +40,11 @@
     </div>
 
 }
-@if (MovieCredits?.Cast != null && MovieCredits.Cast.Any())
+@if (MovieCredits?.Results != null && MovieCredits.Results.Any())
 {
-    <div class="movie-credits">
-        @foreach (var cast in MovieCredits.Cast)
-        {
-            <MovieCardDetails Movie="new Movie {
-                Id = cast.Id,
-                Title = cast.Character,
-                PosterPath = cast.ProfilePath
-                
-            }" />
-        }
-    </div>
+    <MovieListComponent TMovie="MovieWithCharacter" movies="@MovieCredits" OnPageChanged="@LoadPersonMoviesPage" />
+
+
 }
 else
 {
@@ -63,7 +55,7 @@ else
     public int PersonId { get; set; }
 
     private PersonDetails? PersonDetails{ get; set; }
-    private Credit? MovieCredits { get; set; }
+    private PageResponse<MovieWithCharacter>? MovieCredits;
     
 
     protected override async Task OnInitializedAsync()
@@ -72,7 +64,7 @@ else
         {
             //capturing the Task objects<PersonDetails> and <Credit>
             var personTask = _personService.GetPersonDetails(PersonId); 
-            var creditsTask = _creditService.GetMovieCreditsByPersonIdAsync(PersonId); 
+            var creditsTask = _creditService.GetMoviesByPersonIdAsync(PersonId);
 
             //NOTE: Task.WhenAll ensures the tasks run concurrently.
             // wait for both tasks to complete
@@ -81,17 +73,14 @@ else
             // retrieves the result of the already-completed tasks &  assigns them to the respective properties
             // i.e. unwrap Task<personDetails> and Task<Credit> converting to PersonDetails and MovieCredits
             PersonDetails = await personTask;
-            MovieCredits = await creditsTask; 
+            MovieCredits = await creditsTask;
 
 
-            if (PersonDetails == null)
-            {
-                Console.WriteLine("Failed to load person details.");
-            }
-            if (MovieCredits == null)
-            {
-                Console.WriteLine("Failed to load movie credits.");
-            }
+
+            if (PersonDetails == null) Console.WriteLine("Failed to load person details.");
+           
+            if (MovieCredits == null) Console.WriteLine("Failed to load movie credits.");
+            
         }
         catch (Exception ex)
         {
@@ -100,14 +89,16 @@ else
         }
     }
 
+    private async Task LoadPersonMoviesPage(int page)
+    {
+        MovieCredits = await _creditService.GetMoviesByPersonIdAsync(PersonId, page);
+    }
+
 
     private string GetFilteredAKAs(string[]? aliases)
     {
-        if (aliases == null || aliases.Length == 0)
-        {
-            return "N/A";
-        }
-
+        if (aliases == null || aliases.Length == 0) return "N/A";
+       
         // Basic regex to filter names containing only English letters and spaces
         var englishAliases = aliases.Where(alias => System.Text.RegularExpressions.Regex.IsMatch(alias, @"^[a-zA-Z\s]+$"));
 

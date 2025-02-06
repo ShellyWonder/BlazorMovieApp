@@ -1,6 +1,6 @@
 ﻿@typeparam TMovie where TMovie : Movie
 
-@if (Movie is not null)
+@if (Movie != null)
 {
     <div class="card h-100 fade-in shadow p-3 mb-5 bg-body-tertiary rounded">
         <img class="card-img-top" alt="Movie Poster"
@@ -9,11 +9,15 @@
          : $"https://image.tmdb.org/t/p/w500/{Movie.PosterPath}")" />
 
         <div class="card-body border-top bg-light d-flex flex-column">
+            @if (!string.IsNullOrEmpty(Character))
+            {
+                <p class="text-muted">Character: @Character</p>
+            }
             <h5 class="card-title">@Movie.Title?.ToUpper()</h5>
             <p class="card-text">
                 @(DateTime.TryParse(Movie.ReleaseDate, out var parsedDate)
                     ? parsedDate.ToString("MMMM dd, yyyy")
-                    : "Release date not available")
+                    : "Release date not available.")
             </p>
             <!-- Spacer div to fill available space -->
             <div class="flex-grow-1"></div>
@@ -50,5 +54,8 @@ else
 
     [Parameter]
     public TMovie? Movie { get; set; }
+
+    [Parameter]
+    public string Character { get; set; } = string.Empty;
 
 }

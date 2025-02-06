@@ -1,5 +1,6 @@
 ﻿@typeparam TMovie where TMovie : Movie
  @using BlazorMovie.Components.UIComponents
+ @using BlazorMovie.Models.Credits
 
 <PageTitle>Movie Pro Wonder - @Title</PageTitle>
 <div class="container-xxl py-3">
@@ -21,7 +22,7 @@
                     @foreach (var movie in movies.Results)
                     {
                         <div class="col">
-                            <MovieCardDetails Movie="@movie" />
+                        <MovieCardDetails TMovie="TMovie" Movie="@movie" Character="@GetCharacter(movie)" />
                         </div>
                     }
 
@@ -62,6 +63,7 @@
 
     [Parameter]
     public EventCallback<int> OnPageChanged { get; set; }
+
     
     private async Task HandlePageChange(int newPage)
     {
@@ -70,5 +72,14 @@
         await OnPageChanged.InvokeAsync(newPage);
             
         }
+    }
+
+    private string? GetCharacter(Movie movie)
+    {
+        if (movie is MovieWithCharacter mwc)
+        {
+            return mwc.Character;
+        }
+        return null;
     }
 }

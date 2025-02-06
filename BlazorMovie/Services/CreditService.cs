@@ -20,18 +20,15 @@ namespace BlazorMovie.Services
         #region GET CREDITS
         public async Task<(List<Cast> Cast, List<Crew> Crew)> GetCreditsAsync(int movieId)
         {
-            var response = await _tmdbClient.GetCreditsByMovieIdAsync(movieId);
-
-            if (response == null)
-            {
-                throw new Exception("No credit data returned");
-            }
-
+            var response = await _tmdbClient.GetCreditsByMovieIdAsync(movieId) ?? throw new Exception("No credit data returned");
             var cast = CreditsMapper.MapCast(response.Cast);
             var crew = CreditsMapper.MapCrew(response.Crew);
 
             return (Cast: cast, Crew: crew);
         }
+        #endregion
+
+        #region GET MOVIES BY PERSON ID
         public async Task<PageResponse<MovieWithCharacter>> GetMoviesByPersonIdAsync(int personId, int page = 1)
         {
             var creditResponse = await _tmdbClient.GetMovieCreditsByPersonIdAsync(personId);
