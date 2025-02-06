@@ -1,4 +1,4 @@
-# BlazorMovieApp
+# BlazorMovieApp -Movie Pro Wonder
 
 BlazorMovieApp is a .NET 8 Blazor WebAssembly (WASM) application that integrates with The Movie Database (TMDB) API to provide a user-friendly movie discovery experience. The app showcases popular, top-rated, now playing, and upcoming movies, along with detailed information about movies, cast, crew, and providers.
 
@@ -10,7 +10,7 @@ BlazorMovieApp is a .NET 8 Blazor WebAssembly (WASM) application that integrates
 - **Upcoming Movies**: Discover movies that are coming soon.
 - **Movie Search**: Search for movies by title.
 - **Movie Details**: Detailed view of individual movies, including cast, crew, and watch providers.
-- **Actor Details**: View detailed profiles of actors.
+- **Cast/Crew Details**: View detailed profiles of cast/crew.
 - **Caching**: Improves performance with session storage caching for frequently accessed data.
 
 ## Technologies Used
@@ -48,7 +48,7 @@ BlazorMovieApp is a .NET 8 Blazor WebAssembly (WASM) application that integrates
    - Handles movie search queries with validation for non-empty input.
 
 7. **CreditService**
-   - Provides cast and crew details for specific movies.
+   - Provides cast/crew details for specific movies.
 
 8. **ProviderService**
    - Retrieves available watch providers for specific movies.
@@ -57,8 +57,20 @@ BlazorMovieApp is a .NET 8 Blazor WebAssembly (WASM) application that integrates
    - Implements session storage for caching API responses to optimize performance.
 
 10. **PersonService**
-    - Fetches details of individual actors.
+    - Fetches details of individual cast/crew.
+      
+### Structural/Programatic Choices
 
+ **Service Level API Implementation**
+   -TMDBClient.cs builds the raw API calls
+   -Services allow for filters and other logic to be applied to the API calls as desired. 
+   -Uniformity is maintained for all calls regardless of complexity
+   -Structure facilitates expandability for future filters and database accomodation.
+   
+ **Session Storage**
+ -Eliminates frequent API calls to established categories(found on the nav bar) that may experience multiple clicks. 
+ -An expiration time was not set because the stored data is unlikely to change for the session's duration.
+ 
 ### Components
 
 1. **MoviePageComponent**
