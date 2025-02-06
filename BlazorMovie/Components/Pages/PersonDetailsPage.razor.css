@@ -4,14 +4,33 @@ h1 {
     text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.8);
 }
 .hero-bg {
-    background-color:lightgray;
+    background-color: lightgray;
     background-image: var(--bg-img);
     background-size: cover;
     color: white;
     background-position: center;
     background-repeat: no-repeat;
     min-height: 400px;
+    position: relative;
+    min-height: inherit;
 }
+
+    .hero-bg::before {
+        content: ""; /* Inserts an empty element before .hero-bg's actual content. */
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(0, 0, 0, 0.5); /* Dark overlay for enhanced readability */
+        z-index: 0;/*lays behind the content*/
+    }
+
+.hero-container-xxl {
+    position: relative;
+    z-index: 1;
+}
+
 
 .hero-container-xxl {
     min-height: 400px;

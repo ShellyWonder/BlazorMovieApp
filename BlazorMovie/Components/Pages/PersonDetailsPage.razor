@@ -33,18 +33,30 @@
                     ? "N/A"
                     : PersonDetails.Birthplace)
                 </p>
-                <p><strong>Biography:</strong> @PersonDetails?.Biography</p>
             </div>
-
         </div>
     </div>
-
+    @if (!string.IsNullOrEmpty(PersonDetails?.Biography))
+    {
+        <div class="container mt-4">
+            <h3>Biography</h3>
+            <p class="text-muted text-justify">
+                @(ShowFullBio
+                    ? PersonDetails.Biography
+                    : PersonDetails.Biography.Substring(0, Math.Min(300, PersonDetails.Biography.Length)) + "...")
+            </p>
+            @if (PersonDetails.Biography.Length > 300)
+            {
+                <button class="btn btn-link p-0" @onclick="ToggleBiography">
+                    @(ShowFullBio ? "Read Less" : "Read More")
+                </button>
+            }
+        </div>
+    }
 }
 @if (MovieCredits?.Results != null && MovieCredits.Results.Any())
 {
     <MovieListComponent TMovie="MovieWithCharacter" movies="@MovieCredits" OnPageChanged="@LoadPersonMoviesPage" />
-
-
 }
 else
 {
@@ -56,7 +68,8 @@ else
 
     private PersonDetails? PersonDetails{ get; set; }
     private PageResponse<MovieWithCharacter>? MovieCredits;
-    
+    private bool ShowFullBio = false;
+
 
     protected override async Task OnInitializedAsync()
     {
@@ -78,9 +91,9 @@ else
 
 
             if (PersonDetails == null) Console.WriteLine("Failed to load person details.");
-           
+
             if (MovieCredits == null) Console.WriteLine("Failed to load movie credits.");
-            
+
         }
         catch (Exception ex)
         {
@@ -98,11 +111,16 @@ else
     private string GetFilteredAKAs(string[]? aliases)
     {
         if (aliases == null || aliases.Length == 0) return "N/A";
-       
+
         // Basic regex to filter names containing only English letters and spaces
         var englishAliases = aliases.Where(alias => System.Text.RegularExpressions.Regex.IsMatch(alias, @"^[a-zA-Z\s]+$"));
 
         return englishAliases.Any() ? string.Join(", ", englishAliases) : "N/A";
     }
 
+    private void ToggleBiography()
+    {
+        ShowFullBio = !ShowFullBio;
+        InvokeAsync(StateHasChanged);//triggers UI re-render
+    }
 }
