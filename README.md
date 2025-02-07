@@ -8,7 +8,7 @@ BlazorMovieApp is a .NET 8 Blazor WebAssembly (WASM) application that integrates
 - **Now Playing**: Show currently playing movies.
 - **Top-Rated**: Browse top-rated movies.
 - **Upcoming Movies**: Discover movies that are coming soon.
-- **Movie Search**: Search for movies by title.
+- **Movie Search**: Search for movies by title, category, person, or genre.
 - **Movie Details**: Detailed view of individual movies, including cast, crew, and watch providers.
 - **Cast/Crew Details**: View detailed profiles of cast/crew.
 - **Caching**: Improves performance with session storage caching for frequently accessed data.
@@ -137,8 +137,9 @@ BlazorMovieApp is a .NET 8 Blazor WebAssembly (WASM) application that integrates
 ## License
 
 This project is licensed under the [MIT License](LICENSE).
-## Portfolio Status
+## Portfolio Status:
 In Development
+
 ---
 
 Enjoy using BlazorMovieApp for your movie discovery needs!
