@@ -1,9 +1,0 @@
-﻿.cardBtn {
-    background-color: var(--sjw-golden-color);
-    color: var(--sjw-secondary-color);
-    font-size: 1rem;
-    font-weight: 800;
-    border: 2px solid;
-    border-color: var(--sjw-footer-font-color);
-    border-radius: 2rem;
-}

@@ -68,7 +68,7 @@ h1 .focus {
         font-weight: 600; /* Bold active item for emphasis */
     }
 
-.btn-primary {
+/*.btn-primary {
     --bs-btn-bg: var(--sjw-secondary-color);
     --bs-btn-border-color: var(--sjw-primary-color);
     --bs-btn-hover-bg: var(--sjw-primary-color);
@@ -76,7 +76,33 @@ h1 .focus {
     --bs-btn-active-bg: var(--sjw-tertiary-color);
     --bs-btn-active-border-color: var(--sjw-primary-color);
     --bs-btn-font-family: var( --sjw-title-font);
+}*/
+.cardBtn {
+    background-color: var(--sjw-golden-color);
+    color: var(--sjw-secondary-color);
+    font-size: 1rem;
+    font-weight: 800;
+    border: 2px solid;
+    border-color: var(--sjw-footer-font-color);
+    border-radius: 2rem;
+    padding: 0.5rem 1.2rem;
+    transition: all 0.3s ease-in-out; /* Smooth transition */
 }
+
+    .cardBtn:hover {
+        background-color: var(--sjw-secondary-color);
+        color: var(--sjw-golden-color);
+        box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.2);
+        transform: scale(1.05); /* Slight enlarge effect */
+        border-color: var(--sjw-hover-border, #d4a017); /* Fallback color */
+    }
+
+    /* On Click: Slightly Darken & Scale Down for Press Effect */
+    .cardBtn:active {
+        background-color: var(--sjw-golden-color);
+        transform: scale(0.97); /* Press effect */
+        box-shadow: none; /* Remove hover shadow on click */
+    }
 
 /* property display badges */
 .badge {
