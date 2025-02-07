@@ -1,7 +1,6 @@
 ﻿using BlazorMovie.Models;
 using BlazorMovie.Models.Credits;
 using BlazorMovie.Models.Providers;
-using System;
 using System.Net.Http.Json;
 using System.Web;
 
@@ -94,8 +93,10 @@ namespace BlazorMovie.Services
         #region WATCH PROVIDERS(ATTRIBUTION TO WATCH PROVIDERS REQUIRED)
         public  async Task<ProviderDetail<ProviderOption, ProviderOption, ProviderOption>?> GetProvidersByMovieIdAsync(int id)
         {
-               var response =  await _httpClient.GetFromJsonAsync<ProviderDetail<ProviderOption, ProviderOption, ProviderOption>>($"/movie/{id}/watch/providers") 
-                                                                    ?? throw new Exception("No provider data returned");   
+               var response =  await _httpClient.GetFromJsonAsync<ProviderDetail<ProviderOption, 
+                                                                                                                                 ProviderOption, 
+                                                                                                                                 ProviderOption>>($"/movie/{id}/watch/providers") 
+                                                                                                                                 ?? throw new Exception("No provider data returned");   
             return response;
         }
 

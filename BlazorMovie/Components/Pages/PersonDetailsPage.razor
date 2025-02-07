@@ -37,24 +37,26 @@
 
     @if (!string.IsNullOrEmpty(PersonDetails?.Biography))
     {
-        <div class="container mt-4">
-            <p class="text-muted text-justify pt-5">
-                @(ShowFullBio
-                    ? PersonDetails.Biography
-                    : PersonDetails.Biography.Substring(0, Math.Min(300, PersonDetails.Biography.Length)) + "...")
-            </p>
-            @if (PersonDetails.Biography.Length > 300)
-            {
-                <button class="btn btn-link p-0" @onclick="ToggleBiography">
-                    @(ShowFullBio ? "Read Less" : "Read More")
-                </button>
-            }
+        <div class="bio-section">
+            <div class="container mt-4">
+                <p class="text-muted text-justify pt-5">
+                    @(ShowFullBio
+                        ? PersonDetails.Biography
+                        : PersonDetails.Biography.Substring(0, Math.Min(300, PersonDetails.Biography.Length)) + "...")
+                </p>
+                @if (PersonDetails.Biography.Length > 300)
+                {
+                    <button class="btn btn-link p-0" @onclick="ToggleBiography">
+                        @(ShowFullBio ? "Read Less" : "Read More")
+                    </button>
+                }
+            </div>
         </div>
     }
 }
 @if (MovieCredits?.Results != null && MovieCredits.Results.Any())
 {
-    <MovieListComponent TMovie="MovieWithCharacter" movies="@MovieCredits" OnPageChanged="@LoadPersonMoviesPage" />
+    <MovieListComponent TMovie="MovieWithCharacter" Title="@($"{PersonDetails?.Name}'s Movies")" movies="@MovieCredits" OnPageChanged="@LoadPersonMoviesPage" />
 }
 else
 {
