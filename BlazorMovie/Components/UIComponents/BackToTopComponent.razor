@@ -1,0 +1,47 @@
+﻿@* BackToTopComponent *@
+@inject IJSRuntime JS
+
+<button id="backToTop" class="back-to-top" @onclick="ScrollToTop">
+    <i class="bi bi-arrow-up"></i>
+</button>
+
+@code {
+    private async Task ScrollToTop()
+    {
+        await JS.InvokeVoidAsync("window.scrollTo", new object[] { 0, 0 });
+    }
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender)
+        {
+            try
+            {
+                await Task.Delay(500); // Ensure Blazor renders fully before JS call
+
+                // Load JS file dynamically
+                await JS.InvokeVoidAsync("eval", "var script = document.createElement('script'); script.src = 'js/BackToTopComponent.js'; script.async = true; document.head.appendChild(script);");
+
+                // Wait to ensure script is fully loaded
+                await Task.Delay(500);
+
+                // Ensure button exists before calling JS
+                var buttonExists = await JS.InvokeAsync<bool>("scrollHelper.checkButtonExists");
+                if (buttonExists)
+                {
+                    await JS.InvokeVoidAsync("scrollHelper.initBackToTop");
+                }
+                else
+                {
+                    Console.WriteLine("BackToTop button not found in DOM.");
+                }
+            }
+            catch (JSException ex)
+            {
+                Console.WriteLine($"JS Error: {ex.Message}");
+            }
+        }
+    }
+}
+
+
