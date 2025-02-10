@@ -18,3 +18,7 @@
     transition: all 0.3s ease-in-out;
     z-index: 1000;
 }
+    /* Ensure button appears when .show class is added */
+    .back-to-top.show {
+        display: flex !important; /* Ensure it's visible */
+    }
