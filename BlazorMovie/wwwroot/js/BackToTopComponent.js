@@ -21,7 +21,7 @@
         }
 
         window.addEventListener("scroll", function () {
-            if (document.documentElement.scrollTop > 500) { // Threshold set to 500px
+            if (document.documentElement.scrollTop > 300) { 
                 backToTopBtn.classList.add("show");
             } else {
                 backToTopBtn.classList.remove("show");
