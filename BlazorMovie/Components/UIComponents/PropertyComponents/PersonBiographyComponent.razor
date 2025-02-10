@@ -1,0 +1,37 @@
+﻿@*PersonBiographyComponent*@
+@using BlazorMovie.Models.Credits
+
+@if (!string.IsNullOrEmpty(PersonDetails?.Biography))
+{
+    <div class="bio-section">
+        <div class="container mt-4">
+            <p class="text-muted text-justify pt-5">
+                @(ShowFullBio
+                    ? PersonDetails.Biography
+                    : PersonDetails.Biography.Substring(0, Math.Min(300, PersonDetails.Biography.Length)) + "...")
+            </p>
+            @if (PersonDetails.Biography.Length > 300)
+            {
+                <button class="btn btn-link p-0" @onclick="ToggleBiography">
+                    @(ShowFullBio ? "Read Less" : "Read More")
+                </button>
+            }
+        </div>
+    </div>
+}
+
+
+@code {
+    [Parameter]
+    public string Biography { get; set; } = string.Empty;
+
+    private PersonDetails? PersonDetails { get; set; }
+    private bool ShowFullBio = false;
+
+    private void ToggleBiography()
+    {
+        ShowFullBio = !ShowFullBio;
+        InvokeAsync(StateHasChanged);//triggers UI re-render
+    }
+
+}
