@@ -4,8 +4,6 @@ h1 {
     text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.8);
 }
 
-
-
 .hero-bg {
     background-color: lightgray;
     background-image: var(--bg-img);
@@ -13,9 +11,8 @@ h1 {
     color: white;
     background-position: center;
     background-repeat: no-repeat;
-    min-height: 500px;
-    position: relative;
     min-height: inherit;
+    position: relative;
 }
 
 .hero-bg::before {
@@ -39,11 +36,6 @@ h1 {
     background: rgba(0, 0, 0, 0.5);
 }
 
-/* Ensure right alignment */
-.col-md-8 {
-    text-align: right;
-}
-
 /* Foreground Profile Image */
 .profile-img-container {
     position: absolute;
@@ -61,10 +53,19 @@ h1 {
     border-radius: 10px;
 }
 
-.bio-section {
-    background: white;
-    padding: 1.5rem;
-    margin-bottom: 2rem;
-    border-radius: 8px;
-    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
+@media (max-width: 768px) {
+    .profile-img-container {
+        left: 50%;
+        transform: translateX(-50%);
+        bottom: -40px;
+        width: 120px; /* Scale down for smaller screens */
+    }
+
+    .profile-img {
+        width: 100%;
+        height: auto;
+    }
 }
+
+
+

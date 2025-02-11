@@ -1,16 +1,17 @@
 ﻿@*PersonBiographyComponent*@
 @using BlazorMovie.Models.Credits
+@using BlazorMovie.Components.UIComponents.PropertyComponents   
 
-@if (!string.IsNullOrEmpty(PersonDetails?.Biography))
+@if (!string.IsNullOrEmpty(DisplayedBiography))
 {
     <div class="bio-section">
-        <div class="container mt-4">
-            <p class="text-muted text-justify pt-5">
-                @(ShowFullBio
-                    ? PersonDetails.Biography
-                    : PersonDetails.Biography.Substring(0, Math.Min(300, PersonDetails.Biography.Length)) + "...")
+        <div class="container mt-5">
+            <h2>Biography</h2>
+            <p class="text-muted text-justify pt-2">
+                @(ShowFullBio ? DisplayedBiography
+                    : DisplayedBiography.Substring(0, Math.Min(300, DisplayedBiography.Length)) + "...")
             </p>
-            @if (PersonDetails.Biography.Length > 300)
+            @if (DisplayedBiography.Length > 300)
             {
                 <button class="btn btn-link p-0" @onclick="ToggleBiography">
                     @(ShowFullBio ? "Read Less" : "Read More")
@@ -19,15 +20,30 @@
         </div>
     </div>
 }
+else{
+    <div class="bio-section">
+        <div class="container mt-5">
+            <h2>Biography</h2>
+            <p>Biography not available.</p>
+        </div>
+    </div>
+}
 
 
 @code {
     [Parameter]
-    public string Biography { get; set; } = string.Empty;
+    public string? Biography { get; set; }
 
-    private PersonDetails? PersonDetails { get; set; }
+    private PersonDetails? PersonDetails { get; set; } 
     private bool ShowFullBio = false;
+    private string? DisplayedBiography;
 
+    protected override void OnParametersSet()
+    {
+        DisplayedBiography = Biography;
+        Console.WriteLine($"Updated Biography: {DisplayedBiography}");
+        StateHasChanged();
+    }
     private void ToggleBiography()
     {
         ShowFullBio = !ShowFullBio;

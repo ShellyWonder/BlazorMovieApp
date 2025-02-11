@@ -1,8 +1,8 @@
 ﻿﻿@* PersonDetailsPage *@
 @page "/person/{PersonId:int}"
+@using BlazorMovie.Components.UIComponents.PropertyComponents
 @using BlazorMovie.Services.Interfaces
 @using BlazorMovie.Models.Credits
-
 
 @inject IPersonService _personService
 @inject ICreditService _creditService
@@ -35,28 +35,21 @@
         </div>
     </div>
 
-    @if (!string.IsNullOrEmpty(PersonDetails?.Biography))
+    @if (PersonDetails != null && !string.IsNullOrEmpty(PersonDetails?.Biography))
     {
-        <div class="bio-section">
-            <div class="container mt-4">
-                <p class="text-muted text-justify pt-5">
-                    @(ShowFullBio
-                        ? PersonDetails.Biography
-                        : PersonDetails.Biography.Substring(0, Math.Min(300, PersonDetails.Biography.Length)) + "...")
-                </p>
-                @if (PersonDetails.Biography.Length > 300)
-                {
-                    <button class="btn btn-link p-0" @onclick="ToggleBiography">
-                        @(ShowFullBio ? "Read Less" : "Read More")
-                    </button>
-                }
-            </div>
-        </div>
+        <PersonBiographyComponent Biography="@PersonDetails?.Biography" />
+    }
+    else
+    {
+        <p>Loading biography...</p>
     }
 }
 @if (MovieCredits?.Results != null && MovieCredits.Results.Any())
 {
-    <MovieListComponent TMovie="MovieWithCharacter" Title="@($"{PersonDetails?.Name}'s Movies")" movies="@MovieCredits" OnPageChanged="@LoadPersonMoviesPage" />
+    <MovieListComponent TMovie="MovieWithCharacter" 
+                        Title="@($"{PersonDetails?.Name} Movies")" 
+                        movies="@MovieCredits" 
+                        OnPageChanged="@LoadPersonMoviesPage" />
 }
 else
 {
@@ -65,12 +58,9 @@ else
 @code {
     [Parameter]
     public int PersonId { get; set; }
-
     private PersonDetails? PersonDetails{ get; set; }
     private PageResponse<MovieWithCharacter>? MovieCredits;
-    private bool ShowFullBio = false;
-
-
+    
     protected override async Task OnInitializedAsync()
     {
         try
@@ -86,9 +76,7 @@ else
             // retrieves the result of the already-completed tasks &  assigns them to the respective properties
             // i.e. unwrap Task<personDetails> and Task<Credit> converting to PersonDetails and MovieCredits
             PersonDetails = await personTask;
-            MovieCredits = await creditsTask;
-
-
+           MovieCredits = await creditsTask;
 
             if (PersonDetails == null) Console.WriteLine("Failed to load person details.");
 
@@ -104,7 +92,17 @@ else
 
     private async Task LoadPersonMoviesPage(int page)
     {
-        MovieCredits = await _creditService.GetMoviesByPersonIdAsync(PersonId, page);
+        try
+        {
+
+            MovieCredits = await _creditService.GetMoviesByPersonIdAsync(PersonId, page);
+
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Error fetching person details: {ex.Message}");
+            
+        }
     }
 
 
@@ -116,11 +114,5 @@ else
         var englishAliases = aliases.Where(alias => System.Text.RegularExpressions.Regex.IsMatch(alias, @"^[a-zA-Z\s]+$"));
 
         return englishAliases.Any() ? string.Join(", ", englishAliases) : "N/A";
-    }
-
-    private void ToggleBiography()
-    {
-        ShowFullBio = !ShowFullBio;
-        InvokeAsync(StateHasChanged);//triggers UI re-render
     }
 }
