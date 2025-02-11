@@ -8,29 +8,43 @@
 @inject ICreditService _creditService
 
 
-@if (PersonDetails != null)
+@if (isLoading)
 {
-    <div class="hero-bg" style="@($"--bg-img:url(https://image.tmdb.org/t/p/original/{PersonDetails.ProfilePath})")">
+    <p>Loading...</p>
+}
+else if (IsNoInformationAvailable())
+{
+    <div class="alert alert-warning text-center mt-4">
+        <h4>No information is available about @PersonDetails?.Name.</h4>
+    </div>
+}
+else
+{
+    <div class="hero-bg" style="@($"--bg-img:url(https://image.tmdb.org/t/p/original/{PersonDetails?.ProfilePath})")">
         <div class="hero-container-xxl d-flex flex-column flex-md-row align-items-center text-white position-relative">
 
             <!-- Foreground Profile Picture -->
             <div class="profile-img-container">
-                <img class="profile-img" src="@($"https://image.tmdb.org/t/p/w300/{PersonDetails.ProfilePath}")" alt="@PersonDetails.Name">
+                <img class="profile-img" src="@($"https://image.tmdb.org/t/p/w300/{PersonDetails?.ProfilePath}")" alt="@PersonDetails?.Name">
             </div>
 
             <div class="col-md-8 pt-3 ps-3 ms-auto text-end">
                 <h1 class="display-5 fw-bold">
                     <i class="bi bi-camera-reels text-danger"></i> @PersonDetails?.Name
                 </h1>
-                
+
+                @if (!string.IsNullOrWhiteSpace(GetFilteredAKAs(PersonDetails?.AKA)) && !GetFilteredAKAs(PersonDetails?.AKA).Equals("N/A"))
+                {
                     <p><strong>AKA:</strong> @GetFilteredAKAs(PersonDetails?.AKA)</p>
-                    <p><strong>Birthdate:</strong> @(PersonDetails?.Birthdate?.ToString("MMMM dd, yyyy") ?? "N/A")</p>
-                    @if (PersonDetails?.Deathdate != null)
-                    {
-                        <p><strong>Deathdate:</strong> @PersonDetails.Deathdate?.ToString("MMMM dd, yyyy")</p>
-                    }
-                    <p><strong>Birthplace:</strong> @(string.IsNullOrEmpty(PersonDetails?.Birthplace) ? "N/A" : PersonDetails.Birthplace)</p>
-               
+                    
+                }
+                <p><strong>Birthdate:</strong> @(PersonDetails?.Birthdate?.ToString("MMMM dd, yyyy") ?? "N/A")</p>
+                @if (PersonDetails?.Deathdate != null)
+                {
+                    <p><strong>Deathdate:</strong> @PersonDetails.Deathdate?.ToString("MMMM dd, yyyy")</p>
+                }
+                <p><strong>Birthplace:</strong> @(string.IsNullOrEmpty(PersonDetails?.Birthplace) ? "N/A" : PersonDetails.Birthplace)</p>
+
             </div>
         </div>
     </div>
@@ -47,22 +61,24 @@
 @if (MovieCredits?.Results != null && MovieCredits.Results.Any())
 {
     <MovieListComponent TMovie="MovieWithCharacter" 
-                        Title="@($"{PersonDetails?.Name} Movies")" 
-                        movies="@MovieCredits" 
-                        OnPageChanged="@LoadPersonMoviesPage" />
+    Title="@($"{PersonDetails?.Name} Movies")" 
+    movies="@MovieCredits" 
+    OnPageChanged="@LoadPersonMoviesPage" />
 }
 else
 {
-    <p>Loading person details...</p>
+    <p>Loading movies...</p>
 }
 @code {
     [Parameter]
     public int PersonId { get; set; }
     private PersonDetails? PersonDetails{ get; set; }
     private PageResponse<MovieWithCharacter>? MovieCredits;
-    
+    private bool isLoading = true;
+
     protected override async Task OnInitializedAsync()
     {
+        isLoading = true; // Set loading to true before fetching data
         try
         {
             //capturing the Task objects<PersonDetails> and <Credit>
@@ -76,7 +92,7 @@ else
             // retrieves the result of the already-completed tasks &  assigns them to the respective properties
             // i.e. unwrap Task<personDetails> and Task<Credit> converting to PersonDetails and MovieCredits
             PersonDetails = await personTask;
-           MovieCredits = await creditsTask;
+            MovieCredits = await creditsTask;
 
             if (PersonDetails == null) Console.WriteLine("Failed to load person details.");
 
@@ -88,6 +104,8 @@ else
 
             Console.WriteLine($"Error loading person details: {ex.Message}");
         }
+        isLoading = false; // Mark loading as false when API call completes
+        StateHasChanged(); // Ensure UI updates
     }
 
     private async Task LoadPersonMoviesPage(int page)
@@ -101,11 +119,22 @@ else
         catch (Exception ex)
         {
             Console.WriteLine($"Error fetching person details: {ex.Message}");
-            
+
         }
     }
 
+    private bool IsNoInformationAvailable()
+    {
+        if (PersonDetails == null)
+            return true; // If data is null even after loading, show the message
 
+        return string.IsNullOrWhiteSpace(PersonDetails?.Biography) || PersonDetails.Biography == "N/A"
+            && string.IsNullOrWhiteSpace(PersonDetails.Birthplace) || PersonDetails.Birthplace == "N/A"
+            && string.IsNullOrWhiteSpace(PersonDetails.Birthdate?.ToString("MMMM dd, yyyy") ?? "N/A")
+            && string.IsNullOrWhiteSpace(PersonDetails.Deathdate?.ToString("MMMM dd, yyyy") ?? "N/A")
+            && (PersonDetails.AKA == null || PersonDetails.AKA.Length == 0 
+                                          || PersonDetails.AKA.All(a => a.Equals("n/A", StringComparison.OrdinalIgnoreCase))); ;
+    }
     private string GetFilteredAKAs(string[]? aliases)
     {
         if (aliases == null || aliases.Length == 0) return "N/A";
