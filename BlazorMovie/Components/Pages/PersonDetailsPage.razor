@@ -33,11 +33,8 @@ else
                     <i class="bi bi-camera-reels text-danger"></i> @PersonDetails?.Name
                 </h1>
 
-                @if (!string.IsNullOrWhiteSpace(GetFilteredAKAs(PersonDetails?.AKA)) && !GetFilteredAKAs(PersonDetails?.AKA).Equals("N/A"))
-                {
-                    <p><strong>AKA:</strong> @GetFilteredAKAs(PersonDetails?.AKA)</p>
-                    
-                }
+                <PersonAKAComponent AKA="@PersonDetails?.AKA" />
+
                 <p><strong>Birthdate:</strong> @(PersonDetails?.Birthdate?.ToString("MMMM dd, yyyy") ?? "N/A")</p>
                 @if (PersonDetails?.Deathdate != null)
                 {
@@ -131,17 +128,7 @@ else
         return string.IsNullOrWhiteSpace(PersonDetails?.Biography) || PersonDetails.Biography == "N/A"
             && string.IsNullOrWhiteSpace(PersonDetails.Birthplace) || PersonDetails.Birthplace == "N/A"
             && string.IsNullOrWhiteSpace(PersonDetails.Birthdate?.ToString("MMMM dd, yyyy") ?? "N/A")
-            && string.IsNullOrWhiteSpace(PersonDetails.Deathdate?.ToString("MMMM dd, yyyy") ?? "N/A")
-            && (PersonDetails.AKA == null || PersonDetails.AKA.Length == 0 
-                                          || PersonDetails.AKA.All(a => a.Equals("n/A", StringComparison.OrdinalIgnoreCase))); ;
+            && string.IsNullOrWhiteSpace(PersonDetails.Deathdate?.ToString("MMMM dd, yyyy") ?? "N/A");
     }
-    private string GetFilteredAKAs(string[]? aliases)
-    {
-        if (aliases == null || aliases.Length == 0) return "N/A";
-
-        // Basic regex to filter names containing only English letters and spaces
-        var englishAliases = aliases.Where(alias => System.Text.RegularExpressions.Regex.IsMatch(alias, @"^[a-zA-Z\s]+$"));
-
-        return englishAliases.Any() ? string.Join(", ", englishAliases) : "N/A";
-    }
+    
 }

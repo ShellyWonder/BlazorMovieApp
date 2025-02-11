@@ -1,0 +1,31 @@
+﻿@using BlazorMovie.Models.Credits
+@* PersonAKAComponent *@
+
+@if (!string.IsNullOrWhiteSpace(DisplayedAKA) && !DisplayedAKA.Equals("N/A"))
+{
+    <p><strong>AKA:</strong> @DisplayedAKA</p>
+}
+
+@code {
+    [Parameter]
+    public string[]? AKA { get; set; }
+
+    private PersonDetails? PersonDetails { get; set; }
+    private string? DisplayedAKA;
+
+    protected override void OnParametersSet()
+    {
+        DisplayedAKA = GetFilteredAKAs(AKA);
+        StateHasChanged();
+    }
+
+    private string GetFilteredAKAs(string[]? aliases)
+    {
+        if (aliases == null || aliases.Length == 0) return "N/A";
+
+        // Basic regex to filter names containing only English letters and spaces
+        var englishAliases = aliases.Where(alias => System.Text.RegularExpressions.Regex.IsMatch(alias, @"^[a-zA-Z\s]+$"));
+
+        return englishAliases.Any() ? string.Join(", ", englishAliases) : "N/A";
+    }
+}
