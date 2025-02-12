@@ -1,0 +1,30 @@
+﻿/* Foreground Profile Image */
+.profile-img-container {
+    position: absolute;
+    left: 5%;
+    bottom: -60px; /* Ensures it overlaps */
+    background: white;
+    padding: 5px;
+    border-radius: 10px;
+    box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.3);
+}
+
+.profile-img {
+    width: 150px;
+    height: auto;
+    border-radius: 10px;
+}
+
+@media (max-width: 768px) {
+    .profile-img-container {
+        left: 50%;
+        transform: translateX(-50%);
+        bottom: -40px;
+        width: 120px; /* Scale down for smaller screens */
+    }
+
+    .profile-img {
+        width: 100%;
+        height: auto;
+    }
+}

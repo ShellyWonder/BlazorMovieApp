@@ -24,9 +24,7 @@ else
         <div class="hero-container-xxl d-flex flex-column flex-md-row align-items-center text-white position-relative">
 
             <!-- Foreground Profile Picture -->
-            <div class="profile-img-container">
-                <img class="profile-img" src="@($"https://image.tmdb.org/t/p/w300/{PersonDetails?.ProfilePath}")" alt="@PersonDetails?.Name">
-            </div>
+            <PersonProfileImageComponent ProfilePath="@PersonDetails?.ProfilePath" AltText="@PersonDetails?.Name" />
 
             <div class="col-md-8 pt-3 ps-3 ms-auto text-end">
                 <h1 class="display-5 fw-bold">
@@ -129,5 +127,4 @@ else
             && string.IsNullOrWhiteSpace(PersonDetails.Birthdate?.ToString("MMMM dd, yyyy") ?? "N/A")
             && string.IsNullOrWhiteSpace(PersonDetails.Deathdate?.ToString("MMMM dd, yyyy") ?? "N/A");
     }
-    
 }

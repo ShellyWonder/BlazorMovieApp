@@ -1,0 +1,17 @@
+﻿@* PersonProfileImageComponent *@
+
+<div class="profile-img-container">
+    <img class="profile-img" src="@GetProfileImageUrl()" alt="@AltText" />
+</div>
+
+@code {
+    [Parameter]
+    public string? ProfilePath { get; set; }
+
+    [Parameter]
+    public string? AltText { get; set; }
+
+    private string GetProfileImageUrl() => string.IsNullOrEmpty(ProfilePath)
+        ? "/img/ProfilePlaceHolder.png"
+        : $"https://image.tmdb.org/t/p/w500/{ProfilePath}";
+}
