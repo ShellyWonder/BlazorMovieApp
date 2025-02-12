@@ -1,4 +1,5 @@
 ﻿@*MainSearchComponent(Parent)*@
+@using BlazorMovie.Components.UIComponents.UtilityComponents
 @using BlazorMovie.Services.Interfaces
 @using BlazorMovie.Models
 @using System.Web
@@ -148,8 +149,7 @@
         };
 
         NavManager.NavigateTo(route);
-        // Reset dropdown after navigating
-        // dropdownComponent?.ResetDropdown();
+        
     }
     #endregion
 

@@ -1,5 +1,8 @@
 ﻿@typeparam TMovie where TMovie : Movie
 
+@inherits ComponentBase
+@using BlazorMovie.Components.UIComponents.MoviePropertyComponents
+
 @if (Movie != null)
 {
     <div class="card h-100 fade-in shadow p-3 mb-5 bg-body-tertiary rounded">
