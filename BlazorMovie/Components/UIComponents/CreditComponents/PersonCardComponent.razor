@@ -8,7 +8,7 @@
 {
     <div class="card h-100 fade-in shadow p-3 mb-5 bg-body-tertiary rounded position-relative ">
 
-        <ProfileImageComponent ProfilePath="@Person.ProfilePath" />
+        <CardProfileImageComponent ProfilePath="@Person.ProfilePath" />
 
         <div class="card-body border-top bg-light d-flex flex-column">
             <h5 class="card-title">@Person.Name</h5>
@@ -26,7 +26,7 @@ else
 {
     <div class="card h-100 shadow p-3 mb-5 bg-body-tertiary rounded">
 
-        <ProfileImageComponent ProfilePath="@null" />
+        <CardProfileImageComponent ProfilePath="@null" />
 
         <div class="card-body border-top bg-lightd-flex flex-column ">
             <h5 class="card-title placeholder-glow">
