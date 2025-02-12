@@ -1,0 +1,10 @@
+﻿@* PersonBirthplaceComponent *@
+@using BlazorMovie.Models.Credits
+
+<p><strong>Birthplace:</strong> @DisplayedBirthplace</p>
+
+@code {
+    [Parameter]
+    public string? Birthplace { get; set; }
+    private string DisplayedBirthplace => string.IsNullOrEmpty(Birthplace) ? "N/A" : Birthplace;
+}

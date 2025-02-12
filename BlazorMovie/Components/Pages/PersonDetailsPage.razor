@@ -38,7 +38,8 @@ else
                 <PersonBirthdateComponent Birthdate="PersonDetails?.Birthdate" />
 
                 <PersonDeathDateComponent Deathdate="PersonDetails?.Deathdate" />
-                <p><strong>Birthplace:</strong> @(string.IsNullOrEmpty(PersonDetails?.Birthplace) ? "N/A" : PersonDetails.Birthplace)</p>
+
+                <PersonBirthplaceComponent Birthplace="@PersonDetails?.Birthplace" />
 
             </div>
         </div>
