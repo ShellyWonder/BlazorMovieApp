@@ -1,0 +1,11 @@
+﻿@using BlazorMovie.Models.Credits
+@* PersonBirthdateComponent *@
+
+<p><strong>Birthdate:</strong> @PersonDetails?.Birthdate?.ToString("MMMM dd, yyyy")</p>
+
+@code {
+    [Parameter]
+    public DateOnly? Birthdate { get; set; }
+    public PersonDetails? PersonDetails { get; set; }
+    private string DisplayedBirthdate => Birthdate?.ToString("MMMM dd, yyyy") ?? "N/A";
+}

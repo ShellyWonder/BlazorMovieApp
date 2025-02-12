@@ -35,7 +35,8 @@ else
 
                 <PersonAKAComponent AKA="@PersonDetails?.AKA" />
 
-                <p><strong>Birthdate:</strong> @(PersonDetails?.Birthdate?.ToString("MMMM dd, yyyy") ?? "N/A")</p>
+                <PersonBirthdateComponent Birthdate="PersonDetails?.Birthdate" />
+
                 <PersonDeathDateComponent Deathdate="PersonDetails?.Deathdate" />
                 <p><strong>Birthplace:</strong> @(string.IsNullOrEmpty(PersonDetails?.Birthplace) ? "N/A" : PersonDetails.Birthplace)</p>
 
