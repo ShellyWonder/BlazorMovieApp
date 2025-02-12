@@ -1,0 +1,21 @@
+﻿@* PersonDeathDateComponent *@
+@using BlazorMovie.Models.Credits
+
+@if (PersonDetails?.Deathdate != null)
+{
+    <p><strong>Deathdate:</strong> @PersonDetails.Deathdate?.ToString("MMMM dd, yyyy")</p>
+}
+
+@code {
+    [Parameter]
+    public DateOnly? Deathdate { get; set; }
+
+    public PersonDetails? PersonDetails { get; set; }
+    private string DisplayedDeathDate => Deathdate?.ToString("MMMM dd, yyyy") ?? "N/A";
+
+    protected override void OnParametersSet()
+    {
+        
+    }
+
+}
