@@ -1,4 +1,5 @@
 # BlazorMovieApp -Movie Pro Wonder
+![MovieProWonderLogo680](https://github.com/user-attachments/assets/b63b1089-c463-4fda-8243-effcca2d225b)
 
 BlazorMovieApp is a .NET 8 Blazor WebAssembly (WASM) application that integrates with The Movie Database (TMDB) API to provide a user-friendly movie discovery experience. The app showcases popular, top-rated, now playing, and upcoming movies, along with detailed information about movies, cast, crew, and providers.
 
