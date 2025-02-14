@@ -21,6 +21,7 @@ builder.Services.AddScoped<ISearchMovieService, SearchMovieService>();
 builder.Services.AddTransient<ICreditService, CreditService>();
 builder.Services.AddTransient<IProviderService, ProviderService>();
 builder.Services.AddTransient<IPersonService, PersonService>();
+builder.Services.AddScoped<INavigationService, NavigationService>();
 
 builder.Services.AddScoped<CacheService>();
 builder.Services.AddScoped<IMovieServiceFactory, MovieServiceFactory>();

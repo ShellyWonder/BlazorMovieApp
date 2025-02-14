@@ -1,12 +1,13 @@
 ﻿﻿@* PersonDetailsPage *@
 @page "/person/{PersonId:int}"
-@using BlazorMovie.Components.UIComponents.PropertyComponents
+@using BlazorMovie.Components.UIComponents.PersonPropertyComponents
+@using BlazorMovie.Services
 @using BlazorMovie.Services.Interfaces
 @using BlazorMovie.Models.Credits
 
 @inject IPersonService _personService
 @inject ICreditService _creditService
-
+@inject INavigationService _navService
 
 @if (isLoading)
 {
@@ -63,9 +64,14 @@ else
 {
     <p>Loading movies...</p>
 }
+
 @code {
     [Parameter]
     public int PersonId { get; set; }
+
+    [Parameter]
+    public string? PersonName { get; set; }
+
     private PersonDetails? PersonDetails{ get; set; }
     private PageResponse<MovieWithCharacter>? MovieCredits;
     private bool isLoading = true;
@@ -88,7 +94,15 @@ else
             PersonDetails = await personTask;
             MovieCredits = await creditsTask;
 
-            if (PersonDetails == null) Console.WriteLine("Failed to load person details.");
+            if (PersonDetails == null)
+        {
+            Console.WriteLine("Failed to load person details.");
+        }
+        else
+        {
+            // Update the URL with the person's name 
+            _navService.UpdateUrlWithName("/person", PersonId, PersonDetails.Name);
+        }
 
             if (MovieCredits == null) Console.WriteLine("Failed to load movie credits.");
 
@@ -100,6 +114,8 @@ else
         }
         isLoading = false; // Mark loading as false when API call completes
         StateHasChanged(); // Ensure UI updates
+
+        
     }
 
     private async Task LoadPersonMoviesPage(int page)
