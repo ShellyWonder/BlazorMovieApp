@@ -13,12 +13,12 @@
 {
     <p>Loading...</p>
 }
-else if (IsNoInformationAvailable())
+@* else if (IsNoInformationAvailable())
 {
     <div class="alert alert-warning text-center mt-4">
         <h4>No information is available about @PersonDetails?.Name.</h4>
     </div>
-}
+} *@
 else
 {
     <div class="hero-bg" style="@($"--bg-img:url(https://image.tmdb.org/t/p/original/{PersonDetails?.ProfilePath})")">
@@ -44,14 +44,8 @@ else
         </div>
     </div>
 
-    @if (PersonDetails != null && !string.IsNullOrEmpty(PersonDetails?.Biography))
-    {
         <PersonBiographyComponent Biography="@PersonDetails?.Biography" />
-    }
-    else
-    {
-        <p>Loading biography...</p>
-    }
+        
 }
 @if (MovieCredits?.Results != null && MovieCredits.Results.Any())
 {
@@ -133,14 +127,14 @@ else
         }
     }
 
-    private bool IsNoInformationAvailable()
-    {
-        if (PersonDetails == null)
-            return true; // If data is null even after loading, show the message
+    // private bool IsNoInformationAvailable()
+    // {
+    //     if (PersonDetails == null)
+    //         return true; // If data is null even after loading, show the message
 
-        return string.IsNullOrWhiteSpace(PersonDetails?.Biography) || PersonDetails.Biography == "N/A"
-            && string.IsNullOrWhiteSpace(PersonDetails.Birthplace) || PersonDetails.Birthplace == "N/A"
-            && string.IsNullOrWhiteSpace(PersonDetails.Birthdate?.ToString("MMMM dd, yyyy") ?? "N/A")
-            && string.IsNullOrWhiteSpace(PersonDetails.Deathdate?.ToString("MMMM dd, yyyy") ?? "N/A");
-    }
+    //     return string.IsNullOrWhiteSpace(PersonDetails?.Biography) || PersonDetails.Biography == "N/A"
+    //         && string.IsNullOrWhiteSpace(PersonDetails.Birthplace) || PersonDetails.Birthplace == "N/A"
+    //         && string.IsNullOrWhiteSpace(PersonDetails.Birthdate?.ToString("MMMM dd, yyyy") ?? "N/A")
+    //         && string.IsNullOrWhiteSpace(PersonDetails.Deathdate?.ToString("MMMM dd, yyyy") ?? "N/A");
+    // }
 }
