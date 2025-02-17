@@ -2,6 +2,7 @@
 using BlazorMovie.Models.Credits;
 using BlazorMovie.Models.Providers;
 using System.Net.Http.Json;
+using System.Text.Json;
 using System.Web;
 
 
@@ -136,6 +137,7 @@ namespace BlazorMovie.Services
         {
             var response = await _httpClient.GetFromJsonAsync<PersonDetailsWithCredits>($"person/{personId}?append_to_response=movie_credits&language=en-US")
                                                       ?? throw new Exception("No data returned");
+            
             return response;
         }
         #endregion

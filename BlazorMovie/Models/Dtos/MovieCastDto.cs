@@ -13,8 +13,7 @@ namespace BlazorMovie.Models.Dtos
         [JsonPropertyName("order")]
         public int Order { get; set; }
 
-        [JsonPropertyName("id")]
-        public int MovieId { get; set; }
+        
  
     }
 }
