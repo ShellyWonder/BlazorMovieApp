@@ -1,4 +1,5 @@
-﻿using BlazorMovie.Models.Credits;
+﻿using BlazorMovie.Models;
+using BlazorMovie.Models.Credits;
 using BlazorMovie.Services.Interfaces;
 
 namespace BlazorMovie.Services
@@ -6,11 +7,13 @@ namespace BlazorMovie.Services
     public class PersonService : IPersonService
     {
         private readonly TMDBClient _tmdbClient;
+      
 
         #region CONSTRUCTOR
         public PersonService(TMDBClient tmdbClient)
         {
             _tmdbClient = tmdbClient;
+          
         }
         #endregion
 
@@ -22,5 +25,9 @@ namespace BlazorMovie.Services
             return Details;
         }
         #endregion
+
+       
+
+
     }
 }
