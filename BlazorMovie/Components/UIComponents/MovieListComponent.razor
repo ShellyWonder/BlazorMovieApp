@@ -22,7 +22,7 @@
                     @foreach (var movie in movies.Results)
                     {
                         <div class="col">
-                        <MovieCardDetails TMovie="TMovie" Movie="@movie" Character="@GetCharacter(movie)" />
+                        <MovieCardDetails TMovie="TMovie" Movie="@movie"  />
                         </div>
                     }
 
@@ -72,14 +72,5 @@
         await OnPageChanged.InvokeAsync(newPage);
             
         }
-    }
-
-    private string? GetCharacter(Movie movie)
-    {
-        if (movie is MovieWithCharacter mwc)
-        {
-            return mwc.Character;
-        }
-        return null;
     }
 }
