@@ -2,7 +2,6 @@
 using BlazorMovie.Models.Credits;
 using BlazorMovie.Models.Providers;
 using System.Net.Http.Json;
-using System.Text.Json;
 using System.Web;
 
 
@@ -130,17 +129,7 @@ namespace BlazorMovie.Services
                                                       ?? throw new Exception("No movie data returned");
             return response;
         }
-        #endregion
-
-        #region GET PERSON DETAILS WITH CREDITS BY ID
-        public async Task<PersonDetailsWithCredits> GetPersonDetailsWithCreditsById(int personId)
-        {
-            var response = await _httpClient.GetFromJsonAsync<PersonDetailsWithCredits>($"person/{personId}?append_to_response=movie_credits&language=en-US")
-                                                      ?? throw new Exception("No data returned");
-            
-            return response;
-        }
-        #endregion
+       #endregion
 
         #region Movie Count
         private static int MovieCount(int page)
