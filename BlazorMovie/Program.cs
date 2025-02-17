@@ -3,6 +3,7 @@ using BlazorMovie.Factories;
 using BlazorMovie.Factories.Interfaces;
 using BlazorMovie.Services;
 using BlazorMovie.Services.Interfaces;
+using BlazorMovie.Utilities;
 using Microsoft.AspNetCore.Components.Web;
 using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
 
@@ -24,6 +25,7 @@ builder.Services.AddTransient<IPersonService, PersonService>();
 builder.Services.AddScoped<INavigationService, NavigationService>();
 
 builder.Services.AddScoped<CacheService>();
+builder.Services.AddScoped<PaginationUtility>();
 builder.Services.AddScoped<IMovieServiceFactory, MovieServiceFactory>();
 
 await builder.Build().RunAsync();
