@@ -1,7 +1,10 @@
 ﻿using BlazorMovie.Mappers;
 using BlazorMovie.Models;
 using BlazorMovie.Models.Credits;
+using BlazorMovie.Models.Dtos;
 using BlazorMovie.Services.Interfaces;
+using BlazorMovie.Utilities;
+
 
 namespace BlazorMovie.Services
 {
@@ -29,49 +32,55 @@ namespace BlazorMovie.Services
         #endregion
 
         #region GET MOVIES BY PERSON ID
-        public async Task<PageResponse<MovieWithCharacter>> GetMoviesByPersonIdAsync(int personId, int page = 1)
+        public async Task<PageResponse<MovieCastDto>> GetMoviesByPersonIdAsync(int personId, int page = 1)
         {
             var creditResponse = await _tmdbClient.GetMovieCreditsByPersonIdAsync(personId);
-            if (creditResponse?.Cast == null || !creditResponse.Cast.Any())
+            if (creditResponse?.Cast == null || creditResponse.Cast.Length == 0)
             {
                 throw new Exception("No movie credits found.");
             }
-            var movieIds = creditResponse.Cast.Select(c => c.Id).Distinct().ToList();
-            var movieDetailTasks = movieIds.Select(id => _tmdbClient.GetMovieDetailsAsync(id));
-            var movieDetails = await Task.WhenAll(movieDetailTasks);
+            var castList = creditResponse.Cast;
 
-            var moviesWithCharacter = movieDetails
-                .Where(movie => movie != null)
-                .Select(movie =>
-                {
-                    if (movie == null)
-                        return null;
 
-                    return new MovieWithCharacter
-                    {
-                        Id = movie.Id,
-                        Title = movie.Title ?? "Unknown Title",
-                        PosterPath = movie.PosterPath ?? string.Empty,
-                        ReleaseDate = movie.ReleaseDate ?? "Unknown Date",
-                        VoteAverage = movie.VoteAverage,
-                        Character = creditResponse.Cast.FirstOrDefault(c => c.Id == movie.Id)?.Character ?? "Unknown"
-                    };
-                })
-                .Where(m => m != null)
-                .Cast<MovieWithCharacter>()
-                .ToList();
-
-            var pageSize = 10;
-            var paginatedResults = moviesWithCharacter.Skip((page - 1) * pageSize).Take(pageSize).ToList();
-
-            return new PageResponse<MovieWithCharacter>
+            var dtos = castList.Select(c => new MovieCastDto
             {
-                Page = page,
-                TotalPages = (int)Math.Ceiling((double)moviesWithCharacter.Count / pageSize),
-                TotalResults = moviesWithCharacter.Count,
-                Results = paginatedResults
-            };
+                CastId = c.CastId,               
+                Character = c.Character,
+                Id = c.Id,                  
+                Title = c.Title,        
+                PosterPath = c.PosterPath,         
+                ReleaseDate = c.ReleaseDate,                   
+                VoteAverage = c.VoteAverage                     
+            }).ToList();
+
+
+            return PaginationUtility.PaginateList(dtos, page, 10);
         }
         #endregion
+
+        #region GET PERSON DETAILS WITH CREDITS
+        public async Task<PersonWithCreditsDto> GetPersonDetailsWithCredits(int personId, int page = 1)
+        {
+            // Single call to fetch both person details and credits
+            var data = await _tmdbClient.GetPersonDetailsWithCreditsById(personId);
+    
+            // If no credits returned, handle accordingly
+            if (data.MovieCredits?.Cast == null || data.MovieCredits.Cast.Length == 0)
+            {
+                throw new Exception("No movie credits found.");
+            }
+
+            var castDtos = data.MovieCredits?.Cast ?? [];
+
+            var pageResponse = PaginationUtility.PaginateList(castDtos, page, 10);
+            
+            return new PersonWithCreditsDto
+            {
+                PersonDetails = data, // includes the overall PersonDetails
+                MovieCredits = pageResponse // a PageResponse<MovieCastDto>
+            };
+        }
     }
+  #endregion
+
 }

@@ -1,6 +1,7 @@
 ﻿﻿@* PersonDetailsPage *@
 @page "/person/{PersonId:int}"
 @using BlazorMovie.Components.UIComponents.PersonPropertyComponents
+@using BlazorMovie.Models.Dtos
 @using BlazorMovie.Services
 @using BlazorMovie.Services.Interfaces
 @using BlazorMovie.Models.Credits
@@ -49,7 +50,7 @@ else
 }
 @if (MovieCredits?.Results != null && MovieCredits.Results.Any())
 {
-    <MovieListComponent TMovie="MovieWithCharacter" 
+    <MovieListComponent TMovie="MovieCastDto" 
     Title="@($"{PersonDetails?.Name} Movies")" 
     movies="@MovieCredits" 
     OnPageChanged="@LoadPersonMoviesPage" />
@@ -67,7 +68,7 @@ else
     public string? PersonName { get; set; }
 
     private PersonDetails? PersonDetails{ get; set; }
-    private PageResponse<MovieWithCharacter>? MovieCredits;
+    private PageResponse<MovieCastDto>? MovieCredits;
     private bool isLoading = true;
 
     protected override async Task OnInitializedAsync()
@@ -75,41 +76,41 @@ else
         isLoading = true; // Set loading to true before fetching data
         try
         {
-            //capturing the Task objects<PersonDetails> and <Credit>
-            var personTask = _personService.GetPersonDetails(PersonId); 
-            var creditsTask = _creditService.GetMoviesByPersonIdAsync(PersonId);
+            // Single call that returns both PersonDetails + MovieCredits
+            var personWithCredits = await _creditService.GetPersonDetailsWithCredits(PersonId, page: 1);
 
-            //NOTE: Task.WhenAll ensures the tasks run concurrently.
-            // wait for both tasks to complete
-            await Task.WhenAll(personTask, creditsTask);
+            // Optional logging/diagnostics
+            Console.WriteLine(System.Text.Json.JsonSerializer.Serialize(personWithCredits));
 
-            // retrieves the result of the already-completed tasks &  assigns them to the respective properties
-            // i.e. unwrap Task<personDetails> and Task<Credit> converting to PersonDetails and MovieCredits
-            PersonDetails = await personTask;
-            MovieCredits = await creditsTask;
+            // Assign the returned data directly
+            PersonDetails = personWithCredits.PersonDetails;
+            MovieCredits = personWithCredits.MovieCredits;
 
+            // Normal checks/logging
             if (PersonDetails == null)
-        {
-            Console.WriteLine("Failed to load person details.");
-        }
-        else
-        {
-            // Update the URL with the person's name 
-            _navService.UpdateUrlWithName("/person", PersonId, PersonDetails.Name);
-        }
+            {
+                Console.WriteLine("Failed to load person details.");
+            }
+            else
+            {
+                // Using your custom NavService to update the URL:
+                _navService.UpdateUrlWithName("/person", PersonId, PersonDetails.Name);
+            }
 
-            if (MovieCredits == null) Console.WriteLine("Failed to load movie credits.");
-
+            if (MovieCredits == null)
+            {
+                Console.WriteLine("Failed to load movie credits.");
+            }
         }
         catch (Exception ex)
         {
-
             Console.WriteLine($"Error loading person details: {ex.Message}");
         }
-        isLoading = false; // Mark loading as false when API call completes
-        StateHasChanged(); // Ensure UI updates
-
-        
+        finally
+        {
+            isLoading = false;
+            StateHasChanged();
+        }
     }
 
     private async Task LoadPersonMoviesPage(int page)
