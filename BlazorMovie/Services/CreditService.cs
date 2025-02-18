@@ -63,7 +63,6 @@ namespace BlazorMovie.Services
         {
             // Single call to fetch both person details and credits
             var data = await _tmdbClient.GetPersonDetailsWithCreditsById(personId);
-    
             // If no credits returned, handle accordingly
             if (data.MovieCredits?.Cast == null || data.MovieCredits.Cast.Length == 0)
             {
