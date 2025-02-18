@@ -1,5 +1,6 @@
 ﻿using BlazorMovie.Models;
 using BlazorMovie.Services.Interfaces;
+using BlazorMovie.Utilities;
 
 namespace BlazorMovie.Services
 {
@@ -15,15 +16,8 @@ namespace BlazorMovie.Services
         public async Task<PageResponse<Movie>?> GetMoviesAsync(int page)
         {
             var response = await _tmdbClient.GetPopularMoviesAsync(page) ?? throw new Exception("No movie data returned");
-            // Map PageResponse<PopularMovie> to PageResponse<Movie>
-            return new PageResponse<Movie>
-            {
-                Page = response.Page,
-                TotalPages = response.TotalPages,
-                TotalResults = response.TotalResults,
-                Dates = response.Dates,
-                Results = response.Results.Cast<Movie>().ToList() // Cast PopularMovie to Movie
-            };
+
+            return MovieServiceHelperUtility.MapToMoviePageResponse(response);
         }
 
     }

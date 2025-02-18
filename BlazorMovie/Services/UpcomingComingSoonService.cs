@@ -1,4 +1,5 @@
 ﻿using BlazorMovie.Models;
+using BlazorMovie.Utilities;
 using BlazorMovie.Services.Interfaces;
 
 namespace BlazorMovie.Services
@@ -16,14 +17,8 @@ namespace BlazorMovie.Services
         {
             var response = await _tmdbClient.GetUpcomingAsync(page) ?? throw new Exception("No movie data returned");
             // Map PageResponse<Upcoming> to PageResponse<Movie>
-            return new PageResponse<Movie>
-            {
-                Page = response.Page,
-                TotalPages = response.TotalPages,
-                TotalResults = response.TotalResults,
-                Dates = response.Dates,
-                Results = response.Results.Cast<Movie>().ToList() // Cast Upcoming to Movie
-            };
+            return MovieServiceHelperUtility.MapToMoviePageResponse(response);// Cast Upcoming to Movie
+            
         }
     }
 }

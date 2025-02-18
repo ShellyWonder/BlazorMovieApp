@@ -42,7 +42,7 @@
     @if (movies?.TotalPages > 1)
     {
         <div class="my-3">
-            <Paginator CurrentPage="movies?.Page ?? 1"
+            <PaginatorComponent CurrentPage="movies?.Page ?? 1"
                        TotalPages="movies?.TotalPages > 500 ? 500 : movies?.TotalPages ?? 0"
                        OnPageChange="HandlePageChange" />
 
