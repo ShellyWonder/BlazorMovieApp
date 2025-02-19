@@ -3,6 +3,7 @@ using BlazorMovie.Factories;
 using BlazorMovie.Factories.Interfaces;
 using BlazorMovie.Services;
 using BlazorMovie.Services.Interfaces;
+using BlazorMovie.Services.TMDBMovieListServices;
 using Microsoft.AspNetCore.Components.Web;
 using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
 

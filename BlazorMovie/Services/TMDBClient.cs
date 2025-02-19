@@ -1,6 +1,8 @@
 ﻿using BlazorMovie.Models;
 using BlazorMovie.Models.Credits;
 using BlazorMovie.Models.Providers;
+using BlazorMovie.Models.Search;
+using BlazorMovie.Models.TMDBMovieLists;
 using System.Net.Http.Json;
 using System.Web;
 

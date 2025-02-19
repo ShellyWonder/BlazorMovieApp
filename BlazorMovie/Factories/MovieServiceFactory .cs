@@ -1,6 +1,6 @@
 ﻿using BlazorMovie.Factories.Interfaces;
-using BlazorMovie.Services;
 using BlazorMovie.Services.Interfaces;
+using BlazorMovie.Services.TMDBMovieListServices;
 
 namespace BlazorMovie.Factories
 {

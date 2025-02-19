@@ -1,4 +1,4 @@
-﻿namespace BlazorMovie.Models
+﻿namespace BlazorMovie.Models.TMDBMovieLists
 {
     public class Upcoming : Movie
     {

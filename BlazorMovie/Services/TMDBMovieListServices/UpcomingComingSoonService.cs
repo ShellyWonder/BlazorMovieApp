@@ -2,7 +2,7 @@
 using BlazorMovie.Utilities;
 using BlazorMovie.Services.Interfaces;
 
-namespace BlazorMovie.Services
+namespace BlazorMovie.Services.TMDBMovieListServices
 {
     public class UpcomingComingSoonService :  IMovieService
     {

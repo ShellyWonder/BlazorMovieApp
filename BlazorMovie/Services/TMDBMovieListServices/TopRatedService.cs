@@ -2,22 +2,22 @@
 using BlazorMovie.Services.Interfaces;
 using BlazorMovie.Utilities;
 
-namespace BlazorMovie.Services
+namespace BlazorMovie.Services.TMDBMovieListServices
 {
-    public class NowPlayingMovieService : IMovieService
+    public class TopRatedService : IMovieService
     {
         private readonly TMDBClient _tmdbClient;
 
-        public NowPlayingMovieService(TMDBClient tmdbClient)
+        public TopRatedService(TMDBClient tmdbClient)
         {
             _tmdbClient = tmdbClient;
         }
 
         public async Task<PageResponse<Movie>?> GetMoviesAsync(int page)
         {
-            var response = await _tmdbClient.GetNowPlayingAsync(page) ?? throw new Exception("No movie data returned");
+            var response = await _tmdbClient.GetTopRatedAsync(page) ?? throw new Exception("No movie data returned");
+            // Map PageResponse<TopRated> to PageResponse<Movie>
             return MovieServiceHelperUtility.MapToMoviePageResponse(response);
         }
     }
-
 }

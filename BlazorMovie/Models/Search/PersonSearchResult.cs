@@ -1,6 +1,6 @@
 ﻿using System.Text.Json.Serialization;
 
-namespace BlazorMovie.Models
+namespace BlazorMovie.Models.Search
 {
     public class PersonSearchResult
     {

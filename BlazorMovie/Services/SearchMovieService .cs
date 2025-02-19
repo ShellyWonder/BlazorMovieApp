@@ -1,6 +1,7 @@
 ﻿
 using global::BlazorMovie.Models;
 using BlazorMovie.Services.Interfaces;
+using BlazorMovie.Models.Search;
 
 namespace BlazorMovie.Services
 {
