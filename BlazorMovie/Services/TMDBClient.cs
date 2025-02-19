@@ -2,7 +2,6 @@
 using BlazorMovie.Models.Credits;
 using BlazorMovie.Models.Providers;
 using System.Net.Http.Json;
-using System.Text.Json;
 using System.Web;
 
 
@@ -12,7 +11,7 @@ namespace BlazorMovie.Services
     {
         private readonly HttpClient _httpClient;
 
-#region CONSTRUCTOR/CONFIG
+        #region CONSTRUCTOR/CONFIG
         public TMDBClient(HttpClient httpClient, IConfiguration config)
         {
             _httpClient = httpClient;
@@ -91,8 +90,35 @@ namespace BlazorMovie.Services
         }
         #endregion
 
+        #region GET PERSON SEARCH
+        public Task<PageResponse<PersonSearchResult>?> SearchMoviesByPerson(string name, int page = 1)
+        {
+            page = MovieCount(page);
+            // encode the title to make it URL safe
+            string encodedName = HttpUtility.UrlEncode(name);
+            var adult = false;
+            var language = "en-US";
+            var response = _httpClient.GetFromJsonAsync<PageResponse<PersonSearchResult>?>($"search/person?query={encodedName}&include_adult={adult}&language={language}&page={page}")
+                                                                       ?? throw new Exception("No search data returned");
+            return response;
+        }
+        #endregion
+
+        #region WHEN IMPLEMENTING SEARCH ASYNC
+        //public Task<PageResponse<Movie>?> SearchMoviesByTitle(string title, int page = 1)
+        //{
+        //    return SearchAsync<Movie>("movie", title, page);
+        //}
+
+        //public Task<PageResponse<PersonSearchResult>?> SearchMoviesByPerson(string name, int page = 1)
+        //{
+        //    return SearchAsync<PersonSearchResult>("person", name, page);
+        //}
+
+        #endregion
+
         #region WATCH PROVIDERS(ATTRIBUTION TO WATCH PROVIDERS REQUIRED)
-        public  async Task<ProviderDetail<ProviderOption, ProviderOption, ProviderOption>?> GetProvidersByMovieIdAsync(int id)
+        public async Task<ProviderDetail<ProviderOption, ProviderOption, ProviderOption>?> GetProvidersByMovieIdAsync(int id)
         {
                var response =  await _httpClient.GetFromJsonAsync<ProviderDetail<ProviderOption, 
                                                                                                                                  ProviderOption, 
@@ -138,6 +164,27 @@ namespace BlazorMovie.Services
             var response = await _httpClient.GetFromJsonAsync<PersonDetailsWithCredits>($"person/{personId}?append_to_response=movie_credits&language=en-US")
                                                       ?? throw new Exception("No data returned");
             
+            return response;
+        }
+        #endregion
+
+        #region SEARCH ASYNC
+        //EXTRACTION OF SEARCH DUPE CODE FOR FUTURE IMPLEMENTATION
+        private async Task<PageResponse<T>?> SearchAsync<T>(string endpointType, string query, int page = 1)
+        {
+            // Validate page range
+            page = MovieCount(page);
+
+            // Encode the query to make it URL-safe
+            string encodedQuery = HttpUtility.UrlEncode(query);
+
+            bool adult = false;
+            string language = "en-US";
+
+            var response = await _httpClient.GetFromJsonAsync<PageResponse<T>?>(
+                $"search/{endpointType}?query={encodedQuery}&include_adult={adult}&language={language}&page={page}"
+            ) ?? throw new Exception("No search data returned");
+
             return response;
         }
         #endregion
