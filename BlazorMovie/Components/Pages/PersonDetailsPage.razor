@@ -32,8 +32,9 @@ else
                 <h1 class="display-5 fw-bold">
                     <i class="bi bi-camera-reels text-danger"></i> @PersonDetails?.Name
                 </h1>
-
                 <PersonAKAComponent AKA="@PersonDetails?.AKA" />
+
+                <PersonDepartmentComponent Department="@PersonDetails?.KnownForDepartment" />
 
                 <PersonBirthdateComponent Birthdate="PersonDetails?.Birthdate" />
 
@@ -44,9 +45,7 @@ else
             </div>
         </div>
     </div>
-
         <PersonBiographyComponent Biography="@PersonDetails?.Biography" />
-        
 }
 @if (MovieCredits?.Results != null && MovieCredits.Results.Any())
 {

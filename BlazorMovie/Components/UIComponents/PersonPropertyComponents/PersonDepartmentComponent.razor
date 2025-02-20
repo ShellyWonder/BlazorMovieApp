@@ -1,0 +1,11 @@
+﻿@* PersonDepartmentComponent *@
+@using BlazorMovie.Models.Credits
+
+<p><strong>Known For:</strong> @DisplayedDepartment</p>
+
+@code {
+    [Parameter]
+    public string? KnownForDepartment { get; set; }
+    private string DisplayedDepartment => string.IsNullOrEmpty(KnownForDepartment) 
+                                         ? "N/A" : KnownForDepartment;
+}
