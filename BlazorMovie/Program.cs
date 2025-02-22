@@ -18,7 +18,7 @@ builder.Services.AddTransient<PopularMovieService>();
 builder.Services.AddTransient<NowPlayingMovieService>();
 builder.Services.AddTransient<TopRatedService>();
 builder.Services.AddTransient<UpcomingComingSoonService>();
-builder.Services.AddScoped<ISearchMovieService, SearchMovieService>();
+builder.Services.AddScoped<ISearchService, SearchService>();
 builder.Services.AddTransient<ICreditService, CreditService>();
 builder.Services.AddTransient<IProviderService, ProviderService>();
 builder.Services.AddTransient<IPersonService, PersonService>();

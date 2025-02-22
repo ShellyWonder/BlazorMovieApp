@@ -4,7 +4,7 @@
 @using BlazorMovie.Models
 @using BlazorMovie.Models.Search
 @using BlazorMovie.Services.Interfaces
-@inject ISearchMovieService searchMovieService
+@inject ISearchService searchMovieService
 @inject NavigationManager NavManager
 
 <div class="row">
@@ -101,7 +101,9 @@
         try
         {
             Console.WriteLine($"Fetching results for Category: {searchModel.Category}, SearchTerm: {searchQuery}");
+
             searchResults = await searchMovieService.GetMoviesAsync(page, searchQuery);
+
             Console.WriteLine($"Results fetched: {searchResults?.Results?.Count ?? 0}");
             StateHasChanged();
         }

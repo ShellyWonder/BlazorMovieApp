@@ -2,7 +2,7 @@
 
 namespace BlazorMovie.Services.Interfaces
 {
-    public interface ISearchMovieService : IBaseMovieService
+    public interface ISearchService : IBaseMovieService
     {
         Task<PageResponse<Movie>?> GetMoviesAsync(int page, string searchQuery = "");
     }

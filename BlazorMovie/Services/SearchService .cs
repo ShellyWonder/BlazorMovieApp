@@ -5,12 +5,12 @@ using BlazorMovie.Models.Search;
 
 namespace BlazorMovie.Services
 {
-    public class SearchMovieService : ISearchMovieService
+    public class SearchService : ISearchService
     {
         private readonly TMDBClient _tmdbClient;
 
         #region CONSTRUCTOR
-        public SearchMovieService(TMDBClient tmdbClient)
+        public SearchService(TMDBClient tmdbClient)
         {
             _tmdbClient = tmdbClient;
         }

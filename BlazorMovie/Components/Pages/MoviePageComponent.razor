@@ -11,7 +11,7 @@
 
 @inject CacheService cacheService
 @inject IMovieServiceFactory movieServiceFactory
-@inject ISearchMovieService searchMovieService
+@inject ISearchService searchService
 @inject NavigationManager navManager
 
 <MovieListComponent TMovie="Movie"
@@ -54,7 +54,7 @@ OnPageChanged="GetPage" />
     {
         if (!string.IsNullOrEmpty(Query))
         {
-            movies = await searchMovieService.GetMoviesAsync(Page, SearchQuery);
+            movies = await searchService.GetMoviesAsync(Page, SearchQuery);
         }
             var uri = new Uri(navManager.Uri); // navManager is the injected NavigationManager
         var queryString = uri.Query;
@@ -97,7 +97,7 @@ OnPageChanged="GetPage" />
     #region FETCH MOVIES
     private async Task<PageResponse<Movie>?> FetchMoviesAsync(IBaseMovieService movieService, int page)
     {
-        if (movieService is ISearchMovieService searchMovieService)
+        if (movieService is ISearchService searchMovieService)
         {
             // Include SearchQuery in the cache key to differentiate search results
             string cacheKey = $"{Category}Page_{SearchQuery}_{page}";
