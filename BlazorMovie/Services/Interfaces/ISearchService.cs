@@ -7,6 +7,6 @@ namespace BlazorMovie.Services.Interfaces
     {
         Task<PageResponse<Movie>?> GetMoviesAsync(int page, string searchQuery = "");
         Task<PageResponse<PersonSearchResult>?> GetPersonAsync(int page, string searchQuery = "");
-        Task<object?> HandleSearchAsync(string category, string searchQuery, int page = 1);
+        //Task<PageResponse<T>?> HandleSearchAsync<T>(string category, string searchQuery, int page = 1);
     }
 }
