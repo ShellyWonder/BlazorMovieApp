@@ -4,7 +4,7 @@
 @using BlazorMovie.Models
 @using BlazorMovie.Models.Search
 @using BlazorMovie.Services.Interfaces
-@inject ISearchService searchMovieService
+@inject ISearchService searchService
 @inject NavigationManager NavManager
 
 <div class="row">
@@ -44,7 +44,12 @@
 
     private bool showSearchBox = false;
     private int page { get; set; } = 1;
-    private PageResponse<Movie>? searchResults;
+    private string category { get; set; } = string.Empty;
+
+    // individual "search by" properties:
+    private PageResponse<Movie>? searchMovieResults;
+    private PageResponse<PersonSearchResult>? searchPersonResults;
+
     private string errorMessage { get; set; } = string.Empty;
     private SearchBoxInputComponent? searchBox;
     private DropdownComponent? dropdownComponent;
@@ -57,7 +62,8 @@
     private void OnCategoryChanged(ChangeEventArgs e)
     {
         searchModel.Category = e.Value?.ToString() ?? string.Empty;
-        showSearchBox = searchModel.Category == "MovieByTitle"; // Show input box only for MovieByTitle
+        showSearchBox = searchModel.Category == "MovieByTitle" 
+                     || searchModel.Category == "PersonByName";
 
         if (!showSearchBox && !string.IsNullOrWhiteSpace(searchModel.Category))
         {
@@ -76,18 +82,37 @@
             return;
 
         // Clear previous search results
-        searchResults = null;
+        searchMovieResults = null;
+        searchPersonResults = null;
         errorMessage = string.Empty;
         // Update UI to reflect clearing results
         StateHasChanged(); 
 
         await FetchSearchResults();
 
-        if (searchResults?.Results == null || !searchResults.Results.Any())
+        // Now check if we got results
+        if (category == "MovieByTitle")
         {
-            errorMessage = "No results found.";
+            if (searchMovieResults?.Results == null || !searchMovieResults.Results.Any())
+            {
+                errorMessage = "No results found.";
+                return;
+            }
+        }
+        else if (category == "PersonByName")
+        {
+            if (searchPersonResults?.Results == null || !searchPersonResults.Results.Any())
+            {
+                errorMessage = "No results found.";
+                return;
+            }
+        }
+        else
+        {
+            errorMessage = $"Unknown category '{category}'";
             return;
         }
+
         // Navigate to the search results page
         NavManager.NavigateTo($"/search_result?SearchQuery={HttpUtility.UrlEncode(searchQuery)}&Page={page}");
 
@@ -102,15 +127,24 @@
         {
             Console.WriteLine($"Fetching results for Category: {searchModel.Category}, SearchTerm: {searchQuery}");
 
-            searchResults = await searchMovieService.GetMoviesAsync(page, searchQuery);
-
-            Console.WriteLine($"Results fetched: {searchResults?.Results?.Count ?? 0}");
+            if (category == "MovieByTitle")
+            {
+                searchMovieResults = await searchService.GetMoviesAsync(page, searchQuery);
+                Console.WriteLine($"Results fetched: {searchMovieResults?.Results?.Count ?? 0}");
+            }
+            else if (category == "PersonByName")
+            {
+                searchPersonResults = await searchService.GetPersonAsync(page, searchQuery);
+                Console.WriteLine($"Results fetched: {searchPersonResults?.Results?.Count ?? 0}");
+            }
+           
             StateHasChanged();
         }
         catch (Exception ex)
         {
             Console.WriteLine($"Error fetching search results: {ex.Message}");
             errorMessage = "An error occurred while fetching search results.";
+            
         }
     }
     #endregion
@@ -119,7 +153,9 @@
     private void HandleCategorySelected(string selectedCategory)
     {
         searchModel.Category = selectedCategory;
-        showSearchBox = selectedCategory == "MovieByTitle";
+        category = selectedCategory;
+        showSearchBox = selectedCategory == "MovieByTitle"
+                  || selectedCategory == "PersonByName";
 
         if (!showSearchBox && !string.IsNullOrWhiteSpace(selectedCategory))
         {

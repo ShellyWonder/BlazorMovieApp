@@ -8,7 +8,7 @@
                         value="@searchQuery"
                         @oninput="OnSearchQueryChanged"
                        @onkeyup="HandleKeyUp" />
-    <button class="btn btn-primary" type="submit" @onclick="SearchMoviesByTitle">Search</button>
+    <button class="btn btn-primary" type="submit" @onclick="SearchByInputAnsync">Search</button>
     <button class="btn btn-danger border border-2" @onclick="OnClearSearchClick">Clear Search</button>
 </div>
 
@@ -40,11 +40,11 @@
     private DropdownComponent? dropdownComponent;
 
     #region SEARCH BY TITLE
-    private async Task SearchMoviesByTitle()
+    private async Task SearchByInputAnsync()
     {
         if (string.IsNullOrWhiteSpace(searchQuery))
         {
-            errorMessage = "Please enter a movie title to search.";
+            errorMessage = "Please enter term to search.";
             return;
         }
 
@@ -58,7 +58,7 @@
         Console.WriteLine($"Child searchQuery: {searchQuery}");
         if (e.Key == "Enter")
         {
-            await SearchMoviesByTitle();
+            await SearchByInputAnsync();
         }
     }
     #endregion
