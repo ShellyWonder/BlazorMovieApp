@@ -106,20 +106,7 @@ namespace BlazorMovie.Services
         }
         #endregion
 
-        #region WHEN IMPLEMENTING SEARCH ASYNC
-        //public Task<PageResponse<Movie>?> SearchMoviesByTitle(string title, int page = 1)
-        //{
-        //    return SearchAsync<Movie>("movie", title, page);
-        //}
-
-        //public Task<PageResponse<PersonSearchResult>?> SearchMoviesByPerson(string name, int page = 1)
-        //{
-        //    return SearchAsync<PersonSearchResult>("person", name, page);
-        //}
-
-        #endregion
-
-        #region WATCH PROVIDERS(ATTRIBUTION TO WATCH PROVIDERS REQUIRED)
+       #region WATCH PROVIDERS(ATTRIBUTION TO WATCH PROVIDERS REQUIRED)
         public async Task<ProviderDetail<ProviderOption, ProviderOption, ProviderOption>?> GetProvidersByMovieIdAsync(int id)
         {
                var response =  await _httpClient.GetFromJsonAsync<ProviderDetail<ProviderOption, 
