@@ -1,23 +1,29 @@
 ﻿@* PersonSearchResultsComponent modal *@
 @using BlazorMovie.Components.UIComponents.CreditComponents
 @using BlazorMovie.Models.Credits
+@using BlazorMovie.Models.Interfaces
 @using BlazorMovie.Models.Search
 
 @inject NavigationManager _navManager
 
-<div class="modal"tabindex="-1">
-   <div class="modal-dialog">
-      <div class="modal-content">
+<div class="@ModalCssClass"
+     style="@ModalStyle"
+        id="personSearchResultsModal" 
+        tabindex="-1"
+        aria-labelledby="personSearchResultsModalLabel" aria-hidden="@(!IsOpen).ToString()"
+        role="dialog">
+    <div class="modal-dialog">
+        <div class="modal-content">
             <div class="modal-header">
                 <h5 class="modal-title">Modal title</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                </div>
+                <button type="button" class="btn-close" @onclick="CloseModal" aria-label="Close"></button>
+            </div>
             <div class="modal-body">
-                @if (searchPersonResults?.Results is not null && searchPersonResults.Results.Any())
+                @if (SearchPersonResults?.Results is not null && SearchPersonResults.Results.Any())
                 {
-                    @foreach (var person in searchPersonResults.Results)
+                    @foreach (var person in SearchPersonResults.Results)
                     {
-                        <PersonCardComponent Person="" SubText/>
+                        <PersonCardComponent Person="person" SubText="@GetPopularityRating(person)" />
                     }
                 }
                 else
@@ -26,25 +32,41 @@
                 }
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-           </div>
-      </div>
-   </div>
+                <button type="button" class="btn btn-secondary" @onclick="CloseModal">Close</button>
+            </div>
+        </div>
+    </div>
 </div>
 
 @code {
+    #region PARAMETERS
     [Parameter]
-    public PageResponse<PersonSearchResult>? searchPersonResults { get; set; }
+    public PageResponse<PersonSearchResult>? SearchPersonResults { get; set; }
 
     [Parameter]
-    [SupplyParameterFromQuery]
-    public Person? person { get; set; } 
+    public bool IsOpen { get; set; }
+    [Parameter]
+    public EventCallback OnCloseModal { get; set; }
 
     [Parameter]
     public string SubText { get; set; } = string.Empty;
+    #endregion
 
-    private void ViewPersonDetails(int id)
-    {
-        _navManager.NavigateTo($"/persondetails/{id}");
-    }
+    private string person { get; set; } = string.Empty;
+
+    private string ModalCssClass => IsOpen ? "modal fade show" : "modal fade";
+    private string ModalStyle => IsOpen ? "display: block; padding-right: 17px;" : "display: none;";
+
+    //return the conversion of  float popularity  to string SubText
+    private string GetPopularityRating(PersonSearchResult? person)
+    => person?.Popularity.ToString("0.0") ?? "N/A";
+
+
+    private IEnumerable<PersonSearchResult> PersonResults =>
+       SearchPersonResults?.Results ?? Enumerable.Empty<PersonSearchResult>();
+    
+
+    private void ViewPersonDetails(int id) => _navManager.NavigateTo($"/persondetails/{id}");
+    private void CloseModal() => OnCloseModal.InvokeAsync();
+    
 }

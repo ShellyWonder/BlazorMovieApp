@@ -1,5 +1,6 @@
 ﻿﻿@*PersonCardComponent*@
 @using BlazorMovie.Models.Credits
+@using BlazorMovie.Models.Interfaces
 @using BlazorMovie.Components.UIComponents.MoviePropertyComponents
 
  @inject NavigationManager _navManager
@@ -41,7 +42,7 @@ else
 
 @code {
     [Parameter]
-    public Person? Person { get; set; }
+    public IPersonMinimal Person { get; set; } = default!;
 
 
     [Parameter]

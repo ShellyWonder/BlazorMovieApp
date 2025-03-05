@@ -1,8 +1,9 @@
-﻿using System.Text.Json.Serialization;
+﻿using BlazorMovie.Models.Interfaces;
+using System.Text.Json.Serialization;
 
 namespace BlazorMovie.Models.Search
 {
-    public class PersonSearchResult
+    public class PersonSearchResult : IPersonMinimal
     {
         [JsonPropertyName("adult")]
         public bool Adult { get; set; }

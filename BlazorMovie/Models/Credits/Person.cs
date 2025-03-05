@@ -1,8 +1,9 @@
-﻿using System.Text.Json.Serialization;
+﻿using BlazorMovie.Models.Interfaces;
+using System.Text.Json.Serialization;
 
 namespace BlazorMovie.Models.Credits
 {
-    public class Person
+    public class Person : IPersonMinimal
     {
         [JsonPropertyName("adult")]
         public bool Adult { get; set; }
