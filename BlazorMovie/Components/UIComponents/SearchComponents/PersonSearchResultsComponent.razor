@@ -23,7 +23,9 @@
                 {
                     @foreach (var person in SearchPersonResults.Results)
                     {
-                        <PersonCardComponent Person="person" SubText="@GetPopularityRating(person)" />
+                        <PersonCardComponent Person="person" 
+                                             SubText="@GetPopularityRating(person)" 
+                                             OnMoreDetailsRequested="HandleChildMoreDetailsRequested"/>
                     }
                 }
                 else
@@ -45,8 +47,12 @@
 
     [Parameter]
     public bool IsOpen { get; set; }
+
     [Parameter]
     public EventCallback OnCloseModal { get; set; }
+
+    [Parameter]
+    public EventCallback<int> OnMoreDetailsRequested { get; set; }
 
     [Parameter]
     public string SubText { get; set; } = string.Empty;
@@ -56,6 +62,9 @@
 
     private string ModalCssClass => IsOpen ? "modal fade show" : "modal fade";
     private string ModalStyle => IsOpen ? "display: block; padding-right: 17px;" : "display: none;";
+
+    private async Task HandleChildMoreDetailsRequested(int personId) => await OnMoreDetailsRequested.InvokeAsync(personId);
+    
 
     //return the conversion of  float popularity  to string SubText
     private string GetPopularityRating(PersonSearchResult? person)

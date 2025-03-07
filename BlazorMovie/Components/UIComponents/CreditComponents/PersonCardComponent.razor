@@ -2,7 +2,7 @@
 @using BlazorMovie.Models.Credits
 @using BlazorMovie.Models.Interfaces
 @using BlazorMovie.Components.UIComponents.MoviePropertyComponents
-
+@using BlazorMovie.Components.UIComponents.CreditComponents
  @inject NavigationManager _navManager
 
 @if (Person != null)
@@ -16,7 +16,7 @@
             <p class="card-text">@SubText</p>
             <div class="flex-grow-1"></div>
               <button class="btn cardBtn"
-                    @onclick="() => NavigateToDetails(Person.Id)">
+                    @onclick="() =>HandleMoreDetailsClick(Person.Id)">
                 More Details
             </button>
         </div>
@@ -44,13 +44,14 @@ else
     [Parameter]
     public IPersonMinimal Person { get; set; } = default!;
 
-
     [Parameter]
     public string SubText { get; set; } = string.Empty;
 
+    [Parameter]
+    public EventCallback<int> OnMoreDetailsRequested { get; set; }
 
-    private void NavigateToDetails(int personId)
+    private async Task HandleMoreDetailsClick(int personId)
     {
-        _navManager.NavigateTo($"/person/{personId}");
+        await OnMoreDetailsRequested.InvokeAsync(Person.Id);
     }
 }
