@@ -3,25 +3,28 @@
 
 <div class="@animationClass">
     <select class="form-select dropdownSelect" @onchange="OnCategoryChanged" value="@SelectedCategory">
-        <option value=@SearchCategory.None>Search</option>
-        <option value=@SearchCategory.MovieByTitle>Movie By Title</option>
-        <option value=@SearchCategory.PersonByName>Movies By Actor</option>
-        <option value=@SearchCategory.PopularMovies>Popular Movies</option>
-        <option value=@SearchCategory.TopRated>Top Rated</option>
-        <option value=@SearchCategory.Upcoming>Coming Soon</option>
-        <option value=@SearchCategory.NowPlaying>Now Playing</option>
+        <option value="@SearchCategory.None">Search</option>
+        <option value="@SearchCategory.MovieByTitle">Movie By Title</option>
+        <option value="@SearchCategory.PersonByName">Movies By Actor</option>
+        <option value="@SearchCategory.PopularMovies">Popular Movies</option>
+        <option value="@SearchCategory.TopRated">Top Rated</option>
+        <option value="@SearchCategory.Upcoming">Coming Soon</option>
+        <option value="@SearchCategory.NowPlaying">Now Playing</option>
     </select>
 </div>
 
 @code {
+#region PARAMETERS
     [Parameter]
     public SearchCategory SelectedCategory { get; set; } = SearchCategory.None;
 
     [Parameter]
     public EventCallback<SearchCategory> OnCategorySelected { get; set; }
+#endregion
 
     private string animationClass = string.Empty;
 
+    #region ON CATEGORY CHANGED
     private async Task OnCategoryChanged(ChangeEventArgs e)
     {
         var stringValue = e.Value?.ToString() ?? string.Empty;
@@ -36,7 +39,9 @@
             await OnCategorySelected.InvokeAsync(SearchCategory.None);
         }
     }
+#endregion
 
+    #region DROPDOWN RESET
     public async void ResetDropdown()
     {
         // Trigger animation
@@ -54,5 +59,6 @@
         animationClass = string.Empty; // Remove animation class after reset
         StateHasChanged();
     }
+    #endregion
 }
 
