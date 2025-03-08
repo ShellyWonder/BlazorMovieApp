@@ -1,29 +1,40 @@
 ﻿@*DropdownComponent*@
+@using BlazorMovie.Enums
+
 <div class="@animationClass">
     <select class="form-select dropdownSelect" @onchange="OnCategoryChanged" value="@SelectedCategory">
-        <option value="">Search</option>
-        <option value="MovieByTitle">Movie By Title</option>
-        <option value="PersonByName">Movies By Actor</option>
-        <option value="PopularMovies">Popular Movies</option>
-        <option value="TopRated">Top Rated</option>
-        <option value="Upcoming">Coming Soon</option>
-        <option value="NowPlaying">Now Playing</option>
+        <option value=@SearchCategory.None>Search</option>
+        <option value=@SearchCategory.MovieByTitle>Movie By Title</option>
+        <option value=@SearchCategory.PersonByName>Movies By Actor</option>
+        <option value=@SearchCategory.PopularMovies>Popular Movies</option>
+        <option value=@SearchCategory.TopRated>Top Rated</option>
+        <option value=@SearchCategory.Upcoming>Coming Soon</option>
+        <option value=@SearchCategory.NowPlaying>Now Playing</option>
     </select>
 </div>
 
 @code {
     [Parameter]
-    public string SelectedCategory { get; set; } = string.Empty;
+    public SearchCategory SelectedCategory { get; set; } = SearchCategory.None;
 
     [Parameter]
-    public EventCallback<string> OnCategorySelected { get; set; }
+    public EventCallback<SearchCategory> OnCategorySelected { get; set; }
 
     private string animationClass = string.Empty;
 
     private async Task OnCategoryChanged(ChangeEventArgs e)
     {
-        SelectedCategory = e.Value?.ToString() ?? string.Empty;
-        await OnCategorySelected.InvokeAsync(SelectedCategory);
+        var stringValue = e.Value?.ToString() ?? string.Empty;
+        if (Enum.TryParse<SearchCategory>(stringValue, out var parsedCategory))
+        {
+            SelectedCategory = parsedCategory;
+            await OnCategorySelected.InvokeAsync(parsedCategory);
+        }
+        else
+        {
+            SelectedCategory = SearchCategory.None;
+            await OnCategorySelected.InvokeAsync(SearchCategory.None);
+        }
     }
 
     public async void ResetDropdown()
@@ -34,7 +45,8 @@
 
         await Task.Delay(300); // Wait for the fade-out animation to complete
 
-        SelectedCategory = string.Empty;
+        SelectedCategory = SearchCategory.None;
+        await OnCategorySelected.InvokeAsync(SearchCategory.None);
         animationClass = "fade-in"; // Trigger fade-in effect
         StateHasChanged();
 

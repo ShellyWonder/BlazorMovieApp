@@ -1,6 +1,7 @@
 ﻿@*MainSearchComponent(Parent)*@
 @using System.Web
 @using BlazorMovie.Components.UIComponents.UtilityComponents
+@using BlazorMovie.Enums
 @using BlazorMovie.Models
 @using BlazorMovie.Models.Search
 @using BlazorMovie.Services.Interfaces
@@ -15,10 +16,10 @@
             @if (showSearchBox)
             {
                 <SearchBoxInputComponent @ref ="searchBox"
-                                        Placeholder="@Placeholder"
-                                         @bind-SearchQuery="searchQuery"
-                                         OnSearch="PerformSearch"
-                                         OnClearSearch="HandleClearSearch"/>
+                Placeholder="@Placeholder"
+                @bind-SearchQuery="searchQuery"
+                OnSearch="PerformSearch"
+                OnClearSearch="HandleClearSearch"/>
             }
         </div>
     </div>
@@ -27,9 +28,9 @@
 {
     <!-- Render the child modal  -->
     <PersonSearchResultsComponent SearchPersonResults="SearchPersonResults"
-                                  IsOpen ="true"
-                                  OnMoreDetailsRequested="HandleMoreDetailsRequested"
-                                  OnCloseModal="ClosePersonModal" />
+    IsOpen ="true"
+    OnMoreDetailsRequested="HandleMoreDetailsRequested"
+    OnCloseModal="ClosePersonModal" />
 }
 
 <ErrorMessageComponent Message="@errorMessage" />
@@ -56,9 +57,9 @@
     #endregion
 
     private bool IsPersonModalOpen { get; set; } = false;
-    private bool showSearchBox = false;
+    private bool showSearchBox { get; set; } = false;
     private int page { get; set; } = 1;
-    private string category { get; set; } = string.Empty;
+    private SearchCategory category { get; set; } = SearchCategory.None;
 
     // individual "search by" properties:
     private PageResponse<Movie>? SearchMovieResults;
@@ -75,15 +76,14 @@
     #region CATEGORY CHANGED
     private void OnCategoryChanged(ChangeEventArgs e)
     {
-        searchModel.Category = e.Value?.ToString() ?? string.Empty;
-        showSearchBox = searchModel.Category == "MovieByTitle" 
-                     || searchModel.Category == "PersonByName";
+        var stringValue = e.Value?.ToString() ?? string.Empty;
+        searchModel.Category = Enum.TryParse<SearchCategory>(stringValue, out var parsedCategory) ? parsedCategory : SearchCategory.None;
 
-        if (!showSearchBox && !string.IsNullOrWhiteSpace(searchModel.Category))
-        {
-            NavigateToCategory(searchModel.Category); // Navigate to the appropriate route
-        }
-        //update UI
+        showSearchBox = searchModel.Category == SearchCategory.MovieByTitle
+                     || searchModel.Category == SearchCategory.PersonByName;
+
+        if (!showSearchBox && searchModel.Category != SearchCategory.None) NavigateToCategory(searchModel.Category);
+       
         StateHasChanged();
     }
     #endregion
@@ -104,7 +104,7 @@
 
         await FetchSearchResults();
 
-        if (category == "MovieByTitle")
+        if (category == SearchCategory.MovieByTitle)
         {
             if (SearchMovieResults?.Results == null || !SearchMovieResults.Results.Any())
             {
@@ -112,7 +112,7 @@
                 return;
             }
         }
-        else if (category == "PersonByName")
+        else if (category == SearchCategory.PersonByName)
         {
             if (SearchPersonResults?.Results == null || !SearchPersonResults.Results.Any())
             {
@@ -139,12 +139,12 @@
         {
             Console.WriteLine($"Fetching results for Category: {searchModel.Category}, SearchTerm: {searchQuery}");
 
-            if (category == "MovieByTitle")
+            if (category == SearchCategory.MovieByTitle)
             {
                 SearchMovieResults = await searchService.GetMoviesAsync(page, searchQuery);
                 Console.WriteLine($"Results fetched: {SearchMovieResults?.Results?.Count ?? 0}");
             }
-            else if (category == "PersonByName")
+            else if (category == SearchCategory.PersonByName)
             {
                 SearchPersonResults = await searchService.GetPersonAsync(page, searchQuery);
                 Console.WriteLine($"Results fetched: {SearchPersonResults?.Results?.Count ?? 0}");
@@ -163,27 +163,24 @@
     #endregion
 
     #region HANDLE CATEGORY SELECTED
-    private void HandleCategorySelected(string selectedCategory)
+    private void HandleCategorySelected(SearchCategory selectedCategory)
     {
         searchModel.Category = selectedCategory;
         category = selectedCategory;
-        showSearchBox = selectedCategory == "MovieByTitle"
-                  || selectedCategory == "PersonByName";
+        showSearchBox = selectedCategory == SearchCategory.MovieByTitle
+                      || selectedCategory == SearchCategory.PersonByName;
 
-        if (!showSearchBox && !string.IsNullOrWhiteSpace(selectedCategory))
-        {
-            NavigateToCategory(selectedCategory); 
-        }
-
+        if (!showSearchBox && searchModel.Category != SearchCategory.None) NavigateToCategory(searchModel.Category);
+       
         StateHasChanged(); // Update UI
     }
     #endregion
 
     #region NAVIGATE TO CATEGORY PAGE
-    private void NavigateToCategory(string category)
+    private void NavigateToCategory(SearchCategory category)
     {
         // Null or empty category check
-        if (string.IsNullOrWhiteSpace(category))
+        if (category == SearchCategory.None)
         {
             Console.WriteLine("Invalid category provided for navigation.");
             return; // Exit the method if category is null or empty
@@ -192,11 +189,12 @@
         // Map category to route
         var route = category switch
         {
-            "PopularMovies" => "/",
-            "TopRated" => "/top_rated",
-            "Upcoming" => "/upcoming",
-            "NowPlaying" => "/now_playing",
-            "SearchResults" => "/search_result",
+            SearchCategory.PopularMovies => "/",
+            SearchCategory.TopRated => " / top_rated",
+            SearchCategory.Upcoming => " / upcoming",
+            SearchCategory.NowPlaying => " / now_playing",
+            SearchCategory.SearchResults => " / search_result",
+            //fallback
             _ => "/"
         };
 
