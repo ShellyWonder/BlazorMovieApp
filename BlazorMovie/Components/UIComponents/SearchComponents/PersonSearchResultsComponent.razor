@@ -1,4 +1,6 @@
 ﻿@* PersonSearchResultsComponent modal *@
+@inherits LayoutComponentBase
+
 @using BlazorMovie.Components.UIComponents.CreditComponents
 @using BlazorMovie.Models.Credits
 @using BlazorMovie.Models.Interfaces
@@ -6,32 +8,38 @@
 
 @inject NavigationManager _navManager
 
-<div class="@ModalCssClass"
-     style="@ModalStyle"
+        <div class="@ModalCssClass"
+         style="@ModalStyle"
         id="personSearchResultsModal" 
         tabindex="-1"
         aria-labelledby="personSearchResultsModalLabel" aria-hidden="@(!IsOpen).ToString()"
         role="dialog">
-    <div class="modal-dialog">
+    <div class="modal-dialog modal-xl modal-dialog-centered modal-custom-size">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title">Modal title</h5>
+                <h5 class="modal-title">Search Results</h5>
                 <button type="button" class="btn-close" @onclick="CloseModal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
-                @if (SearchPersonResults?.Results is not null && SearchPersonResults.Results.Any())
-                {
-                    @foreach (var person in SearchPersonResults.Results)
-                    {
-                        <PersonCardComponent Person="person" 
-                                             SubText="@GetPopularityRating(person)" 
-                                             OnMoreDetailsRequested="HandleChildMoreDetailsRequested"/>
-                    }
-                }
-                else
-                {
-                    <p>No matching people found.</p>
-                }
+                <div class="container">
+                    <div class="row gy-4">
+                        @if (SearchPersonResults?.Results is not null && SearchPersonResults.Results.Any())
+                        {
+                            @foreach (var person in SearchPersonResults.Results)
+                            {
+                                <div class="col-lg-4 col-md-6 col-sm-12">
+                                    <PersonCardComponent Person="person" 
+                                                     SubText="@GetPopularityRating(person)" 
+                                                     OnMoreDetailsRequested="HandleChildMoreDetailsRequested"/>
+                                </div>
+                            }
+                        }
+                        else
+                        {
+                            <p>No matching people found.</p>
+                        }
+                    </div>
+                </div>
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" @onclick="CloseModal">Close</button>
@@ -39,7 +47,7 @@
         </div>
     </div>
 </div>
-
+    
 @code {
     #region PARAMETERS
     [Parameter]
@@ -58,23 +66,20 @@
     public string SubText { get; set; } = string.Empty;
     #endregion
 
+    #region PROPERTIES/VARIABLES
     private string person { get; set; } = string.Empty;
-
     private string ModalCssClass => IsOpen ? "modal fade show" : "modal fade";
-    private string ModalStyle => IsOpen ? "display: block; padding-right: 17px;" : "display: none;";
-
-    private async Task HandleChildMoreDetailsRequested(int personId) => await OnMoreDetailsRequested.InvokeAsync(personId);
+    private string ModalStyle => IsOpen ? "display: block; padding-right: 17px;" : "display: none";
     
-
     //return the conversion of  float popularity  to string SubText
     private string GetPopularityRating(PersonSearchResult? person)
     => person?.Popularity.ToString("0.0") ?? "N/A";
-
-
-    private IEnumerable<PersonSearchResult> PersonResults =>
-       SearchPersonResults?.Results ?? Enumerable.Empty<PersonSearchResult>();
+#endregion
+    private async Task HandleChildMoreDetailsRequested(int personId) => await OnMoreDetailsRequested.InvokeAsync(personId);
+   
+    private IEnumerable<PersonSearchResult> PersonResults => SearchPersonResults?.Results 
+                                                         ?? Enumerable.Empty<PersonSearchResult>();
     
-
     private void ViewPersonDetails(int id) => _navManager.NavigateTo($"/persondetails/{id}");
     private void CloseModal() => OnCloseModal.InvokeAsync();
     
