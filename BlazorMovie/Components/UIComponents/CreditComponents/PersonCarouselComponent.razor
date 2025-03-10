@@ -1,5 +1,6 @@
 ﻿@*PersonCarouselComponent*@
 @using BlazorMovie.Models.Credits
+@inject NavigationManager _navManager
 
 @if (People is not null && People.Any())
 {
@@ -24,7 +25,9 @@
                         @foreach (var person in group)
                         {
                             <div class="col-lg-4 col-md-6">
-                                <PersonCardComponent Person="person" SubText="@GetSubText(person)" />
+                                <PersonCardComponent Person="person" 
+                                SubText="@GetSubText(person)"
+                                OnMoreDetailsRequested="@OnCarouselMoreDetailsClick" />/>
                             </div>
                         }
                     </div>
@@ -47,11 +50,16 @@ else
 }
 
 @code {
+    #region PARAMETERS
     [Parameter]
     public IEnumerable<Person>? People { get; set; } = Enumerable.Empty<Person>();
 
     [Parameter]
     public Person? Person { get; set; }
+
+    [Parameter]
+    public EventCallback<int> OnMoreDetailsRequested { get; set; }
+    #endregion
 
     private IEnumerable<(IEnumerable<Person> Group, int Index)> ChunkPeople(IEnumerable<Person> people, int size)
     {
@@ -71,7 +79,10 @@ else
             _ => $"Department: {person.KnownForDepartment}"
         };
     }
-
+    private void OnCarouselMoreDetailsClick(int personId) 
+    {
+        _navManager.NavigateTo($"/person/{personId}");
+    }
     private string carouselId = $"carousel-{Guid.NewGuid()}";
 }
 

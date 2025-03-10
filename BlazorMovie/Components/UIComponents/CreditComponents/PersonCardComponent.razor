@@ -52,6 +52,6 @@ else
 
     private async Task HandleMoreDetailsClick(int personId)
     {
-        await OnMoreDetailsRequested.InvokeAsync(Person.Id);
+        if (Person != null) await OnMoreDetailsRequested.InvokeAsync(Person.Id);
     }
 }
