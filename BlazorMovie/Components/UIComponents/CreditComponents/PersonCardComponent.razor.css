@@ -1,5 +1,5 @@
 ﻿/*PersonCardComponent.razor.css*/
 
 .card-light-bg {
-    background-color: var(--sjw-primary-color) !important;
+    background-color: var(--sjw-primary-color);
 }
