@@ -7,13 +7,13 @@
 
 @if (Person != null)
 {
-    <div class="card h-100 fade-in shadow p-3 mb-5 bg-body-tertiary rounded position-relative ">
+    <div class="card h-100 fade-in shadow p-3 mb-5 card-light-bg rounded position-relative ">
 
         <CardProfileImageComponent ProfilePath="@Person.ProfilePath" />
 
-        <div class="card-body border-top bg-light d-flex flex-column">
-            <h5 class="card-title">@Person.Name</h5>
-            <p class="card-text">@SubText</p>
+        <div class="card-body border-top d-flex flex-column">
+            <h3 class="card-title">@Person.Name</h3>
+            <p class="card-text">Popularity Score: @SubText / 10</p>
             <div class="flex-grow-1"></div>
               <button class="btn cardBtn"
                     @onclick="() =>HandleMoreDetailsClick(Person.Id)">
@@ -29,7 +29,7 @@ else
 
         <CardProfileImageComponent ProfilePath="@null" />
 
-        <div class="card-body border-top bg-lightd-flex flex-column ">
+        <div class="card-body border-top flex-column ">
             <h5 class="card-title placeholder-glow">
                 <span class="placeholder col-6"></span>
             </h5>
