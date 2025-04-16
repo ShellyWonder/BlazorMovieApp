@@ -1,7 +1,35 @@
 ﻿/*PersonSearchResultsComponent.razor.css*/
-
 .modal-custom-size {
     max-width: 80%;
     width: 80%;
 }
+.modal-content {
+    background-color: inherit;  /*transparent background */
+}
 
+.modalDesign {
+    background-color: var(--sjw-background-color) !important;
+    border-radius: 30px;
+}
+
+.bg-body-tertiary {
+    background-color: var(--sjw-background-color) !important;
+}
+
+.modalDesign .modal-content {
+    box-shadow: 0 0 15px rgba(0,0,0,0.3);
+    border-color: var(--sjw-font-color) !important;
+    border-width: 4px;
+}
+/*Recolor default SVG used in .btn-close using CSS filter.*/
+.btn-close {
+    filter: brightness(0) saturate(100%) invert(6%) sepia(85%) saturate(7474%) hue-rotate(212deg) brightness(70%) contrast(135%);
+}
+
+
+     @media (max-width: 992px) {
+        .modal-xl {
+            max-width: 90% !important;
+            width: 85% !important;
+        }
+     }
