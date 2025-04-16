@@ -9,6 +9,7 @@
     --sjw-golden-color: #ffa060;
     --sjw-tertiary-color: #F2BF5E; /*Mustard*/
     --sjw-font-color: #0b0b45;
+    --sjw-modalBorder-color: #0b0024;
     --sjw-footer-font-color: #faebd7; /*Antique white*/
     /*text styles*/
     --sjw-font-size: 1rem;
@@ -68,15 +69,7 @@ h1 .focus {
         font-weight: 600; /* Bold active item for emphasis */
     }
 
-/*.btn-primary {
-    --bs-btn-bg: var(--sjw-secondary-color);
-    --bs-btn-border-color: var(--sjw-primary-color);
-    --bs-btn-hover-bg: var(--sjw-primary-color);
-    --bs-btn-hover-border-color: var(--sjw-tertiary-color);
-    --bs-btn-active-bg: var(--sjw-tertiary-color);
-    --bs-btn-active-border-color: var(--sjw-primary-color);
-    --bs-btn-font-family: var( --sjw-title-font);
-}*/
+
 .cardBtn {
     background-color: var(--sjw-golden-color);
     color: var(--sjw-secondary-color);
