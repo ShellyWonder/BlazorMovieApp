@@ -28,11 +28,9 @@ role="dialog">
                             @foreach (var person in SearchPersonResults.Results)
                             {
                                 <div class="col-lg-4 col-md-6 col-sm-12">
-                                    @* <div class="card h-100 shadow p-3 mb-5 bg-body-tertiary rounded"> *@
                                         <SearchPersonCardComponent Person="person" 
                                         SubText="@GetPopularityRating(person)" 
                                         OnMoreDetailsRequested="HandleChildMoreDetailsRequested"/>
-                                    @* </div> *@
                                 </div>
                             }
                         }

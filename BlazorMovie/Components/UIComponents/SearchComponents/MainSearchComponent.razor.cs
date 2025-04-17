@@ -1,4 +1,5 @@
-﻿using BlazorMovie.Enums;
+﻿//MainSearchComponent.razor.cs
+using BlazorMovie.Enums;
 using Microsoft.AspNetCore.Components;
 
 namespace BlazorMovie.Components.UIComponents.SearchComponents
@@ -106,7 +107,7 @@ namespace BlazorMovie.Components.UIComponents.SearchComponents
             #region CLOSE PERSON MODAL
             private void ClosePersonModal()
             {
-                // Called by PersonSearchResultsComponent button
+                // Called by PersonSearchResultsComponent(modal) button
                 IsPersonModalOpen = false;
                 SearchPersonResults = null;
             }

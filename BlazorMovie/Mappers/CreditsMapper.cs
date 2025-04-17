@@ -63,11 +63,6 @@ namespace BlazorMovie.Mappers
             }
         #endregion
 
-        // Cast-specific properties
-        //Character = c.Character,
-        //            CastId = c.CastId,
-        //            Order = c.Order
-
     }
 
 }   
