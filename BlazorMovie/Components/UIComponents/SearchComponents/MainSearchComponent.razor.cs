@@ -1,11 +1,16 @@
 ﻿//MainSearchComponent.razor.cs
 using BlazorMovie.Enums;
+using BlazorMovie.Services;
+using BlazorMovie.Services.Interfaces;
 using Microsoft.AspNetCore.Components;
 
 namespace BlazorMovie.Components.UIComponents.SearchComponents
 {
-    public partial class MainSearchComponent
+    public partial class MainSearchComponent:ComponentBase
     {
+        [Inject]
+        private ISearchService _searchService { get; set; } = default!;
+    
     #region CATEGORY MANAGEMENT
             #region CATEGORY CHANGED
             private void OnCategoryChanged(ChangeEventArgs e)
@@ -20,10 +25,39 @@ namespace BlazorMovie.Components.UIComponents.SearchComponents
 
                 StateHasChanged();
             }
-            #endregion
+        #endregion
 
-            #region HANDLE CATEGORY SELECTED
-            private void HandleCategorySelected(SearchCategory selectedCategory)
+        #region FETCH RESULTS FOR CATEGORY SELECTED
+        private async Task FetchCategoryResultsAsync()
+        {
+            switch (category)
+            {
+                case SearchCategory.MovieByTitle:
+                    if (await ValidateSearchTerm())
+                    {
+                        SearchMovieResults = await _searchService.GetMoviesAsync(page, searchQuery);
+                        Console.WriteLine($"Results fetched: {SearchMovieResults?.Results?.Count ?? 0}");
+                        break;
+                    }
+                    break;
+                case SearchCategory.PersonByName:
+                    SearchPersonResults = await _searchService.GetPersonAsync(page, searchQuery);
+                    Console.WriteLine($"Results fetched: {SearchPersonResults?.Results?.Count ?? 0}");
+                    if (SearchPersonResults?.Results?.Any() == true)
+                    {
+                        IsPersonModalOpen = true;
+                    }
+                    break;
+
+                default:
+                    Console.WriteLine($"Unknown category: {category}");
+                    break;
+            }
+        }
+
+        #endregion
+        #region HANDLE CATEGORY SELECTED
+        private void HandleCategorySelected(SearchCategory selectedCategory)
             {
                 searchModel.Category = selectedCategory;
                 category = selectedCategory;

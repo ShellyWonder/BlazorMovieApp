@@ -5,7 +5,7 @@
 @using BlazorMovie.Models
 @using BlazorMovie.Models.Search
 @using BlazorMovie.Services.Interfaces
-@inject ISearchService searchService
+
 @inject NavigationManager _navManager
 
 <div class="row">
@@ -76,6 +76,14 @@
     public NavigationManager NavigationManager { get; set; } = null!;
     #endregion
 
+    #region ON PARAMETERS SET
+    protected override async Task OnParametersSetAsync()
+    {
+        // Check if the search query is not null or empty
+        if (!string.IsNullOrWhiteSpace(searchQuery) && category != SearchCategory.None) await PerformSearch();
+    }
+
+    #endregion
     #region PERFORM SEARCH
     private async Task PerformSearch()
     {
@@ -127,18 +135,9 @@
         {
             Console.WriteLine($"Fetching results for Category: {searchModel.Category}, SearchTerm: {searchQuery}");
 
-            if (category == SearchCategory.MovieByTitle)
-            {
-                SearchMovieResults = await searchService.GetMoviesAsync(page, searchQuery);
-                Console.WriteLine($"Results fetched: {SearchMovieResults?.Results?.Count ?? 0}");
-            }
-            else if (category == SearchCategory.PersonByName)
-            {
-                SearchPersonResults = await searchService.GetPersonAsync(page, searchQuery);
-                Console.WriteLine($"Results fetched: {SearchPersonResults?.Results?.Count ?? 0}");
-                if (SearchPersonResults?.Results?.Any() == true) IsPersonModalOpen = true;
-            }
-           
+            //API CALLS FOR MOVIE AND PERSON SEARCH RESULTS
+            await FetchCategoryResultsAsync();
+
             StateHasChanged();
         }
         catch (Exception ex)
@@ -149,5 +148,5 @@
         }
     }
     #endregion
- 
+
 }
